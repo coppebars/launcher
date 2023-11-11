@@ -182,7 +182,8 @@ pub enum ArgsContainer {
 		arguments: Args,
 	},
 	Legacy {
-		minecraft_arguments: String,
+		#[serde(rename = "minecraft_arguments")]
+		arguments: String,
 	}
 }
 
