@@ -19,8 +19,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-		"baseUrl": "./",
-		"paths": {
+    "baseUrl": "./",
+    "paths": {
       "@app/entrypoint": [
         "app/entrypoint"
       ]

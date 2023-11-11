@@ -26,6 +26,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/entrypoint@workspace:app/entrypoint"
   dependencies:
+    "@tauri-apps/api": "npm:1.5.1"
     "@types/react": "npm:18.2.37"
     "@types/react-dom": "npm:18.2.15"
     "@vitejs/plugin-react": "npm:4.1.1"
@@ -705,6 +706,13 @@ __metadata:
     picocolors: "npm:^1.0.0"
     tslib: "npm:^2.6.0"
   checksum: 7c3e68f6405a1d4c51f418d8d580e71d7bade2683d5db07e8413d8e57f7e389047eda44a2341f77a1b3085895fca7676a9d45e8812a58312524f8c4c65d501be
+  languageName: node
+  linkType: hard
+
+"@tauri-apps/api@npm:1.5.1":
+  version: 1.5.1
+  resolution: "@tauri-apps/api@npm:1.5.1"
+  checksum: f2848c0e71b70154bd5d06f454f9e7cbe1e76bdd880842f1f79cbbbaa80ab89e47b631a2789aef8af9ae721cd3e5277501868298a2a76ff6c50f065449df1d99
   languageName: node
   linkType: hard
 
