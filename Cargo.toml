@@ -4,4 +4,5 @@ members = [
 	"src-tauri",
 	"crates/common",
 	"crates/launcher",
+	"crates/providers/mojang"
 ]

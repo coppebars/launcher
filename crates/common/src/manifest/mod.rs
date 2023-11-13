@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use {
   serde::Deserialize,
   std::{
@@ -69,12 +70,68 @@ pub struct Rule {
   pub condition: Condition,
 }
 
+impl Rule {
+	fn check_os_condition(&self) -> bool {
+		let mut allow = true;
+
+		if let Some(os_condition) = &self.condition.os {
+			if let Some(os_name) = &os_condition.name {
+				allow = match os_name {
+					#[cfg(target_os = "linux")]
+					Os::Linux => true,
+					#[cfg(target_os = "windows")]
+					Os::Windows => true,
+					#[cfg(target_os = "macos")]
+					Os::Osx => true,
+					#[allow(unreachable_patterns)]
+					_ => false,
+				};
+			}
+
+			if let Some(os_arch) = &os_condition.arch {
+				allow = match os_arch {
+					#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+					Arch::X64 => true,
+					#[cfg(target_arch = "x86")]
+					Arch::X86 => true,
+					#[allow(unreachable_patterns)]
+					_ => false,
+				};
+			}
+		}
+
+		allow
+	}
+
+	pub fn unwrap_featured(&self, features: HashSet<&str>) -> bool {
+		let mut allow = self.check_os_condition();
+
+		if let Some(features_condition) = &self.condition.features {
+			allow = features_condition.keys().all(|it| features.contains(it.as_str()));
+		}
+
+		match self.action {
+			RuleAction::Allow => allow,
+			RuleAction::Disallow => !allow,
+		}
+	}
+
+	pub fn unwrap(&self) -> bool {
+		let allow = self.check_os_condition();
+
+		match self.action {
+			RuleAction::Allow => allow,
+			RuleAction::Disallow => !allow,
+		}
+	}
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Artifact {
   pub path: PathBuf,
   pub sha1: String,
-  pub size: i32,
+  pub size: u64,
   pub url: Url,
 }
 
@@ -94,15 +151,13 @@ pub enum Library {
   Native {
     downloads: LibraryDownloadEntry,
     name: String,
-    #[serde(flatten)]
-    rules: Option<Vec<Rule>>,
+    rules: Vec<Rule>,
     classifiers: HashMap<String, Artifact>,
     natives: HashMap<Os, String>,
   },
   Seminative {
     downloads: LibraryDownloadEntry,
     name: String,
-    #[serde(flatten)]
     rules: Vec<Rule>,
   },
   Default {
@@ -305,4 +360,14 @@ impl InheritedManifest {
 
     root
   }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct AssetObject {
+	pub hash: String,
+	pub size: u64
+}
+
+pub struct AssetIndex {
+	pub objects: HashMap<String, AssetObject>
 }
