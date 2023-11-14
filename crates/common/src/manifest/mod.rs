@@ -1,8 +1,10 @@
-use std::collections::HashSet;
 use {
   serde::Deserialize,
   std::{
-    collections::HashMap,
+    collections::{
+      HashMap,
+      HashSet,
+    },
     path::PathBuf,
   },
   url::Url,
@@ -71,59 +73,65 @@ pub struct Rule {
 }
 
 impl Rule {
-	fn check_os_condition(&self) -> bool {
-		let mut allow = true;
+  fn check_os_condition(&self) -> bool {
+    let mut allow = true;
 
-		if let Some(os_condition) = &self.condition.os {
-			if let Some(os_name) = &os_condition.name {
-				allow = match os_name {
-					#[cfg(target_os = "linux")]
-					Os::Linux => true,
-					#[cfg(target_os = "windows")]
-					Os::Windows => true,
-					#[cfg(target_os = "macos")]
-					Os::Osx => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
+    if let Some(os_condition) = &self.condition.os {
+      if let Some(os_name) = &os_condition.name {
+        allow = match os_name {
+          #[cfg(target_os = "linux")]
+          Os::Linux => true,
+          #[cfg(target_os = "windows")]
+          Os::Windows => true,
+          #[cfg(target_os = "macos")]
+          Os::Osx => true,
+          #[allow(unreachable_patterns)]
+          _ => false,
+        };
+      }
 
-			if let Some(os_arch) = &os_condition.arch {
-				allow = match os_arch {
-					#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-					Arch::X64 => true,
-					#[cfg(target_arch = "x86")]
-					Arch::X86 => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
-		}
+      if let Some(os_arch) = &os_condition.arch {
+        allow = match os_arch {
+          #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+          Arch::X64 => true,
+          #[cfg(target_arch = "x86")]
+          Arch::X86 => true,
+          #[allow(unreachable_patterns)]
+          _ => false,
+        };
+      }
+    }
 
-		allow
-	}
+    allow
+  }
 
-	pub fn unwrap_featured(&self, features: HashSet<&str>) -> bool {
-		let mut allow = self.check_os_condition();
+  pub fn unwrap_featured(&self, features: &HashSet<&str>) -> bool {
+    let mut allow = self.check_os_condition();
 
-		if let Some(features_condition) = &self.condition.features {
-			allow = features_condition.keys().all(|it| features.contains(it.as_str()));
-		}
+    if let Some(features_condition) = &self.condition.features {
+      if features_condition.is_empty() {
+        allow = false
+      } else {
+        allow = features_condition
+          .keys()
+          .all(|it| features.contains(it.as_str()));
+      }
+    }
 
-		match self.action {
-			RuleAction::Allow => allow,
-			RuleAction::Disallow => !allow,
-		}
-	}
+    match self.action {
+      RuleAction::Allow => allow,
+      RuleAction::Disallow => !allow,
+    }
+  }
 
-	pub fn unwrap(&self) -> bool {
-		let allow = self.check_os_condition();
+  pub fn unwrap(&self) -> bool {
+    let allow = self.check_os_condition();
 
-		match self.action {
-			RuleAction::Allow => allow,
-			RuleAction::Disallow => !allow,
-		}
-	}
+    match self.action {
+      RuleAction::Allow => allow,
+      RuleAction::Disallow => !allow,
+    }
+  }
 }
 
 #[derive(Debug, Deserialize)]
@@ -231,7 +239,7 @@ pub struct Args {
 
 #[derive(Debug, Deserialize)]
 pub struct ModernArgs {
-  arguments: Args,
+  pub arguments: Args,
 }
 
 impl From<String> for ModernArgs {
@@ -251,13 +259,13 @@ impl From<String> for ModernArgs {
 #[derive(Debug, Deserialize)]
 pub struct LegacyArgs {
   #[serde(rename = "minecraft_arguments")]
-  arguments: String,
+  pub arguments: String,
 }
 
 impl From<LegacyArgs> for ModernArgs {
-	fn from(value: LegacyArgs) -> Self {
-		value.arguments.into()
-	}
+  fn from(value: LegacyArgs) -> Self {
+    value.arguments.into()
+  }
 }
 
 #[derive(Debug, Deserialize)]
@@ -267,23 +275,38 @@ pub enum ArgsContainer {
   Legacy(LegacyArgs),
 }
 
+impl From<ArgsContainer> for ModernArgs {
+	fn from(value: ArgsContainer) -> Self {
+		match value {
+			ArgsContainer::Modern(it) => it,
+			ArgsContainer::Legacy(it) => it.into()
+		}
+	}
+}
+
 impl ArgsContainer {
   fn merge(self, with: ArgsContainer) -> Self {
     use ArgsContainer::*;
 
-		match with {
-			Modern(ModernArgs { arguments }) => {
-				let Args { jvm: jvm_ext, game: game_ext } = arguments;
-				let mut modern = self.into_modern();
-				let Args { ref mut jvm, ref mut game } = modern.arguments;
+    match with {
+      Modern(ModernArgs { arguments }) => {
+        let Args {
+          jvm: jvm_ext,
+          game: game_ext,
+        } = arguments;
+        let mut modern = self.into_modern();
+        let Args {
+          ref mut jvm,
+          ref mut game,
+        } = modern.arguments;
 
-				jvm.extend(jvm_ext);
-				game.extend(game_ext);
+        jvm.extend(jvm_ext);
+        game.extend(game_ext);
 
-				Modern(modern)
-			}
-			Legacy(args) => self.merge(Modern(args.into()))
-		}
+        Modern(modern)
+      }
+      Legacy(args) => self.merge(Modern(args.into())),
+    }
   }
 
   fn into_modern(self) -> ModernArgs {
@@ -355,8 +378,8 @@ impl InheritedManifest {
       main_class
     };
 
-		root.arguments = root.arguments.merge(self.arguments);
-		root.libraries.extend(self.libraries);
+    root.arguments = root.arguments.merge(self.arguments);
+    root.libraries.extend(self.libraries);
 
     root
   }
@@ -364,11 +387,11 @@ impl InheritedManifest {
 
 #[derive(Debug, Deserialize)]
 pub struct AssetObject {
-	pub hash: String,
-	pub size: u64
+  pub hash: String,
+  pub size: u64,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct AssetIndex {
-	pub objects: HashMap<String, AssetObject>
+  pub objects: HashMap<String, AssetObject>,
 }

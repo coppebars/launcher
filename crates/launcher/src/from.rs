@@ -1,127 +1,89 @@
 use {
-  super::Launcher,
+  crate::launcher::Launcher,
   common::{
+    libutils::libname_to_path,
     manifest::{
-      Arch,
-      Args,
-      ArgsContainer,
       Argument,
       ConditionalArgument,
       Library,
-      Manifest,
-      Os,
+      ModernArgs,
+      RootManifest,
       Rule,
-      RuleAction,
+      VersionType,
     },
   },
+  once_cell::sync::Lazy,
+  std::collections::HashSet,
+  thiserror::Error,
 };
 
-fn check_rule(rule: Rule) -> bool {
-  let condition = rule.condition;
-  let mut allow = true;
+static DEFAULT_FEATURES: Lazy<HashSet<&str>> = Lazy::new(HashSet::new);
 
-  if let Some(os_condition) = condition.os {
-    if let Some(os_name) = os_condition.name {
-      allow = match os_name {
-        #[cfg(target_os = "linux")]
-        Os::Linux => true,
-        #[cfg(target_os = "windows")]
-        Os::Windows => true,
-        #[cfg(target_os = "macos")]
-        Os::Osx => true,
-				#[allow(unreachable_patterns)]
-        _ => false,
-      };
-    }
-
-    if let Some(os_arch) = os_condition.arch {
-      allow = match os_arch {
-        #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-        Arch::X64 => true,
-        #[cfg(target_arch = "x86")]
-        Arch::X86 => true,
-				#[allow(unreachable_patterns)]
-        _ => false,
-      };
-    }
-  }
-
-  match rule.action {
-    RuleAction::Allow => allow,
-    RuleAction::Disallow => !allow,
-  }
-}
-
-fn process_arg(argument: Argument) -> Option<Vec<String>> {
-  match argument {
-    Argument::Constant(it) => Some(vec![it]),
-    Argument::Conditional { rules, value } => {
-      if rules.into_iter().all(check_rule) {
-        match value {
-          ConditionalArgument::Single(it) => Some(vec![it]),
-          ConditionalArgument::List(it) => Some(it),
+fn process_args(args: Vec<Argument>, to: &mut Vec<String>) {
+  for arg in args {
+    match arg {
+      Argument::Constant(it) => to.push(it),
+      Argument::Conditional { rules, value } => {
+        if !rules.iter().all(|it| it.unwrap_featured(&DEFAULT_FEATURES)) {
+          continue;
         }
-      } else {
-        None
+
+        match value {
+          ConditionalArgument::Single(it) => to.push(it),
+          ConditionalArgument::List(it) => to.extend(it),
+        }
       }
     }
   }
 }
 
-impl From<Manifest> for Launcher {
-  fn from(manifest: Manifest) -> Self {
-    let libs = manifest
-      .libraries
-      .into_iter()
-      .filter_map(|it| match it {
+#[derive(Debug, Error)]
+pub enum FromError {
+  #[error("Failed to convert manifest to launcher instance: {0}")]
+  InvalidManifest(String),
+}
+
+impl TryFrom<RootManifest> for Launcher {
+  type Error = FromError;
+
+  fn try_from(value: RootManifest) -> Result<Self, Self::Error> {
+    let mut launcher = Launcher::default();
+
+    launcher.id = value.id;
+		launcher.asset_index_name = value.assets;
+		launcher.main_class = value.main_class;
+    launcher.version_type = match value.version_type {
+      VersionType::Release => "release",
+      VersionType::Snapshot => "snapshot",
+      VersionType::OldBeta => "old_beta",
+      VersionType::OldAlpha => "old_alpha",
+    }
+    .into();
+
+    for lib in value.libraries {
+      match lib {
+        Library::Custom { name, .. } => launcher.classpath.push(
+          libname_to_path(&name).ok_or(FromError::InvalidManifest("Invalid lib name".into()))?,
+        ),
         Library::Seminative {
           rules, downloads, ..
         } => {
-          if rules.into_iter().all(check_rule) {
-            Some(downloads.artifact.path)
-          } else {
-            None
+          if rules.iter().all(Rule::unwrap) {
+            launcher.classpath.push(downloads.artifact.path);
           }
         }
-        Library::Default { downloads, .. } => Some(downloads.artifact.path),
-        _ => None,
-      })
-      .collect::<Vec<_>>();
-
-    let args = match manifest.arguments {
-      ArgsContainer::Modern { arguments } => arguments,
-      ArgsContainer::Legacy { arguments } => Args {
-        game: arguments
-          .split_whitespace()
-          .map(|it| Argument::Constant(it.to_owned()))
-          .collect::<Vec<_>>(),
-        jvm: Vec::new(),
-      },
-    };
-
-    let jvm_ext = args
-      .jvm
-      .into_iter()
-      .filter_map(process_arg)
-      .flatten()
-      .collect::<Vec<_>>();
-    let game = args
-      .game
-      .into_iter()
-      .filter_map(process_arg)
-      .flatten()
-      .collect::<Vec<_>>();
-
-		let mut jvm: Vec<_> =  ["-Xms", "${init_alloc}", "-Xmx", "${max_alloc}"].map(ToString::to_string).into();
-
-		jvm.extend(jvm_ext);
-
-    Self {
-      id: manifest.id,
-      main: String::from("client.jar"),
-      libs,
-      jvm_args: jvm,
-      game_args: game,
+        Library::Default { downloads, .. } => launcher.classpath.push(downloads.artifact.path),
+        Library::Native { downloads, .. } => launcher.classpath.push(downloads.artifact.path),
+      }
     }
+
+		launcher.classpath.push(format!("../versions/{}/client.jar", &launcher.id).into());
+
+    let ModernArgs { arguments }: ModernArgs = value.arguments.into();
+
+    process_args(arguments.jvm, &mut launcher.jvm_args);
+    process_args(arguments.game, &mut launcher.game_args);
+
+    Ok(launcher)
   }
 }

@@ -1,26 +1,24 @@
 use {
   crate::api::{
-    get_manifest,
+    get_versions_manifest,
     MINECRAFT_RESOURCES_BASE_URL,
   },
-  common::manifest::{
-    Artifact,
-    AssetIndex,
-    Library,
-    Os,
-    RootManifest,
-    Rule,
+  common::{
+    libutils::libname_to_path,
+    manifest::{
+      Artifact,
+      AssetIndex,
+      Library,
+      Os,
+      RootManifest,
+      Rule,
+    },
   },
-  regex::Regex,
   serde::Deserialize,
-  std::{
-    iter,
-    path::PathBuf,
-  },
+  std::path::PathBuf,
   thiserror::Error,
   url::Url,
 };
-use crate::api::get_versions_manifest;
 
 #[derive(Debug)]
 pub enum Kind {
@@ -75,7 +73,7 @@ impl Install for RootManifest {
     items.push(Item {
       kind: Kind::Version,
       url: self.downloads.client.url,
-      path: "client.jar".into(),
+      path: PathBuf::from(&self.id).join("client.jar"),
       known_size: Some(self.downloads.client.size),
       known_sha: Some(self.downloads.client.sha1),
     });
@@ -83,33 +81,12 @@ impl Install for RootManifest {
     for lib in self.libraries {
       match lib {
         Library::Custom { name, url } => {
-          let re = Regex::new(r"^([^:]+):([^:]+):(.+)").unwrap();
-
-          let ca = re.captures(&name).ok_or(InstallError::InvalidManifest(
-            "Malformed or unsupported artifact name".into(),
-          ))?;
-
-          let package = &ca[0];
-          let artifact = &ca[1];
-          let version = &ca[2];
-
-          let path = PathBuf::from_iter(
-            package
-              .split('.')
-              .chain(iter::once(artifact))
-              .chain(iter::once(version)),
-          );
-
-          let sub = format!("{}-{}.jar", artifact, version);
+          let path = libname_to_path(&name)
+            .ok_or(InstallError::InvalidManifest("Invalid lib name".into()))?;
 
           let url = url
-            .join(
-              path
-                .join(&sub)
-                .to_str()
-                .expect("Failed to parse artifact path"),
-            )
-            .map_err(|_| InstallError::InvalidManifest(sub))?;
+            .join(path.to_str().expect("Failed to parse artifact path"))
+            .map_err(|_| InstallError::InvalidManifest("Failed to parse lib url".into()))?;
 
           items.push(Item {
             kind: Kind::Lib,
@@ -191,48 +168,59 @@ impl Install for RootManifest {
 
 impl Install for AssetIndex {
   fn into_items(self) -> Result<Vec<Item>, InstallError> {
-    Ok(
-      self
-        .objects
-        .into_values()
-        .map(|it| {
-          let path = format!("{}/{}", &it.hash[..2], it.hash);
+    let base = PathBuf::from("objects");
+    let mut items: Vec<Item> = Vec::with_capacity(2048);
 
-          Item {
-            kind: Kind::Asset,
-            url: MINECRAFT_RESOURCES_BASE_URL.join(&path).unwrap(),
-            path: path.into(),
-            known_size: Some(it.size),
-            known_sha: Some(it.hash),
-          }
-        })
-        .collect(),
-    )
+    for it in self.objects.into_values() {
+      let path = format!("{}/{}", &it.hash[..2], it.hash);
+
+      items.push(Item {
+        kind: Kind::Asset,
+        url: MINECRAFT_RESOURCES_BASE_URL.join(&path).unwrap(),
+        path: base.join(path),
+        known_size: Some(it.size),
+        known_sha: Some(it.hash),
+      });
+    }
+
+    Ok(items)
   }
 }
 
 pub async fn get_items(id: &str) -> Result<Vec<Item>, Box<dyn std::error::Error>> {
   let versions = get_versions_manifest().await?;
-	let version = versions.versions.into_iter().find(|it| it.id == id).expect("Unknown id");
+  let version = versions
+    .versions
+    .into_iter()
+    .find(|it| it.id == id)
+    .expect("Unknown id");
 
-	let manifest: RootManifest = reqwest::get(version.url.clone()).await?.json().await?;
+  let manifest: RootManifest = reqwest::get(version.url.clone()).await?.json().await?;
   let asset_index = reqwest::get(manifest.asset_index.url.clone())
     .await?
     .json::<AssetIndex>()
     .await?;
 
-	let mut items = Vec::with_capacity(4096);
+  let mut items = Vec::with_capacity(4096);
 
-	items.push(Item {
-		kind: Kind::Version,
-		url: version.url,
-		path: "version.json".into(),
-		known_size: None,
-		known_sha: Some(version.sha1),
-	});
+  items.push(Item {
+    kind: Kind::Version,
+    url: version.url,
+    path: PathBuf::from(id).join("version.json"),
+    known_size: None,
+    known_sha: Some(version.sha1),
+  });
 
-	items.extend(manifest.into_items()?);
-	items.extend(asset_index.into_items()?);
+  items.push(Item {
+    kind: Kind::Asset,
+    url: manifest.asset_index.url.clone(),
+    path: PathBuf::from("indexes").join(format!("{}.json", &manifest.assets)),
+    known_size: None,
+    known_sha: Some(manifest.asset_index.sha1.clone()),
+  });
 
-	Ok(items)
+  items.extend(manifest.into_items()?);
+  items.extend(asset_index.into_items()?);
+
+  Ok(items)
 }
