@@ -189,7 +189,7 @@ pub struct PackageDownloads {
 #[serde(rename_all = "camelCase")]
 pub struct Resource {
   pub sha1: String,
-  pub size: i32,
+  pub size: u64,
   pub url: Url,
 }
 
@@ -368,6 +368,7 @@ pub struct AssetObject {
 	pub size: u64
 }
 
+#[derive(Debug, Deserialize)]
 pub struct AssetIndex {
 	pub objects: HashMap<String, AssetObject>
 }
