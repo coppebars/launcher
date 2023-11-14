@@ -1,5 +1,8 @@
 use {
-  super::api::MINECRAFT_RESOURCES_BASE_URL,
+  crate::api::{
+    get_manifest,
+    MINECRAFT_RESOURCES_BASE_URL,
+  },
   common::manifest::{
     Artifact,
     AssetIndex,
@@ -17,13 +20,14 @@ use {
   thiserror::Error,
   url::Url,
 };
+use crate::api::get_versions_manifest;
 
 #[derive(Debug)]
 pub enum Kind {
   Lib,
   Native,
   Asset,
-	Version,
+  Version,
 }
 
 #[derive(Debug)]
@@ -68,13 +72,13 @@ impl Install for RootManifest {
   fn into_items(self) -> Result<Vec<Item>, InstallError> {
     let mut items: Vec<Item> = Vec::new();
 
-		items.push(Item {
-			kind: Kind::Version,
-			url: self.downloads.client.url,
-			path: "client.jar".into(),
-			known_size: Some(self.downloads.client.size),
-			known_sha: Some(self.downloads.client.sha1),
-		});
+    items.push(Item {
+      kind: Kind::Version,
+      url: self.downloads.client.url,
+      path: "client.jar".into(),
+      known_size: Some(self.downloads.client.size),
+      known_sha: Some(self.downloads.client.sha1),
+    });
 
     for lib in self.libraries {
       match lib {
@@ -205,4 +209,30 @@ impl Install for AssetIndex {
         .collect(),
     )
   }
+}
+
+pub async fn get_items(id: &str) -> Result<Vec<Item>, Box<dyn std::error::Error>> {
+  let versions = get_versions_manifest().await?;
+	let version = versions.versions.into_iter().find(|it| it.id == id).expect("Unknown id");
+
+	let manifest: RootManifest = reqwest::get(version.url.clone()).await?.json().await?;
+  let asset_index = reqwest::get(manifest.asset_index.url.clone())
+    .await?
+    .json::<AssetIndex>()
+    .await?;
+
+	let mut items = Vec::with_capacity(4096);
+
+	items.push(Item {
+		kind: Kind::Version,
+		url: version.url,
+		path: "version.json".into(),
+		known_size: None,
+		known_sha: Some(version.sha1),
+	});
+
+	items.extend(manifest.into_items()?);
+	items.extend(asset_index.into_items()?);
+
+	Ok(items)
 }
