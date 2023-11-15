@@ -20,6 +20,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
+    "types": [
+      "vite/client"
+    ],
     "paths": {
       "@app/entrypoint": [
         "app/entrypoint"
@@ -29,6 +32,30 @@
       ],
       "@app/root": [
         "app/root"
+      ],
+      "props-of": [
+        "shared/lib/props-of"
+      ],
+      "styled-std": [
+        "shared/lib/styled-std"
+      ],
+      "@theme/common": [
+        "shared/theme/common"
+      ],
+      "@theme/dark": [
+        "shared/theme/dark"
+      ],
+      "@theme/fonts": [
+        "shared/theme/fonts"
+      ],
+      "@theme/global": [
+        "shared/theme/global"
+      ],
+      "@theme/light": [
+        "shared/theme/light"
+      ],
+      "@theme/provider": [
+        "shared/theme/provider"
       ]
     }
   },

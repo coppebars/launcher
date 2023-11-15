@@ -1,0 +1,10 @@
+{
+	"name": "@theme/light",
+	"main": "mod.ts",
+	"dependencies": {
+		"@theme/common": "workspace:"
+	},
+	"peerDependencies": {
+		"react": "*"
+	}
+}

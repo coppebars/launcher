@@ -1,0 +1,10 @@
+{
+	"name": "@theme/dark",
+	"main": "mod.ts",
+	"dependencies": {
+		"@theme/common": "workspace:"
+	},
+	"peerDependencies": {
+		"react": "*"
+	}
+}

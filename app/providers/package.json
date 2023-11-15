@@ -2,6 +2,7 @@
 	"name": "@app/providers",
 	"main": "mod.tsx",
 	"dependencies": {
+		"@theme/provider": "workspace:",
 		"react-router-dom": "6.18.0"
 	},
 	"devDependencies": {

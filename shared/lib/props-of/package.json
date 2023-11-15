@@ -1,0 +1,7 @@
+{
+	"name": "props-of",
+	"main": "mod.ts",
+	"devDependencies": {
+		"@types/react": "18.2.37"
+	}
+}
