@@ -1,5 +1,9 @@
 {
 	"name": "@app/entrypoint",
+	"dependencies": {
+		"@app/providers": "workspace:",
+		"@app/root": "workspace:"
+	},
 	"devDependencies": {
 		"@tauri-apps/api": "1.5.1",
 		"@types/react": "18.2.37",

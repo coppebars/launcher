@@ -1,0 +1,14 @@
+{
+	"name": "@app/providers",
+	"main": "mod.tsx",
+	"dependencies": {
+		"react-router-dom": "6.18.0"
+	},
+	"devDependencies": {
+		"@types/react": "18.2.37"
+	},
+	"peerDependencies": {
+		"react": "*",
+		"react-dom": "*"
+	}
+}

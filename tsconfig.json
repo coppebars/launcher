@@ -23,6 +23,12 @@
     "paths": {
       "@app/entrypoint": [
         "app/entrypoint"
+      ],
+      "@app/providers": [
+        "app/providers"
+      ],
+      "@app/root": [
+        "app/root"
       ]
     }
   },

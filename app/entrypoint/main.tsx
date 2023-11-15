@@ -1,6 +1,7 @@
-import { invoke }     from '@tauri-apps/api'
-import { createRoot } from 'react-dom/client'
+import { withProviders } from '@app/providers'
+import { Root }          from '@app/root'
+import { createRoot }    from 'react-dom/client'
 
-invoke('mojang_list_versions').then(console.log)
+const RootWithProviders = withProviders(Root)
 
-createRoot(document.getElementById('root')!).render('Hello')
+createRoot(document.getElementById('root')!).render(<RootWithProviders />)
