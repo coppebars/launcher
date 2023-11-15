@@ -1,29 +1,36 @@
 use {
-	common::{
-		libutils::libname_to_path,
-		manifest::{
-			Artifact,
-			AssetIndex,
-			Library,
-			Os,
-			RootManifest,
-			Rule,
+  crate::api::{
+    get_versions_manifest,
+    MINECRAFT_RESOURCES_BASE_URL,
+  },
+  common::{
+    libutils::libname_to_path,
+    manifest::{
+      Artifact,
+      AssetIndex,
+      Library,
+      Os,
+      RootManifest,
+      Rule,
     },
   },
-	crate::api::{
-		get_versions_manifest,
-		MINECRAFT_RESOURCES_BASE_URL,
+  download::Item as DownloadItem,
+  once_cell::sync::Lazy,
+  serde::Deserialize,
+  std::{
+    collections::HashMap,
+    path::{
+      Path,
+      PathBuf,
+    },
   },
-	serde::Deserialize,
-	std::path::PathBuf,
-	thiserror::Error,
-	url::Url,
+  thiserror::Error,
+  url::Url,
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Kind {
   Lib,
-  Native,
   Asset,
   Version,
 }
@@ -35,6 +42,29 @@ pub struct Item {
   pub path: PathBuf,
   pub known_size: Option<u64>,
   pub known_sha: Option<String>,
+}
+
+static PATHS: Lazy<HashMap<Kind, PathBuf>> =
+  Lazy::new(|| HashMap::from([
+		(Kind::Version, PathBuf::from("versions")),
+		(Kind::Lib, PathBuf::from("libraries")),
+		(Kind::Asset, PathBuf::from("assets")),
+	]));
+
+impl Item {
+  pub fn place(self, root: &Path) -> DownloadItem {
+    DownloadItem {
+      path: root.join(
+        PATHS
+          .get(&self.kind)
+          .expect("Unknown item kind")
+          .join(self.path),
+      ),
+      url: self.url,
+      known_sha: self.known_sha,
+      known_size: self.known_size,
+    }
+  }
 }
 
 impl From<Artifact> for Item {
@@ -77,6 +107,8 @@ impl Install for RootManifest {
       known_size: Some(self.downloads.client.size),
       known_sha: Some(self.downloads.client.sha1),
     });
+
+		let native_path = Path::new("natives");
 
     for lib in self.libraries {
       match lib {
@@ -140,9 +172,9 @@ impl Install for RootManifest {
             ))?;
 
           items.push(Item {
-            kind: Kind::Native,
+            kind: Kind::Version,
             url,
-            path,
+            path: native_path.join(path.iter().last().unwrap()),
             known_size: Some(size),
             known_sha: Some(sha1),
           });

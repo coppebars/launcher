@@ -17,7 +17,7 @@ use {
   thiserror::Error,
 };
 
-static DEFAULT_FEATURES: Lazy<HashSet<&str>> = Lazy::new(HashSet::new);
+static DEFAULT_FEATURES: Lazy<HashSet<&str>> = Lazy::new(|| HashSet::from(["has_custom_resolution"]));
 
 fn process_args(args: Vec<Argument>, to: &mut Vec<String>) {
   for arg in args {
