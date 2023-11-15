@@ -5,5 +5,5 @@ members = [
 	"crates/common",
 	"crates/launcher",
 	"crates/providers/mojang",
-	"crates/download"
+	"crates/download",
 ]

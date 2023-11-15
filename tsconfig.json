@@ -33,6 +33,12 @@
       "@app/root": [
         "app/root"
       ],
+      "@config/storage": [
+        "shared/config/storage"
+      ],
+      "indexed-db": [
+        "shared/lib/indexed-db"
+      ],
       "props-of": [
         "shared/lib/props-of"
       ],
