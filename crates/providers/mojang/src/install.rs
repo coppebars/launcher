@@ -1,23 +1,23 @@
 use {
-  crate::api::{
-    get_versions_manifest,
-    MINECRAFT_RESOURCES_BASE_URL,
-  },
-  common::{
-    libutils::libname_to_path,
-    manifest::{
-      Artifact,
-      AssetIndex,
-      Library,
-      Os,
-      RootManifest,
-      Rule,
+	common::{
+		libutils::libname_to_path,
+		manifest::{
+			Artifact,
+			AssetIndex,
+			Library,
+			Os,
+			RootManifest,
+			Rule,
     },
   },
-  serde::Deserialize,
-  std::path::PathBuf,
-  thiserror::Error,
-  url::Url,
+	crate::api::{
+		get_versions_manifest,
+		MINECRAFT_RESOURCES_BASE_URL,
+  },
+	serde::Deserialize,
+	std::path::PathBuf,
+	thiserror::Error,
+	url::Url,
 };
 
 #[derive(Debug)]

@@ -6,16 +6,30 @@ use {
   },
 	reqwest::Client,
 	serde::Serialize,
-	std::{
-		path::PathBuf,
-		sync::Arc,
+	sha1::{
+		Digest,
+		Sha1,
   },
+	std::{
+		io::ErrorKind,
+		path::PathBuf,
+		sync::{
+			Arc,
+			atomic::{
+				AtomicUsize,
+				Ordering,
+      },
+    },
+	},
 	thiserror::Error,
 	tokio::{
 		fs::File,
-		io::AsyncWriteExt,
+		io::{
+			AsyncReadExt,
+			AsyncWriteExt,
+    },
 		sync::mpsc::Sender,
-	},
+  },
 	tokio_util::sync::CancellationToken,
 	url::Url,
 };
@@ -26,13 +40,6 @@ pub struct Item {
   pub path: PathBuf,
   pub known_size: Option<u64>,
   pub known_sha: Option<String>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct Chunk {
-  size: usize,
-  total: Option<u64>,
-  progress: usize,
 }
 
 #[derive(Debug, Error, Serialize, Clone)]
@@ -49,11 +56,14 @@ pub enum DownloadError {
   #[error("sync: {0}")]
   SendError(String),
 
-	#[error("join: {0}")]
-	JoinError(String),
+  #[error("join: {0}")]
+  JoinError(String),
 
   #[error("unexpected: {0}")]
   Unexpected(String),
+
+  #[error("sha: {0}")]
+  InvalidSha(String),
 
   #[error("shutdown")]
   Shutdown,
@@ -78,16 +88,30 @@ from_err! {
   std::io::Error => Io,
   reqwest::Error => Reqwest,
   tokio::sync::mpsc::error::SendError<DownloadEvent> => SendError,
-	tokio::task::JoinError => JoinError
+  tokio::task::JoinError => JoinError
 }
 
 #[derive(Debug, Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "camelCase")]
 pub enum DownloadEvent {
-  Start { item: Item },
-  Chunk { path: String, chunk: Chunk },
-  Error { item: Item, error: DownloadError },
-  Finish { item: Item },
+  Start {
+    item: Item,
+  },
+  Chunk {
+    path: String,
+    size: usize,
+    total: Option<u64>,
+    progress: usize,
+  },
+  Error {
+    item: Item,
+    error: DownloadError,
+  },
+  Finish {
+    item: Item,
+    total: usize,
+    progress: usize,
+  },
 }
 
 pub async fn download(
@@ -104,9 +128,46 @@ pub async fn download(
     .send(DownloadEvent::Start { item: item.clone() })
     .await?;
 
+  if let Some(sha) = item.known_sha {
+    match File::open(&item.path).await {
+      Ok(mut file) => {
+        let mut hasher = Sha1::new();
+
+        let mut buffer: Vec<u8> = vec![0; 2097152];
+
+        loop {
+          let bytes_read = file.read(&mut buffer).await?;
+
+          if bytes_read == 0 {
+            break;
+          }
+          hasher.update(&buffer[..bytes_read]);
+        }
+
+        let hex = &hasher.finalize()[..];
+
+        let bytes = (0..sha.len())
+          .step_by(2)
+          .map(|i| u8::from_str_radix(&sha[i..i + 2], 16))
+          .collect::<Result<Vec<_>, _>>()
+          .map_err(|err| DownloadError::InvalidSha(err.to_string()))?;
+
+        let matched = hex.iter().zip(&bytes).all(|(a, b)| a == b);
+
+        if matched {
+          return Ok(());
+        }
+      }
+      Err(err) => match err.kind() {
+        ErrorKind::NotFound => {}
+        _ => Err(err)?,
+      },
+    };
+  }
+
   let response = client.get(item.url.to_owned()).send().await?;
 
-  let content_length = response.content_length();
+  let content_length = response.content_length().or(item.known_size);
   let mut stream = response.bytes_stream().map_err(DownloadError::from);
   let mut target_file = File::create(&item.path).await?;
 
@@ -133,16 +194,12 @@ pub async fn download(
     sender
       .send(DownloadEvent::Chunk {
         path: path_key.clone(),
-        chunk: Chunk {
-          progress,
-          size: bytes.len(),
-          total: content_length,
-        },
+        progress,
+        size: bytes.len(),
+        total: content_length,
       })
       .await?;
   }
-
-  sender.send(DownloadEvent::Finish { item }).await?;
 
   Ok(())
 }
@@ -154,26 +211,47 @@ pub async fn download_all(
   token: Arc<CancellationToken>,
   workers: usize,
 ) -> Result<(), DownloadError> {
+  let len = items.len();
+  let counter = Arc::new(AtomicUsize::new(0));
+
   let mut futures = fut_iter(items.into_iter().map(|it| {
+    let counter = counter.clone();
     let client = client.clone();
     let sender = sender.clone();
     let token = token.clone();
 
     tokio::spawn(async move {
-			match download(&client, it.clone(), &sender, &token).await {
-				Ok(result) => Ok(result),
-				Err(err) => {
-					sender.send(DownloadEvent::Error { item: it.clone(), error: err.clone() }).await?;
-					Err(err)
-				}
-			}
-		})
+      match download(&client, it.clone(), &sender, &token).await {
+        Ok(result) => {
+          counter.fetch_add(1, Ordering::Relaxed);
+
+          sender
+            .send(DownloadEvent::Finish {
+              item: it.clone(),
+              total: len,
+              progress: counter.load(Ordering::Relaxed),
+            })
+            .await?;
+
+          Ok(result)
+        }
+        Err(err) => {
+          sender
+            .send(DownloadEvent::Error {
+              item: it.clone(),
+              error: err.clone(),
+            })
+            .await?;
+          Err(err)
+        }
+      }
+    })
   }))
   .buffer_unordered(workers);
 
-	while let Some(result) = futures.next().await {
-		result??
-	}
+  while let Some(result) = futures.next().await {
+    result??
+  }
 
   Ok(())
 }
