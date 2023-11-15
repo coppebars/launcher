@@ -5,7 +5,7 @@ mod commands;
 
 fn main() {
 	tauri::Builder::default()
-		.invoke_handler(tauri::generate_handler![commands::providers::list])
+		.invoke_handler(tauri::generate_handler![commands::providers::mojang_list_versions])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
