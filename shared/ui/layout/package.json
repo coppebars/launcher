@@ -1,5 +1,6 @@
 {
 	"name": "@ui/layout",
+	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
 		"@emotion/styled": "11.11.0",

@@ -1,5 +1,6 @@
 {
 	"name": "@app/root",
+	"type": "module",
 	"main": "mod.tsx",
 	"dependencies": {
 		"@config/general": "workspace:",

@@ -1,5 +1,6 @@
 {
 	"name": "@theme/fonts",
+	"type": "module",
 	"main": "mod.tsx",
 	"devDependencies": {
 		"@emotion/react": "11.11.1",

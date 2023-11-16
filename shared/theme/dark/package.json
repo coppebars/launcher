@@ -1,5 +1,6 @@
 {
 	"name": "@theme/dark",
+	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
 		"@theme/common": "workspace:"

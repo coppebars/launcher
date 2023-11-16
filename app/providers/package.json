@@ -1,9 +1,10 @@
 {
 	"name": "@app/providers",
+	"type": "module",
 	"main": "mod.tsx",
 	"dependencies": {
 		"@theme/provider": "workspace:",
-		"react-router-dom": "6.18.0"
+		"react-router-dom": "6.19.0"
 	},
 	"devDependencies": {
 		"@types/react": "18.2.37"

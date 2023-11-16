@@ -1,5 +1,6 @@
 {
 	"name": "@theme/provider",
+	"type": "module",
 	"main": "mod.tsx",
 	"dependencies": {
 		"@theme/dark": "workspace:",

@@ -1,5 +1,6 @@
 {
 	"name": "@app/entrypoint",
+	"type": "module",
 	"dependencies": {
 		"@app/providers": "workspace:",
 		"@app/root": "workspace:",
@@ -9,9 +10,9 @@
 		"@tauri-apps/api": "1.5.1",
 		"@types/react": "18.2.37",
 		"@types/react-dom": "18.2.15",
-		"@vitejs/plugin-react": "4.1.1",
+		"@vitejs/plugin-react": "4.2.0",
 		"react": "canary",
 		"react-dom": "canary",
-		"vite": "4.5.0"
+		"vite": "5.0.0"
 	}
 }

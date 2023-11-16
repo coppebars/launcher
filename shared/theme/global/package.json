@@ -1,5 +1,6 @@
 {
 	"name": "@theme/global",
+	"type": "module",
 	"main": "mod.tsx",
 	"dependencies": {
 		"styled-std": "workspace:"

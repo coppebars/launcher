@@ -1,5 +1,6 @@
 {
 	"name": "@theme/common",
+	"type": "module",
 	"main": "mod.ts",
 	"devDependencies": {
 		"@emotion/react": "11.11.1"
