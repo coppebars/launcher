@@ -1,15 +1,16 @@
-use std::path::Path;
-use std::time::Duration;
 use {
-  crate::install::Item,
-  download::{
-    download_all,
-    DownloadEvent,
+	download::{
+		download_all,
+		DownloadEvent,
   },
-  reqwest::Client,
-  std::sync::Arc,
-  tokio::sync::mpsc::channel,
-  tokio_util::sync::CancellationToken,
+	reqwest::Client,
+	std::{
+		path::Path,
+		sync::Arc,
+		time::Duration,
+  },
+	tokio::sync::mpsc::channel,
+	tokio_util::sync::CancellationToken,
 };
 
 mod api;
@@ -19,7 +20,7 @@ mod install;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
   let items = install::get_items("1.20.1").await?;
 
-	let root = Path::new("./minecraft");
+  let root = Path::new("./minecraft");
 
   let items: Vec<_> = items.into_iter().map(|it| it.place(root)).collect();
 
@@ -30,17 +31,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   let task_token = token.clone();
   let task =
-    tokio::spawn(async move { download_all(&client, items, Arc::new(tx), task_token, 8).await });
+    tokio::spawn(async move { download_all(&client, items, Arc::new(tx), task_token, 4).await });
 
   while let Some(msg) = rx.recv().await {
     if let DownloadEvent::Finish {
-        total, progress, ..
-      } = msg {
+      total, progress, ..
+    } = msg
+    {
       println!("{progress} / {total}")
     };
   }
 
-	task.await??;
+  task.await??;
 
   Ok(())
 }

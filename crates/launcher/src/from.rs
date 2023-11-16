@@ -54,6 +54,7 @@ impl TryFrom<RootManifest> for Launcher {
       id: value.id,
       asset_index_name: value.assets,
       main_class: value.main_class,
+			jre_component: value.java_version.component,
       version_type: match value.version_type {
         VersionType::Release => "release",
         VersionType::Snapshot => "snapshot",
@@ -83,7 +84,7 @@ impl TryFrom<RootManifest> for Launcher {
 
     launcher
       .classpath
-      .push(format!("../versions/{}/client.jar", &launcher.id).into());
+      .push(format!("../versions/{0}/{0}.jar", &launcher.id).into());
 
     let ModernArgs { arguments }: ModernArgs = value.arguments.into();
 

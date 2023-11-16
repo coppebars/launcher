@@ -4,12 +4,10 @@
 	"main": "mod.ts",
 	"dependencies": {
 		"@emotion/styled": "11.11.0",
-		"styled-std": "workspace:",
-		"styled-system": "5.1.5"
+		"styled-std": "workspace:"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.37",
-		"@types/styled-system": "5.1.22"
+		"@types/react": "18.2.37"
 	},
 	"peerDependencies": {
 		"@emotion/react": "*",

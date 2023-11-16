@@ -1,7 +1,12 @@
 use {
   std::{
     collections::HashMap,
+    fs::{
+      set_permissions,
+      Permissions,
+    },
     iter,
+    os::unix::fs::PermissionsExt,
     path::PathBuf,
     process::Command,
   },
@@ -10,8 +15,8 @@ use {
 
 #[derive(Debug)]
 pub struct Launcher {
-  pub bin: PathBuf,
   pub id: String,
+  pub jre_component: String,
   pub classpath: Vec<PathBuf>,
   pub asset_index_name: String,
   pub version_type: String,
@@ -36,8 +41,8 @@ impl Default for Launcher {
       .join(".minecraft");
 
     Self {
-      bin: "java".into(),
-      id: "".to_string(),
+      id: String::new(),
+      jre_component: "java-runtime-gamma".into(),
       width: 1280,
       height: 720,
       root_dir: home_dir.clone(),
@@ -47,9 +52,9 @@ impl Default for Launcher {
       fullscreen: false,
       access_token: "local".into(),
       classpath: Vec::new(),
-			asset_index_name: String::new(),
-			version_type: "release".into(),
-			jvm_args: Vec::new(),
+      asset_index_name: String::new(),
+      version_type: "release".into(),
+      jvm_args: Vec::new(),
       game_args: Vec::new(),
       main_class: String::new(),
     }
@@ -61,43 +66,58 @@ pub enum LaunchError {
   #[error("Invalid path")]
   InvalidPath,
 
-	#[error(transparent)]
-	Io(#[from] std::io::Error)
+  #[error(transparent)]
+  Io(#[from] std::io::Error),
 }
 
 impl Launcher {
   pub fn launch(&self) -> Result<Command, LaunchError> {
     let lib_dir = self.root_dir.join("libraries");
-    let nat_dir = self.root_dir.join("versions").join(&self.id).join("natives");
+    let nat_dir = self
+      .root_dir
+      .join("versions")
+      .join(&self.id)
+      .join("natives");
     let assets_dir = self.root_dir.join("assets");
 
-    let classpath = self.classpath.iter().map(|it| {
-			Ok(lib_dir.join(it).canonicalize()?.to_str().ok_or(LaunchError::InvalidPath)?.to_owned())
-		}).collect::<Result<Vec<_>, LaunchError>>()?;
+    let classpath = self
+      .classpath
+      .iter()
+      .map(|it| {
+        Ok(
+          lib_dir
+            .join(it)
+            .canonicalize()?
+            .to_str()
+            .ok_or(LaunchError::InvalidPath)?
+            .to_owned(),
+        )
+      })
+      .collect::<Result<Vec<_>, LaunchError>>()?;
 
     let mut vars = HashMap::<&str, &str>::new();
 
-		let var_game_dir = &self.game_dir.canonicalize()?;
-		let var_assets_dir = assets_dir.canonicalize()?;
-		let var_nat_dir = nat_dir.canonicalize()?;
+    let var_game_dir = &self.game_dir.canonicalize()?;
+    let var_assets_dir = assets_dir.canonicalize()?;
+    let var_nat_dir = nat_dir.canonicalize()?;
 
     vars.insert("${auth_player_name}", &self.username);
     vars.insert("${version_name}", &self.id);
     vars.insert(
       "${game_directory}",
-			var_game_dir.to_str().ok_or(LaunchError::InvalidPath)?,
+      var_game_dir.to_str().ok_or(LaunchError::InvalidPath)?,
     );
     vars.insert(
       "${assets_root}",
-			var_assets_dir.to_str().ok_or(LaunchError::InvalidPath)?,
+      var_assets_dir.to_str().ok_or(LaunchError::InvalidPath)?,
     );
-		vars.insert(
+    vars.insert(
       "${natives_directory}",
-			var_nat_dir.to_str().ok_or(LaunchError::InvalidPath)?,
+      var_nat_dir.to_str().ok_or(LaunchError::InvalidPath)?,
     );
 
-		let width = self.width.to_string();
-		let height = self.height.to_string();
+    let width = self.width.to_string();
+    let height = self.height.to_string();
 
     vars.insert("${assets_index_name}", &self.asset_index_name);
     vars.insert("${auth_uuid}", &self.uuid);
@@ -108,12 +128,12 @@ impl Launcher {
     vars.insert("${launcher_name}", "coppertiles");
     vars.insert("${launcher_version}", "unknown");
 
-		#[cfg(target_family = "windows")]
-		let cp_str = classpath.join(":");
-		#[cfg(not(target_family = "windows"))]
-		let cp_str = classpath.join(":");
+    #[cfg(target_family = "windows")]
+    let cp_str = classpath.join(":");
+    #[cfg(not(target_family = "windows"))]
+    let cp_str = classpath.join(":");
 
-		vars.insert("${classpath}", &cp_str);
+    vars.insert("${classpath}", &cp_str);
 
     let args: Vec<_> = self
       .jvm_args
@@ -121,17 +141,23 @@ impl Launcher {
       .chain(iter::once(&self.main_class))
       .chain(&self.game_args)
       .map(|arg| {
-				let mut arg = arg.to_owned();
-				for (key, value) in &vars {
-					arg = arg.replace(key, value);
-				}
-				arg
-			})
-			.collect();
+        let mut arg = arg.to_owned();
+        for (key, value) in &vars {
+          arg = arg.replace(key, value);
+        }
+        arg
+      })
+      .collect();
 
-		let mut command = Command::new(&self.bin);
-		command.current_dir(&self.root_dir);
-		command.args(args);
-		Ok(command)
+    let bin = PathBuf::from("jre")
+      .join(&self.jre_component)
+      .join("bin/java");
+
+    set_permissions(self.root_dir.join(&bin), Permissions::from_mode(0o744))?;
+
+    let mut command = Command::new(bin);
+    command.current_dir(&self.root_dir);
+    command.args(args);
+    Ok(command)
   }
 }

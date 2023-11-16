@@ -1,44 +1,44 @@
 use {
-  crate::api::{
-    get_jre_components,
-    get_jre_manifest,
-    get_versions_manifest,
-    MINECRAFT_RESOURCES_BASE_URL,
-  },
-  common::{
-    jre::{
-      all::{
-        ComponentType,
-        Target,
+	common::{
+		jre::{
+			all::{
+				ComponentType,
+				Target,
       },
-      manifest::{
-        Entry,
-        Manifest as JreManifest,
+			manifest::{
+				Entry,
+				Manifest as JreManifest,
       },
     },
-    libutils::libname_to_path,
-    manifest::{
-      Artifact,
-      AssetIndex,
-      Library,
-      Os,
-      RootManifest,
-      Rule,
+		libutils::libname_to_path,
+		manifest::{
+			Artifact,
+			AssetIndex,
+			Library,
+			Os,
+			RootManifest,
+			Rule,
     },
   },
-  download::Item as DownloadItem,
-  once_cell::sync::Lazy,
-  reqwest::Error,
-  serde::Deserialize,
-  std::{
-    collections::HashMap,
-    path::{
-      Path,
-      PathBuf,
+	crate::api::{
+		get_jre_components,
+		get_jre_manifest,
+		get_versions_manifest,
+		MINECRAFT_RESOURCES_BASE_URL,
+  },
+	download::Item as DownloadItem,
+	once_cell::sync::Lazy,
+	reqwest::Error,
+	serde::Deserialize,
+	std::{
+		collections::HashMap,
+		path::{
+			Path,
+			PathBuf,
     },
   },
-  thiserror::Error,
-  url::Url,
+	thiserror::Error,
+	url::Url,
 };
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -134,7 +134,7 @@ impl Install for RootManifest {
     items.push(Item {
       kind: Kind::Version,
       url: self.downloads.client.url,
-      path: PathBuf::from(&self.id).join("client.jar"),
+      path: PathBuf::from(&self.id).join(format!("{}.jar", &self.id)),
       known_size: Some(self.downloads.client.size),
       known_sha: Some(self.downloads.client.sha1),
     });
@@ -250,8 +250,12 @@ impl Install for AssetIndex {
   }
 }
 
-impl Install for JreManifest {
-  fn into_items(self) -> Result<Vec<Item>, InstallError> {
+trait JreInstall {
+	fn into_items(self, jre_component: &Path) -> Result<Vec<Item>, InstallError>;
+}
+
+impl JreInstall for JreManifest {
+  fn into_items(self, jre_component: &Path) -> Result<Vec<Item>, InstallError> {
     Ok(
       self
         .files
@@ -262,7 +266,7 @@ impl Install for JreManifest {
 
 						Some(Item {
 							kind: Kind::Jre,
-							path,
+							path: jre_component.join(path),
 							url: file.url,
 							known_size: Some(file.size),
 							known_sha: Some(file.sha1),
@@ -322,12 +326,12 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
 
   let jre_manifest = get_jre_manifest(&jre_component.manifest.sha1).await?;
 
-  let mut items = Vec::with_capacity(4096);
+  let mut items = Vec::with_capacity(8192);
 
   items.push(Item {
     kind: Kind::Version,
     url: version.url,
-    path: PathBuf::from(id).join("version.json"),
+    path: PathBuf::from(id).join(format!("{id}.json")),
     known_size: None,
     known_sha: Some(version.sha1),
   });
@@ -340,9 +344,11 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
     known_sha: Some(manifest.asset_index.sha1.clone()),
   });
 
+	let jre_component = manifest.java_version.component.clone();
+
   items.extend(manifest.into_items()?);
   items.extend(asset_index.into_items()?);
-  items.extend(jre_manifest.into_items()?);
+  items.extend(jre_manifest.into_items(Path::new(&jre_component))?);
 
   Ok(items)
 }
