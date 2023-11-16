@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   let mut launcher: Launcher = manifest.try_into()?;
 
-	launcher.bin = "./minecraft/jre/bin/java".into();
+	launcher.bin = "./jre/bin/java".into();
   launcher.game_dir = "./minecraft/game".into();
   launcher.root_dir = "./minecraft".into();
 

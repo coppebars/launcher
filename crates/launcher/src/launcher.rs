@@ -1,4 +1,3 @@
-use std::fs::canonicalize;
 use {
   std::{
     collections::HashMap,
@@ -73,14 +72,14 @@ impl Launcher {
     let assets_dir = self.root_dir.join("assets");
 
     let classpath = self.classpath.iter().map(|it| {
-			Ok(canonicalize(lib_dir.join(it))?.to_str().ok_or(LaunchError::InvalidPath)?.to_owned())
+			Ok(lib_dir.join(it).canonicalize()?.to_str().ok_or(LaunchError::InvalidPath)?.to_owned())
 		}).collect::<Result<Vec<_>, LaunchError>>()?;
 
     let mut vars = HashMap::<&str, &str>::new();
 
-		let var_game_dir = canonicalize(&self.game_dir)?;
-		let var_assets_dir = canonicalize(assets_dir)?;
-		let var_nat_dir = canonicalize(nat_dir)?;
+		let var_game_dir = &self.game_dir.canonicalize()?;
+		let var_assets_dir = assets_dir.canonicalize()?;
+		let var_nat_dir = nat_dir.canonicalize()?;
 
     vars.insert("${auth_player_name}", &self.username);
     vars.insert("${version_name}", &self.id);
@@ -131,6 +130,7 @@ impl Launcher {
 			.collect();
 
 		let mut command = Command::new(&self.bin);
+		command.current_dir(&self.root_dir);
 		command.args(args);
 		Ok(command)
   }

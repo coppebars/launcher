@@ -5,7 +5,9 @@ use {
     manifest::{
       Argument,
       ConditionalArgument,
-      Library,
+      Library::{
+        self,
+      },
       ModernArgs,
       RootManifest,
       Rule,
@@ -17,7 +19,8 @@ use {
   thiserror::Error,
 };
 
-static DEFAULT_FEATURES: Lazy<HashSet<&str>> = Lazy::new(|| HashSet::from(["has_custom_resolution"]));
+static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
+  Lazy::new(|| HashSet::from(["has_custom_resolution"]));
 
 fn process_args(args: Vec<Argument>, to: &mut Vec<String>) {
   for arg in args {
@@ -47,18 +50,19 @@ impl TryFrom<RootManifest> for Launcher {
   type Error = FromError;
 
   fn try_from(value: RootManifest) -> Result<Self, Self::Error> {
-    let mut launcher = Launcher::default();
-
-    launcher.id = value.id;
-		launcher.asset_index_name = value.assets;
-		launcher.main_class = value.main_class;
-    launcher.version_type = match value.version_type {
-      VersionType::Release => "release",
-      VersionType::Snapshot => "snapshot",
-      VersionType::OldBeta => "old_beta",
-      VersionType::OldAlpha => "old_alpha",
-    }
-    .into();
+    let mut launcher = Launcher {
+      id: value.id,
+      asset_index_name: value.assets,
+      main_class: value.main_class,
+      version_type: match value.version_type {
+        VersionType::Release => "release",
+        VersionType::Snapshot => "snapshot",
+        VersionType::OldBeta => "old_beta",
+        VersionType::OldAlpha => "old_alpha",
+      }
+      .into(),
+			..Default::default()
+    };
 
     for lib in value.libraries {
       match lib {
@@ -77,7 +81,9 @@ impl TryFrom<RootManifest> for Launcher {
       }
     }
 
-		launcher.classpath.push(format!("../versions/{}/client.jar", &launcher.id).into());
+    launcher
+      .classpath
+      .push(format!("../versions/{}/client.jar", &launcher.id).into());
 
     let ModernArgs { arguments }: ModernArgs = value.arguments.into();
 
