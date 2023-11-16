@@ -1,9 +1,21 @@
 use {
   crate::api::{
+    get_jre_components,
+    get_jre_manifest,
     get_versions_manifest,
     MINECRAFT_RESOURCES_BASE_URL,
   },
   common::{
+    jre::{
+      all::{
+        ComponentType,
+        Target,
+      },
+      manifest::{
+        Entry,
+        Manifest as JreManifest,
+      },
+    },
     libutils::libname_to_path,
     manifest::{
       Artifact,
@@ -16,6 +28,7 @@ use {
   },
   download::Item as DownloadItem,
   once_cell::sync::Lazy,
+  reqwest::Error,
   serde::Deserialize,
   std::{
     collections::HashMap,
@@ -33,6 +46,7 @@ pub enum Kind {
   Lib,
   Asset,
   Version,
+  Jre,
 }
 
 #[derive(Debug)]
@@ -44,12 +58,14 @@ pub struct Item {
   pub known_sha: Option<String>,
 }
 
-static PATHS: Lazy<HashMap<Kind, PathBuf>> =
-  Lazy::new(|| HashMap::from([
-		(Kind::Version, PathBuf::from("versions")),
-		(Kind::Lib, PathBuf::from("libraries")),
-		(Kind::Asset, PathBuf::from("assets")),
-	]));
+static PATHS: Lazy<HashMap<Kind, PathBuf>> = Lazy::new(|| {
+  HashMap::from([
+    (Kind::Version, PathBuf::from("versions")),
+    (Kind::Lib, PathBuf::from("libraries")),
+    (Kind::Asset, PathBuf::from("assets")),
+    (Kind::Jre, PathBuf::from("jre")),
+  ])
+});
 
 impl Item {
   pub fn place(self, root: &Path) -> DownloadItem {
@@ -90,6 +106,21 @@ impl From<Artifact> for Item {
 pub enum InstallError {
   #[error("Malformed or unsupported manifest: {0}")]
   InvalidManifest(String),
+
+  #[error("network: {0}")]
+  Network(String),
+
+  #[error("unsupported: {0}")]
+  Unsupported(String),
+
+  #[error("unexpected")]
+  Unexpected(String),
+}
+
+impl From<reqwest::Error> for InstallError {
+  fn from(value: Error) -> Self {
+    Self::Network(value.to_string())
+  }
 }
 
 pub trait Install {
@@ -108,7 +139,7 @@ impl Install for RootManifest {
       known_sha: Some(self.downloads.client.sha1),
     });
 
-		let native_path = Path::new("natives");
+    let native_path = Path::new("natives");
 
     for lib in self.libraries {
       match lib {
@@ -219,7 +250,32 @@ impl Install for AssetIndex {
   }
 }
 
-pub async fn get_items(id: &str) -> Result<Vec<Item>, Box<dyn std::error::Error>> {
+impl Install for JreManifest {
+  fn into_items(self) -> Result<Vec<Item>, InstallError> {
+    Ok(
+      self
+        .files
+        .into_iter()
+        .filter_map(|(path, entry)| match entry {
+          Entry::File { downloads, .. } => {
+						let file = downloads.raw;
+
+						Some(Item {
+							kind: Kind::Jre,
+							path,
+							url: file.url,
+							known_size: Some(file.size),
+							known_sha: Some(file.sha1),
+						})
+					},
+          _ => None,
+        })
+        .collect(),
+    )
+  }
+}
+
+pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
   let versions = get_versions_manifest().await?;
   let version = versions
     .versions
@@ -232,6 +288,39 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, Box<dyn std::error::Error>
     .await?
     .json::<AssetIndex>()
     .await?;
+
+  let jre_manifest = get_jre_components().await?;
+  let jre_target = jre_manifest
+    .get(
+      #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+      &Target::Linux,
+      #[cfg(all(target_os = "linux", target_arch = "x86"))]
+      &Target::LinuxI386,
+      #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+      &Target::WindowsX64,
+      #[cfg(all(target_os = "windows", target_arch = "x86"))]
+      &Target::WindowsX86,
+      #[cfg(all(target_os = "windows", target_arch = "aarch64"))]
+      &Target::WindowsArm64,
+      #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+      &Target::Macos,
+      #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+      &Target::Macos,
+    )
+    .ok_or(InstallError::Unsupported("Unsupported platform".into()))?;
+
+  let jre_component = jre_target
+		.get(
+			&ComponentType::from_str(&manifest.java_version.component)
+				.ok_or(InstallError::Unexpected("Unknown jre component".into()))?,
+		)
+		.ok_or(InstallError::Unexpected("No such jre component".into()))?
+		.get(0)
+		.ok_or(InstallError::Unsupported(
+			"Jre is not supported for current platform".into(),
+		))?;
+
+  let jre_manifest = get_jre_manifest(&jre_component.manifest.sha1).await?;
 
   let mut items = Vec::with_capacity(4096);
 
@@ -253,6 +342,7 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, Box<dyn std::error::Error>
 
   items.extend(manifest.into_items()?);
   items.extend(asset_index.into_items()?);
+  items.extend(jre_manifest.into_items()?);
 
   Ok(items)
 }

@@ -1,8 +1,14 @@
 use {
-  common::manifest::RootManifest,
-  once_cell::sync::Lazy,
-  serde::Deserialize,
-  url::Url,
+	common::{
+		jre::{
+			all::JavaRuntime,
+			manifest::Manifest as JreManifest,
+    },
+		manifest::RootManifest,
+  },
+	once_cell::sync::Lazy,
+	serde::Deserialize,
+	url::Url,
 };
 
 pub static PISTON_META_BASE_URL: Lazy<Url> =
@@ -47,6 +53,24 @@ pub async fn get_manifest(sha: &str, id: &str) -> Result<RootManifest, reqwest::
   reqwest::get(
     PISTON_META_BASE_URL
       .join(&format!("v1/packages/{sha}/{id}.json"))
+      .unwrap(),
+  )
+  .await?
+  .json()
+  .await
+}
+
+pub async fn get_jre_components() -> Result<JavaRuntime, reqwest::Error> {
+  reqwest::get("https://launchermeta.mojang.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json")
+  .await?
+  .json()
+  .await
+}
+
+pub async fn get_jre_manifest(sha: &str) -> Result<JreManifest, reqwest::Error> {
+  reqwest::get(
+    PISTON_META_BASE_URL
+      .join(&format!("v1/packages/{sha}/manifest.json"))
       .unwrap(),
   )
   .await?

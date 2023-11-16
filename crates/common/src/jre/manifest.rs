@@ -1,3 +1,4 @@
+use url::Url;
 use {
   serde::Deserialize,
   std::{
@@ -9,19 +10,20 @@ use {
 #[derive(Debug, Deserialize)]
 pub struct File {
   pub sha1: String,
-  pub size: u32,
-  pub url: String,
+  pub size: u64,
+  pub url: Url,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Downloads {
-  pub lzma: File,
+  pub lzma: Option<File>,
   pub raw: File,
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum Entry {
+	Link,
   Directory,
   File {
     executable: bool,

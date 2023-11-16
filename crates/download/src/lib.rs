@@ -171,7 +171,7 @@ pub async fn download(
   let content_length = response.content_length().or(item.known_size);
   let mut stream = response.bytes_stream().map_err(DownloadError::from);
 	fs::create_dir_all(&item.path.parent().unwrap()).await?;
-  let mut target_file = File::create(&item.path).await?;
+	let mut target_file = File::create(&item.path).await?;
 
   let mut progress: usize = 0;
 

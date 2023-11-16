@@ -1,9 +1,6 @@
 use {
-  serde::Deserialize,
-  std::collections::{
-    HashMap,
-    HashSet,
-  },
+	serde::Deserialize,
+	std::collections::HashMap,
 };
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Hash)]
@@ -33,6 +30,23 @@ pub enum ComponentType {
   JavaRuntimeBeta,
   JavaRuntimeGamma,
   JavaRuntimeGammaSnapshot,
+	JreLegacy,
+	MinecraftJavaExe,
+}
+
+impl ComponentType {
+	#[allow(clippy::should_implement_trait)]
+	pub fn from_str(value: &str) -> Option<ComponentType> {
+		match value {
+			"java-runtime-alpha" => Some(Self::JavaRuntimeAlpha),
+			"java-runtime-beta" => Some(Self::JavaRuntimeBeta),
+			"java-runtime-gamma" => Some(Self::JavaRuntimeGamma),
+			"java-runtime-gamma-snapshot" => Some(Self::JavaRuntimeGammaSnapshot),
+			"jre-legacy" => Some(Self::JreLegacy),
+			"minecraft-java-exe" => Some(Self::MinecraftJavaExe),
+			_ => None,
+		}
+	}
 }
 
 #[derive(Debug, Deserialize)]
@@ -61,4 +75,4 @@ pub struct Component {
   pub version: Version,
 }
 
-pub type JavaRuntime = HashMap<Target, HashSet<ComponentType, Component>>;
+pub type JavaRuntime = HashMap<Target, HashMap<ComponentType, Vec<Component>>>;

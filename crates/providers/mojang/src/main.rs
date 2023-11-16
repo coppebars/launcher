@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::time::Duration;
 use {
   crate::install::Item,
   download::{
@@ -22,14 +23,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   let items: Vec<_> = items.into_iter().map(|it| it.place(root)).collect();
 
-  let client = Client::new();
+  let client = Client::builder().timeout(Duration::from_secs(30)).build()?;
 
   let (tx, mut rx) = channel::<DownloadEvent>(1024);
   let token = Arc::new(CancellationToken::new());
 
   let task_token = token.clone();
   let task =
-    tokio::spawn(async move { download_all(&client, items, Arc::new(tx), task_token, 2).await });
+    tokio::spawn(async move { download_all(&client, items, Arc::new(tx), task_token, 8).await });
 
   while let Some(msg) = rx.recv().await {
     if let DownloadEvent::Finish {
