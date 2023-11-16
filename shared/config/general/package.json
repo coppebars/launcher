@@ -1,0 +1,8 @@
+{
+	"name": "@config/general",
+	"main": "mod.ts",
+	"dependencies": {
+		"@tauri-apps/api": "1.5.1",
+		"indexed-db": "workspace:"
+	}
+}

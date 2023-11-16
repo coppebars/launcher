@@ -102,7 +102,7 @@ export class LFw<T extends object> {
 	}
 }
 
-interface CreateDatabaseOptions<T> {
+export interface CreateDatabaseOptions<T> {
 	name: string
 	sub: string
 	version?: number
