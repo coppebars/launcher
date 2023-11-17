@@ -2,11 +2,6 @@
 	"name": "@app/root",
 	"type": "module",
 	"main": "mod.tsx",
-	"dependencies": {
-		"@config/general": "workspace:",
-		"@tauri-apps/api": "1.5.1",
-		"@ui/layout": "workspace:"
-	},
 	"devDependencies": {
 		"@types/react": "18.2.37"
 	},

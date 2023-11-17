@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "lint": "eslint **/**.{ts,tsx}",
+    "typecheck": "tsc",
     "tauri": "tauri"
   },
   "devDependencies": {

@@ -56,10 +56,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/root@workspace:app/root"
   dependencies:
-    "@config/general": "workspace:"
-    "@tauri-apps/api": "npm:1.5.1"
     "@types/react": "npm:18.2.37"
-    "@ui/layout": "workspace:"
   peerDependencies:
     "@emotion/react": "*"
     react: "*"
@@ -380,7 +377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@config/general@workspace:, @config/general@workspace:shared/config/general":
+"@config/general@workspace:shared/config/general":
   version: 0.0.0-use.local
   resolution: "@config/general@workspace:shared/config/general"
   dependencies:
@@ -1464,7 +1461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ui/layout@workspace:, @ui/layout@workspace:shared/ui/layout":
+"@ui/layout@workspace:shared/ui/layout":
   version: 0.0.0-use.local
   resolution: "@ui/layout@workspace:shared/ui/layout"
   dependencies:
