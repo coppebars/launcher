@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 19.x
-      - run: yarn --immutable --immutable-cache
+      - run: yarn --immutable
       - run: yarn lint
   typecheck:
     name: "💯 Typecheck"
@@ -33,5 +33,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 19.x
-      - run: yarn
+      - run: yarn --immutable
       - run: yarn typecheck
