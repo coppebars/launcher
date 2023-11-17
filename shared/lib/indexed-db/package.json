@@ -1,0 +1,9 @@
+{
+	"name": "indexed-db",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"localforage": "1.10.0",
+		"type-fest": "4.7.1"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "@ui/layout",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"@emotion/styled": "11.11.0",
+		"styled-std": "workspace:"
+	},
+	"devDependencies": {
+		"@types/react": "18.2.37"
+	},
+	"peerDependencies": {
+		"@emotion/react": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

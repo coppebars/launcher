@@ -1,0 +1,13 @@
+{
+	"name": "@app/root",
+	"type": "module",
+	"main": "mod.tsx",
+	"devDependencies": {
+		"@types/react": "18.2.37"
+	},
+	"peerDependencies": {
+		"@emotion/react": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

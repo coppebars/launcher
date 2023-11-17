@@ -1,0 +1,17 @@
+{
+	"name": "@theme/global",
+	"type": "module",
+	"main": "mod.tsx",
+	"dependencies": {
+		"styled-std": "workspace:"
+	},
+	"devDependencies": {
+		"@emotion/react": "11.11.1",
+		"@types/react": "18.2.37"
+	},
+	"peerDependencies": {
+		"@emotion/react": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}
