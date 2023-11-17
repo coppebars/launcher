@@ -131,15 +131,17 @@ impl Install for RootManifest {
   fn into_items(self) -> Result<Vec<Item>, InstallError> {
     let mut items: Vec<Item> = Vec::new();
 
+		let version_path = PathBuf::from(&self.id);
+
     items.push(Item {
       kind: Kind::Version,
       url: self.downloads.client.url,
-      path: PathBuf::from(&self.id).join(format!("{}.jar", &self.id)),
+      path: version_path.join(format!("{}.jar", &self.id)),
       known_size: Some(self.downloads.client.size),
       known_sha: Some(self.downloads.client.sha1),
     });
 
-    let native_path = Path::new("natives");
+    let native_path = version_path.join("natives");
 
     for lib in self.libraries {
       match lib {
@@ -161,9 +163,8 @@ impl Install for RootManifest {
         }
         Library::Native {
           rules,
-          downloads,
+          mut downloads,
           natives,
-          mut classifiers,
           ..
         } => {
           items.push(Item {
@@ -196,12 +197,13 @@ impl Install for RootManifest {
             path,
             size,
             sha1,
-          } = classifiers
+          } = downloads.classifiers
             .remove(classifier)
             .ok_or(InstallError::InvalidManifest(
               "Inappropriate native classifier".into(),
             ))?;
 
+					println!("{:?}", path);
           items.push(Item {
             kind: Kind::Version,
             url,

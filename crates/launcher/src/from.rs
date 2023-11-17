@@ -18,6 +18,7 @@ use {
   std::collections::HashSet,
   thiserror::Error,
 };
+use common::manifest::Os;
 
 static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
   Lazy::new(|| HashSet::from(["has_custom_resolution"]));

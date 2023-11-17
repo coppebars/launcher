@@ -18,13 +18,13 @@ mod install;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-  let items = install::get_items("1.20.1").await?;
+  let items = install::get_items("1.16.4").await?;
 
   let root = Path::new("./minecraft");
 
   let items: Vec<_> = items.into_iter().map(|it| it.place(root)).collect();
 
-  let client = Client::builder().timeout(Duration::from_secs(30)).build()?;
+  let client = Client::builder().connect_timeout(Duration::from_secs(30)).build()?;
 
   let (tx, mut rx) = channel::<DownloadEvent>(1024);
   let token = Arc::new(CancellationToken::new());

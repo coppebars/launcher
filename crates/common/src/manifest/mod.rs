@@ -150,6 +150,13 @@ pub struct LibraryDownloadEntry {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NativeDownloadEntry {
+	pub artifact: Artifact,
+	pub classifiers: HashMap<String, Artifact>,
+}
+
+#[derive(Debug, Deserialize)]
 #[serde(untagged, rename_all = "camelCase")]
 pub enum Library {
   Custom {
@@ -157,10 +164,9 @@ pub enum Library {
     url: Url,
   },
   Native {
-    downloads: LibraryDownloadEntry,
+    downloads: NativeDownloadEntry,
     name: String,
     rules: Vec<Rule>,
-    classifiers: HashMap<String, Artifact>,
     natives: HashMap<Os, String>,
   },
   Seminative {

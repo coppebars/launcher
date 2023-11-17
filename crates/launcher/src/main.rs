@@ -9,7 +9,7 @@ use {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   let mut json = String::new();
-  File::open("./minecraft/versions/1.20.1/1.20.1.json")
+  File::open("./minecraft/versions/1.16.4/1.16.4.json")
     .unwrap()
     .read_to_string(&mut json)
     .unwrap();
