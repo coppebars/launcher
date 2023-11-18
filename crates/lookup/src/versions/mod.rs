@@ -1,11 +1,11 @@
+pub use overview::VersionOverview;
 use {
-	profile::{
-		ProfileEntry,
-		read_profile,
+  profile::{
+    read_profile,
+    ProfileEntry,
   },
-	self::overview::VersionOverview,
-	std::path::Path,
-	tokio::fs,
+  std::path::Path,
+  tokio::fs,
 };
 
 mod overview;
