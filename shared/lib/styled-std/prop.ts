@@ -1,13 +1,6 @@
 import type { Fn }    from './types.ts'
+import type { Paths } from './types.ts'
 import type { Props } from './types.ts'
-
-type Paths<T> = T extends Array<infer U>
-	? `${Paths<U>}`
-	: T extends object
-	? {
-			[K in keyof T & (string | number)]: K extends string ? `${K}` | `${K}.${Paths<T[K]>}` : never
-	  }[keyof T & (string | number)]
-	: never
 
 export function std<T extends object>() {
 	return {
@@ -28,7 +21,7 @@ export function prop<T extends object>(resolver: Resolver<T>) {
 		return resolver
 	}
 
-	return (props: Props<T>) => resolver.split('.').reduce((a, c) => a[c], props as any)
+	return (props: Props<T>) => resolver.split('.').reduce((a, c) => a?.[c], props as any)
 }
 
 export function match<T extends object, K extends string>(matcher: (props: Props<T>) => Record<K, boolean>) {
@@ -55,10 +48,10 @@ export function variants<T extends object, K extends string>(
 
 export function when<T extends object>(matcher: Matcher<T>, fn: Fn<T>, or?: Fn<T>) {
 	if (typeof matcher === 'function') {
-		return (props: Props<T>) => (matcher(props) ? fn : or)
+		return (props: Props<T>) => (matcher(props) ? fn(props) : or?.(props))
 	}
 
-	return (props: Props<T>) => (matcher.split('.').reduce((a, c) => a[c], props as any) ? fn : or)
+	return (props: Props<T>) => (matcher.split('.').reduce((a, c) => a?.[c], props as any) ? fn(props) : or?.(props))
 }
 
 export function not<T extends object>(matcher: Matcher<T>, fn: Fn<T>) {
