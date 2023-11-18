@@ -15,6 +15,8 @@ use window_vibrancy::{
 
 fn main() {
   tauri::Builder::default()
+		.plugin(tauri_plugin_window::init())
+		.plugin(tauri_plugin_shell::init())
     .setup(|app| {
 			#[allow(unused)]
       let window = app.get_window("main").unwrap();

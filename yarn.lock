@@ -392,7 +392,7 @@ __metadata:
   dependencies:
     "@lmpx-config/eslint": "npm:0.0.18"
     "@lmpx-config/prettier": "npm:0.0.2"
-    "@tauri-apps/cli": "npm:1.5.6"
+    "@tauri-apps/cli": "npm:2.0.0-alpha.17"
     "@types/node": "npm:20.9.0"
     eslint: "npm:8.51.0"
     prettier: "npm:3.1.0"
@@ -1041,90 +1041,90 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-darwin-arm64@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-darwin-arm64@npm:1.5.6"
+"@tauri-apps/cli-darwin-arm64@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-darwin-arm64@npm:2.0.0-alpha.17"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-darwin-x64@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-darwin-x64@npm:1.5.6"
+"@tauri-apps/cli-darwin-x64@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-darwin-x64@npm:2.0.0-alpha.17"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm-gnueabihf@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-linux-arm-gnueabihf@npm:1.5.6"
+"@tauri-apps/cli-linux-arm-gnueabihf@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-linux-arm-gnueabihf@npm:2.0.0-alpha.17"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm64-gnu@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-linux-arm64-gnu@npm:1.5.6"
+"@tauri-apps/cli-linux-arm64-gnu@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-linux-arm64-gnu@npm:2.0.0-alpha.17"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm64-musl@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-linux-arm64-musl@npm:1.5.6"
+"@tauri-apps/cli-linux-arm64-musl@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-linux-arm64-musl@npm:2.0.0-alpha.17"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-x64-gnu@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-linux-x64-gnu@npm:1.5.6"
+"@tauri-apps/cli-linux-x64-gnu@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-linux-x64-gnu@npm:2.0.0-alpha.17"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-x64-musl@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-linux-x64-musl@npm:1.5.6"
+"@tauri-apps/cli-linux-x64-musl@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-linux-x64-musl@npm:2.0.0-alpha.17"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-win32-arm64-msvc@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-win32-arm64-msvc@npm:1.5.6"
+"@tauri-apps/cli-win32-arm64-msvc@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-win32-arm64-msvc@npm:2.0.0-alpha.17"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-win32-ia32-msvc@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-win32-ia32-msvc@npm:1.5.6"
+"@tauri-apps/cli-win32-ia32-msvc@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-win32-ia32-msvc@npm:2.0.0-alpha.17"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-win32-x64-msvc@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli-win32-x64-msvc@npm:1.5.6"
+"@tauri-apps/cli-win32-x64-msvc@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli-win32-x64-msvc@npm:2.0.0-alpha.17"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@tauri-apps/cli@npm:1.5.6"
+"@tauri-apps/cli@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@tauri-apps/cli@npm:2.0.0-alpha.17"
   dependencies:
-    "@tauri-apps/cli-darwin-arm64": "npm:1.5.6"
-    "@tauri-apps/cli-darwin-x64": "npm:1.5.6"
-    "@tauri-apps/cli-linux-arm-gnueabihf": "npm:1.5.6"
-    "@tauri-apps/cli-linux-arm64-gnu": "npm:1.5.6"
-    "@tauri-apps/cli-linux-arm64-musl": "npm:1.5.6"
-    "@tauri-apps/cli-linux-x64-gnu": "npm:1.5.6"
-    "@tauri-apps/cli-linux-x64-musl": "npm:1.5.6"
-    "@tauri-apps/cli-win32-arm64-msvc": "npm:1.5.6"
-    "@tauri-apps/cli-win32-ia32-msvc": "npm:1.5.6"
-    "@tauri-apps/cli-win32-x64-msvc": "npm:1.5.6"
+    "@tauri-apps/cli-darwin-arm64": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-darwin-x64": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-linux-arm-gnueabihf": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-linux-arm64-gnu": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-linux-arm64-musl": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-linux-x64-gnu": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-linux-x64-musl": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-win32-arm64-msvc": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-win32-ia32-msvc": "npm:2.0.0-alpha.17"
+    "@tauri-apps/cli-win32-x64-msvc": "npm:2.0.0-alpha.17"
   dependenciesMeta:
     "@tauri-apps/cli-darwin-arm64":
       optional: true
@@ -1148,7 +1148,7 @@ __metadata:
       optional: true
   bin:
     tauri: tauri.js
-  checksum: 5b02e12ef9309307893a06c18366b1b5a313bf1a1df8d828472264d7589ee1fd6cde28219e38d2717eccfa334008ef329db01544cfa9d6d99116a70551f5b03b
+  checksum: c83dc4fb57f4d62cceb0060c91f0819d463c39e073252f2457d54e682a8bf5a51c9d9fabe59c4f075b286399ea472fea34d201b2feba2687975b17bed43828ee
   languageName: node
   linkType: hard
 

@@ -7,5 +7,6 @@ members = [
 	"crates/providers/mojang",
 	"crates/download",
 	"crates/profile",
-	"crates/lookup"
+	"crates/lookup",
+	"crates/ipc"
 ]
