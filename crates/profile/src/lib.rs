@@ -1,3 +1,4 @@
+use std::io::ErrorKind;
 use {
   serde::{
     Deserialize,
@@ -7,7 +8,10 @@ use {
     collections::HashMap,
     path::Path,
   },
-  tokio::fs,
+  tokio::{
+    fs,
+    io::AsyncWriteExt,
+  },
 };
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -17,7 +21,7 @@ pub struct ProfileEntry {
   pub icon: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct Profile {
   pub profiles: HashMap<String, ProfileEntry>,
 }
@@ -26,4 +30,12 @@ pub async fn read_profile(root: &Path) -> Result<Profile, std::io::Error> {
   let contents = fs::read_to_string(root.join("profile.json")).await?;
 
   Ok(serde_json::from_str(contents.as_str())?)
+}
+
+pub async fn create_empty_profile(root: &Path) -> Result<(), std::io::Error> {
+  let mut file = fs::File::create(root).await?;
+
+  file.write_all(br#"{"profiles":{}}"#).await?;
+
+  Ok(())
 }

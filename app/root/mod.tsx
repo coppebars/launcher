@@ -5,7 +5,7 @@ import { invoke }    from '@tauri-apps/api/primitives'
 export function Root() {
 	useEffect(() => {
 		void (async () => {
-			console.log(await invoke('lookup_versions', { path: '/home/limpix/workspaces/launcher/minecraft' }))
+			await invoke('lookup_versions', { path: '~/workspaces/launcher/minecraft' }).then(console.log, console.log)
 		})()
 	})
 

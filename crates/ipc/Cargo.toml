@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 tauri = "2.0.0-alpha"
 lookup = { path = "../lookup" }
+serde = { version = "1.0.192", features = ["derive"] }
