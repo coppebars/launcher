@@ -1,8 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod commands;
-
 use tauri::Manager;
 #[cfg(target_os = "windows")]
 use window_vibrancy::apply_blur;
@@ -15,6 +13,8 @@ use window_vibrancy::{
 
 fn main() {
   tauri::Builder::default()
+		.plugin(tauri_plugin_window::init())
+		.plugin(tauri_plugin_shell::init())
     .setup(|app| {
 			#[allow(unused)]
       let window = app.get_window("main").unwrap();
@@ -30,7 +30,7 @@ fn main() {
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
-      commands::providers::mojang_list_versions
+      ipc::lookup_versions
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

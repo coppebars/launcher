@@ -8,7 +8,6 @@ trim_trailing_whitespace = true
 
 [*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,json,yml,yaml,toml,rs}]
 indent_style = tab
-indent_size = 1
 max_line_length = 100
 tab_width = 2
 ij_javascript_force_quote_style = true
