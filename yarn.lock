@@ -56,6 +56,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/root@workspace:app/root"
   dependencies:
+    "@tauri-apps/api": "npm:2.0.0-alpha.11"
     "@types/react": "npm:18.2.37"
   peerDependencies:
     "@emotion/react": "*"
@@ -1038,6 +1039,13 @@ __metadata:
   version: 1.5.1
   resolution: "@tauri-apps/api@npm:1.5.1"
   checksum: f2848c0e71b70154bd5d06f454f9e7cbe1e76bdd880842f1f79cbbbaa80ab89e47b631a2789aef8af9ae721cd3e5277501868298a2a76ff6c50f065449df1d99
+  languageName: node
+  linkType: hard
+
+"@tauri-apps/api@npm:2.0.0-alpha.11":
+  version: 2.0.0-alpha.11
+  resolution: "@tauri-apps/api@npm:2.0.0-alpha.11"
+  checksum: f62f0bf48465dc3063fafd9e5b16a7dcb27ac452198480ed7b7a395fdcc615d2f91d2bebf20fead9b23fc1168e52a396a0c7e64caa8597cb3b1cccf6e725696f
   languageName: node
   linkType: hard
 
