@@ -8,5 +8,6 @@ members = [
 	"crates/download",
 	"crates/profile",
 	"crates/lookup",
-	"crates/ipc"
+	"crates/ipc",
+	"crates/integrity"
 ]

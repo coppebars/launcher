@@ -6,31 +6,24 @@ use {
 	},
 	reqwest::Client,
 	serde::Serialize,
-	sha1::{
-		Digest,
-		Sha1,
-	},
 	std::{
 		io::ErrorKind,
 		path::PathBuf,
 		sync::{
+			Arc,
 			atomic::{
 				AtomicUsize,
 				Ordering,
 			},
-			Arc,
 		},
 	},
 	thiserror::Error,
 	tokio::{
 		fs::{
-			File,
 			{self,},
+			File,
 		},
-		io::{
-			AsyncReadExt,
-			AsyncWriteExt,
-		},
+		io::AsyncWriteExt,
 		sync::mpsc::Sender,
 	},
 	tokio_util::sync::CancellationToken,
@@ -134,30 +127,7 @@ pub async fn download(
 	if let Some(sha) = item.known_sha {
 		match File::open(&item.path).await {
 			Ok(mut file) => {
-				let mut hasher = Sha1::new();
-
-				let mut buffer: Vec<u8> = vec![0; 2097152];
-
-				loop {
-					let bytes_read = file.read(&mut buffer).await?;
-
-					if bytes_read == 0 {
-						break;
-					}
-					hasher.update(&buffer[..bytes_read]);
-				}
-
-				let hex = &hasher.finalize()[..];
-
-				let bytes = (0..sha.len())
-					.step_by(2)
-					.map(|i| u8::from_str_radix(&sha[i..i + 2], 16))
-					.collect::<Result<Vec<_>, _>>()
-					.map_err(|err| DownloadError::InvalidSha(err.to_string()))?;
-
-				let matched = hex.iter().zip(&bytes).all(|(a, b)| a == b);
-
-				if matched {
+				if integrity::check(&mut file, &sha).await? {
 					return Ok(());
 				}
 			}
