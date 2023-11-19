@@ -59,8 +59,8 @@ pub enum IpcError {
 	Unknown(Box<Unknown>),
 }
 
-impl<T: std::error::Error> From<T> for IpcError {
-	default fn from(value: T) -> Self {
+default impl<T: std::error::Error> From<T> for IpcError {
+	fn from(value: T) -> Self {
 		Self::Unknown(Box::new(value.into()))
 	}
 }
