@@ -7,11 +7,11 @@ edition = "2021"
 
 [dependencies]
 url = { version = "2.4.1", features = ["serde"] }
-common = { path = "../common" }
 serde = { version = "1.0.192", features = ["derive"] }
 reqwest = { version = "0.11.22", features = ["stream"] }
 tokio = { version = "1.34.0", features = ["full"] }
 futures = "0.3.29"
+anyhow = "1.0.75"
 thiserror = "1.0.50"
 tokio-util = "0.7.10"
 integrity = { path = "../integrity" }

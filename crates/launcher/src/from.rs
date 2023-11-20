@@ -77,7 +77,23 @@ impl TryFrom<RootManifest> for Launcher {
 					}
 				}
 				Library::Default { downloads, .. } => launcher.classpath.push(downloads.artifact.path),
-				Library::Native { downloads, .. } => launcher.classpath.push(downloads.artifact.path),
+				Library::Native { mut downloads, rules, natives, .. } => {
+					launcher.classpath.push(downloads.artifact.path);
+
+					if rules.iter().all(Rule::unwrap) {
+						#[cfg(target_os = "linux")]
+						let native_id = Os::Linux;
+						#[cfg(target_os = "windows")]
+						let native_id = Os::Windows;
+						#[cfg(target_os = "macos")]
+						let native_id = Os::Osx;
+
+						let classifier_id = natives.get(&native_id).unwrap();
+						let artifact = downloads.classifiers.remove(classifier_id).unwrap();
+
+						launcher.classpath.push(artifact.path);
+					}
+				},
 			}
 		}
 

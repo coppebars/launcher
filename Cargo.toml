@@ -9,5 +9,7 @@ members = [
 	"crates/profile",
 	"crates/lookup",
 	"crates/ipc",
-	"crates/integrity"
+	"crates/integrity",
+	"crates/barscfg",
+	"crates/launchers"
 ]

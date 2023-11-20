@@ -29,7 +29,8 @@ pub async fn check(file: &mut File, sha: &str) -> Result<bool, IntegrityCheckErr
 
 		if bytes_read == 0 {
 			break;
-		}
+	}
+
 		hasher.update(&buffer[..bytes_read]);
 	}
 

@@ -2,7 +2,6 @@ use {
 	crate::api::{
 		get_jre_components,
 		get_jre_manifest,
-		get_versions_manifest,
 		MINECRAFT_RESOURCES_BASE_URL,
 	},
 	common::{
@@ -25,62 +24,22 @@ use {
 			RootManifest,
 			Rule,
 		},
+		tree::CanonicalKind,
 	},
-	download::Item as DownloadItem,
-	once_cell::sync::Lazy,
 	reqwest::Error,
 	serde::Deserialize,
-	std::{
-		collections::HashMap,
-		path::{
-			Path,
-			PathBuf,
-		},
-	},
+	std::path::PathBuf,
 	thiserror::Error,
 	url::Url,
 };
 
-#[derive(Debug, PartialEq, Eq, Hash)]
-pub enum Kind {
-	Lib,
-	Asset,
-	Version,
-	Jre,
-}
-
 #[derive(Debug)]
 pub struct Item {
-	pub kind: Kind,
+	pub kind: CanonicalKind,
 	pub url: Url,
 	pub path: PathBuf,
 	pub known_size: Option<u64>,
 	pub known_sha: Option<String>,
-}
-
-static PATHS: Lazy<HashMap<Kind, PathBuf>> = Lazy::new(|| {
-	HashMap::from([
-		(Kind::Version, PathBuf::from("versions")),
-		(Kind::Lib, PathBuf::from("libraries")),
-		(Kind::Asset, PathBuf::from("assets")),
-		(Kind::Jre, PathBuf::from("jre")),
-	])
-});
-
-impl Item {
-	pub fn place(self, root: &Path) -> DownloadItem {
-		DownloadItem {
-			path: root.join(
-				PATHS
-					.get(&self.kind)
-					.expect("Unknown item kind")
-					.join(self.path),
-			),
-			url: self.url,
-			known_sha: self.known_sha,
-			known_size: self.known_size,
-		}
-	}
 }
 
 impl From<Artifact> for Item {
@@ -93,7 +52,7 @@ impl From<Artifact> for Item {
 		}: Artifact,
 	) -> Self {
 		Self {
-			kind: Kind::Lib,
+			kind: CanonicalKind::Library,
 			url,
 			path,
 			known_size: Some(size),
@@ -123,25 +82,23 @@ impl From<reqwest::Error> for InstallError {
 	}
 }
 
-pub trait Install {
+pub trait IntoItems {
 	fn into_items(self) -> Result<Vec<Item>, InstallError>;
 }
 
-impl Install for RootManifest {
+impl IntoItems for RootManifest {
 	fn into_items(self) -> Result<Vec<Item>, InstallError> {
 		let mut items: Vec<Item> = Vec::new();
 
 		let version_path = PathBuf::from(&self.id);
 
 		items.push(Item {
-			kind: Kind::Version,
+			kind: CanonicalKind::Version,
 			url: self.downloads.client.url,
 			path: version_path.join(format!("{}.jar", &self.id)),
 			known_size: Some(self.downloads.client.size),
 			known_sha: Some(self.downloads.client.sha1),
 		});
-
-		let native_path = version_path.join("natives");
 
 		for lib in self.libraries {
 			match lib {
@@ -154,7 +111,7 @@ impl Install for RootManifest {
 						.map_err(|_| InstallError::InvalidManifest("Failed to parse lib url".into()))?;
 
 					items.push(Item {
-						kind: Kind::Lib,
+						kind: CanonicalKind::Library,
 						url,
 						path,
 						known_size: None,
@@ -168,7 +125,7 @@ impl Install for RootManifest {
 					..
 				} => {
 					items.push(Item {
-						kind: Kind::Lib,
+						kind: CanonicalKind::Library,
 						url: downloads.artifact.url,
 						path: downloads.artifact.path,
 						known_size: Some(downloads.artifact.size),
@@ -192,26 +149,15 @@ impl Install for RootManifest {
 						"Inappropriate native classifier".into(),
 					))?;
 
-					let Artifact {
-						url,
-						path,
-						size,
-						sha1,
-					} = downloads
-						.classifiers
-						.remove(classifier)
-						.ok_or(InstallError::InvalidManifest(
-							"Inappropriate native classifier".into(),
-						))?;
+					let artifact =
+						downloads
+							.classifiers
+							.remove(classifier)
+							.ok_or(InstallError::InvalidManifest(
+								"Inappropriate native classifier".into(),
+							))?;
 
-					println!("{:?}", path);
-					items.push(Item {
-						kind: Kind::Version,
-						url,
-						path: native_path.join(path.iter().last().unwrap()),
-						known_size: Some(size),
-						known_sha: Some(sha1),
-					});
+					items.push(artifact.into());
 				}
 				Library::Seminative {
 					rules, downloads, ..
@@ -232,18 +178,17 @@ impl Install for RootManifest {
 	}
 }
 
-impl Install for AssetIndex {
+impl IntoItems for AssetIndex {
 	fn into_items(self) -> Result<Vec<Item>, InstallError> {
-		let base = PathBuf::from("objects");
 		let mut items: Vec<Item> = Vec::with_capacity(2048);
 
 		for it in self.objects.into_values() {
 			let path = format!("{}/{}", &it.hash[..2], it.hash);
 
 			items.push(Item {
-				kind: Kind::Asset,
+				kind: CanonicalKind::AssetsObject,
 				url: MINECRAFT_RESOURCES_BASE_URL.join(&path).unwrap(),
-				path: base.join(path),
+				path: path.into(),
 				known_size: Some(it.size),
 				known_sha: Some(it.hash),
 			});
@@ -253,12 +198,8 @@ impl Install for AssetIndex {
 	}
 }
 
-trait JreInstall {
-	fn into_items(self, jre_component: &Path) -> Result<Vec<Item>, InstallError>;
-}
-
-impl JreInstall for JreManifest {
-	fn into_items(self, jre_component: &Path) -> Result<Vec<Item>, InstallError> {
+impl IntoItems for JreManifest {
+	fn into_items(self) -> Result<Vec<Item>, InstallError> {
 		Ok(
 			self
 				.files
@@ -268,8 +209,8 @@ impl JreInstall for JreManifest {
 						let file = downloads.raw;
 
 						Some(Item {
-							kind: Kind::Jre,
-							path: jre_component.join(path),
+							kind: CanonicalKind::Jre,
+							path,
 							url: file.url,
 							known_size: Some(file.size),
 							known_sha: Some(file.sha1),
@@ -282,15 +223,7 @@ impl JreInstall for JreManifest {
 	}
 }
 
-pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
-	let versions = get_versions_manifest().await?;
-	let version = versions
-		.versions
-		.into_iter()
-		.find(|it| it.id == id)
-		.expect("Unknown id");
-
-	let manifest: RootManifest = reqwest::get(version.url.clone()).await?.json().await?;
+pub async fn get_items(manifest: RootManifest) -> Result<Vec<Item>, InstallError> {
 	let asset_index = reqwest::get(manifest.asset_index.url.clone())
 		.await?
 		.json::<AssetIndex>()
@@ -312,7 +245,7 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
 			#[cfg(all(target_os = "macos", target_arch = "x86_64"))]
 			&Target::Macos,
 			#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
-			&Target::Macos,
+			&Target::MacosArm64,
 		)
 		.ok_or(InstallError::Unsupported("Unsupported platform".into()))?;
 
@@ -332,26 +265,16 @@ pub async fn get_items(id: &str) -> Result<Vec<Item>, InstallError> {
 	let mut items = Vec::with_capacity(8192);
 
 	items.push(Item {
-		kind: Kind::Version,
-		url: version.url,
-		path: PathBuf::from(id).join(format!("{id}.json")),
-		known_size: None,
-		known_sha: Some(version.sha1),
-	});
-
-	items.push(Item {
-		kind: Kind::Asset,
+		kind: CanonicalKind::AssetsIndex,
 		url: manifest.asset_index.url.clone(),
-		path: PathBuf::from("indexes").join(format!("{}.json", &manifest.assets)),
+		path: format!("{}.json", &manifest.assets).into(),
 		known_size: None,
 		known_sha: Some(manifest.asset_index.sha1.clone()),
 	});
 
-	let jre_component = manifest.java_version.component.clone();
-
 	items.extend(manifest.into_items()?);
 	items.extend(asset_index.into_items()?);
-	items.extend(jre_manifest.into_items(Path::new(&jre_component))?);
+	items.extend(jre_manifest.into_items()?);
 
 	Ok(items)
 }

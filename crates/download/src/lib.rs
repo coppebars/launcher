@@ -5,22 +5,25 @@ use {
 		TryStreamExt,
 	},
 	reqwest::Client,
-	serde::Serialize,
+	serde::{
+		Serialize,
+		Serializer,
+	},
 	std::{
 		io::ErrorKind,
 		path::PathBuf,
 		sync::{
-			Arc,
 			atomic::{
 				AtomicUsize,
 				Ordering,
 			},
+			Arc,
 		},
 	},
 	thiserror::Error,
 	tokio::{
 		fs::{
-			{self,},
+			self,
 			File,
 		},
 		io::AsyncWriteExt,
@@ -38,53 +41,37 @@ pub struct Item {
 	pub known_sha: Option<String>,
 }
 
-#[derive(Debug, Error, Serialize, Clone)]
+#[derive(Debug, Error)]
 pub enum DownloadError {
-	#[error("known: Unknown kind value")]
-	UnknownKind,
+	#[error(transparent)]
+	Io(#[from] std::io::Error),
 
-	#[error("io: {0}")]
-	Io(String),
+	#[error(transparent)]
+	Reqwest(#[from] reqwest::Error),
 
-	#[error("reqwest: {0}")]
-	Reqwest(String),
+	#[error("Invalid unicode in path: {0}")]
+	InvalidPathUnicode(PathBuf),
 
-	#[error("sync: {0}")]
-	SendError(String),
+	#[error(transparent)]
+	Integrity(#[from] integrity::IntegrityCheckError),
 
-	#[error("join: {0}")]
-	JoinError(String),
+	#[error(transparent)]
+	Send(#[from] tokio::sync::mpsc::error::SendError<DownloadEvent>),
 
-	#[error("unexpected: {0}")]
-	Unexpected(String),
+	#[error(transparent)]
+	Join(#[from] tokio::task::JoinError),
 
-	#[error("sha: {0}")]
-	InvalidSha(String),
-
-	#[error("shutdown")]
-	Shutdown,
-
-	#[error("cancelled")]
+	#[error("Download cancelled")]
 	Cancelled,
 }
 
-macro_rules! from_err {
-	($($t:ty => $id:ident),+) => {
-		$(
-			impl From<$t> for DownloadError {
-				fn from(value: $t) -> Self {
-					Self::$id(value.to_string())
-				}
-			}
-		)+
-	};
-}
-
-from_err! {
-	std::io::Error => Io,
-	reqwest::Error => Reqwest,
-	tokio::sync::mpsc::error::SendError<DownloadEvent> => SendError,
-	tokio::task::JoinError => JoinError
+impl Serialize for DownloadError {
+	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+	where
+		S: Serializer,
+	{
+		serializer.serialize_str(self.to_string().as_str())
+	}
 }
 
 #[derive(Debug, Serialize)]
@@ -98,10 +85,6 @@ pub enum DownloadEvent {
 		size: usize,
 		total: Option<u64>,
 		progress: usize,
-	},
-	Error {
-		item: Item,
-		error: DownloadError,
 	},
 	Finish {
 		item: Item,
@@ -150,9 +133,7 @@ pub async fn download(
 	let path_key = item
 		.path
 		.to_str()
-		.ok_or(DownloadError::Unexpected(
-			"Failed to convert path to string".into(),
-		))?
+		.ok_or(DownloadError::InvalidPathUnicode(item.path.clone()))?
 		.to_owned();
 
 	while let Some(bytes) = stream.next().await {
@@ -209,15 +190,7 @@ pub async fn download_all(
 
 					Ok(result)
 				}
-				Err(err) => {
-					sender
-						.send(DownloadEvent::Error {
-							item: it.clone(),
-							error: err.clone(),
-						})
-						.await?;
-					Err(err)
-				}
+				Err(err) => Err(err),
 			}
 		})
 	}))

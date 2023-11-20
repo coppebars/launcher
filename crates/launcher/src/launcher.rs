@@ -2,8 +2,8 @@ use {
 	std::{
 		collections::HashMap,
 		fs::{
-			set_permissions,
 			Permissions,
+			set_permissions,
 		},
 		iter,
 		os::unix::fs::PermissionsExt,
@@ -28,6 +28,7 @@ pub struct Launcher {
 	pub username: String,
 	pub uuid: String,
 	pub access_token: String,
+	pub user_type: String,
 	pub width: u32,
 	pub height: u32,
 	pub fullscreen: bool,
@@ -48,11 +49,12 @@ impl Default for Launcher {
 			root_dir: home_dir.clone(),
 			game_dir: home_dir.clone(),
 			username: "Player".into(),
-			uuid: "00000000-0000-0000-0000-000000000000".into(),
+			uuid: "4fa31eff-fc04-4aa1-a866-95f8747127a3".into(),
 			fullscreen: false,
-			access_token: "local".into(),
+			access_token: "null".into(),
 			classpath: Vec::new(),
 			asset_index_name: String::new(),
+			user_type: "slim".to_string(),
 			version_type: "release".into(),
 			jvm_args: Vec::new(),
 			game_args: Vec::new(),
@@ -127,6 +129,7 @@ impl Launcher {
 		vars.insert("${resolution_height}", &height);
 		vars.insert("${launcher_name}", "coppertiles");
 		vars.insert("${launcher_version}", "unknown");
+		vars.insert("${user_type}", &self.user_type);
 
 		#[cfg(target_family = "windows")]
 		let cp_str = classpath.join(":");

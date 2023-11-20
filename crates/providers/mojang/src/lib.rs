@@ -1,12 +1,10 @@
+#![feature(async_fn_in_trait)]
+
+use std::path::Path;
+
 mod api;
 mod install;
 
-pub fn id() -> &'static str {
-	"mojang"
-}
+pub fn prepare(path: &Path, id: &str) {
 
-pub async fn list_versions() -> Result<Vec<String>, reqwest::Error> {
-	let versions = api::get_versions_manifest().await?;
-
-	Ok(versions.versions.into_iter().map(|it| it.id).collect())
 }
