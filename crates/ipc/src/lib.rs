@@ -2,7 +2,7 @@
 
 pub(crate) mod error;
 mod lookup;
-mod prepare;
+mod distros;
 
 pub use lookup::*;
-pub use prepare::*;
+pub use distros::*;

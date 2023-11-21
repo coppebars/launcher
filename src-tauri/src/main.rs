@@ -32,6 +32,7 @@ fn main() {
 		.invoke_handler(tauri::generate_handler![
 			ipc::lookup_versions,
 			ipc::mojang_prepare,
+			ipc::mojang_launch,
 		])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");

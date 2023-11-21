@@ -1,3 +1,4 @@
+use tokio::io::AsyncWriteExt;
 use {
 	crate::{
 		distros::{
@@ -46,6 +47,7 @@ use {
 	},
 	thiserror::Error,
 	url::Url,
+	tokio::fs,
 };
 
 mod api;
@@ -93,6 +95,9 @@ pub enum Error {
 
 	#[error("Manifest malformed: {0}")]
 	Malformed(String),
+
+	#[error(transparent)]
+	Io(#[from] std::io::Error)
 }
 
 static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
@@ -203,6 +208,17 @@ impl Mojang {
 		);
 
 		Ok(process)
+	}
+
+	pub async fn save_manifest(root: &Path, id: &str) -> Result<Box<RootManifest>, Error> {
+		let manifest = Self::get_manifest(id).await?;
+		let version_dir = root.join("versions").join(id);
+		fs::create_dir_all(&version_dir).await?;
+		let mut file = fs::File::create(version_dir.join(format!("{}.json", id))).await?;
+
+		file.write_all(serde_json::to_string(&manifest)?.as_bytes()).await?;
+
+		Ok(manifest)
 	}
 
 	pub async fn get_manifest(id: &str) -> Result<Box<RootManifest>, Error> {
