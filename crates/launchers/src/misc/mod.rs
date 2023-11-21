@@ -9,8 +9,9 @@ use {
 	tokio::sync::mpsc::Sender,
 	tokio_util::sync::CancellationToken,
 };
+
 #[cfg(feature = "download")]
-use download::{
+pub use download::{
 	download_all,
 	DownloadError,
 	DownloadEvent,

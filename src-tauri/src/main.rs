@@ -28,8 +28,11 @@ fn main() {
 				.expect("Unsupported platform! 'apply_blur' is only supported on Windows");
 
 			Ok(())
-		})1
-		.invoke_handler(tauri::generate_handler![ipc::lookup_versions])
+		})
+		.invoke_handler(tauri::generate_handler![
+			ipc::lookup_versions,
+			ipc::mojang_prepare,
+		])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }

@@ -2,9 +2,6 @@
 resolver = "2"
 members = [
 	"src-tauri",
-	"crates/common",
-	"crates/launcher",
-	"crates/providers/mojang",
 	"crates/download",
 	"crates/profile",
 	"crates/lookup",

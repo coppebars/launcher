@@ -131,6 +131,10 @@ impl Mojang {
 		Ok(Self::try_from_json(&contents)?)
 	}
 
+	pub async fn try_from_canonical_tree(root: &Path, id: &str) -> Result<Self, TryFromError> {
+		Self::try_from_file(&root.join("versions").join(id).join(format!("{}.json", id))).await
+	}
+
 	pub fn try_into_process(self) -> Result<ProcessLauncher, Error> {
 		let manifest = match self.0 {
 			Manifest::Root(it) => it,

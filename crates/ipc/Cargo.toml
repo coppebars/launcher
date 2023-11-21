@@ -9,4 +9,6 @@ edition = "2021"
 tauri = "2.0.0-alpha"
 lookup = { path = "../lookup" }
 serde = { version = "1.0.192", features = ["derive"] }
-pvdr_mojang = { path = "../providers/mojang" }
+launchers = { path = "../launchers", features = ["all"] }
+tokio = { version = "1.34.0", features = ["sync"] }
+tokio-util = "0.7.10"
