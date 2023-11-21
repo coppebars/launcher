@@ -5,10 +5,9 @@ use {
 		TryStreamExt,
 	},
 	reqwest::Client,
-	serde::Serialize,
-	sha1::{
-		Digest,
-		Sha1,
+	serde::{
+		Serialize,
+		Serializer,
 	},
 	std::{
 		io::ErrorKind,
@@ -24,13 +23,10 @@ use {
 	thiserror::Error,
 	tokio::{
 		fs::{
+			self,
 			File,
-			{self,},
 		},
-		io::{
-			AsyncReadExt,
-			AsyncWriteExt,
-		},
+		io::AsyncWriteExt,
 		sync::mpsc::Sender,
 	},
 	tokio_util::sync::CancellationToken,
@@ -45,53 +41,37 @@ pub struct Item {
 	pub known_sha: Option<String>,
 }
 
-#[derive(Debug, Error, Serialize, Clone)]
+#[derive(Debug, Error)]
 pub enum DownloadError {
-	#[error("known: Unknown kind value")]
-	UnknownKind,
+	#[error(transparent)]
+	Io(#[from] std::io::Error),
 
-	#[error("io: {0}")]
-	Io(String),
+	#[error(transparent)]
+	Reqwest(#[from] reqwest::Error),
 
-	#[error("reqwest: {0}")]
-	Reqwest(String),
+	#[error("Invalid unicode in path: {0}")]
+	InvalidPathUnicode(PathBuf),
 
-	#[error("sync: {0}")]
-	SendError(String),
+	#[error(transparent)]
+	Integrity(#[from] integrity::IntegrityCheckError),
 
-	#[error("join: {0}")]
-	JoinError(String),
+	#[error(transparent)]
+	Send(#[from] tokio::sync::mpsc::error::SendError<DownloadEvent>),
 
-	#[error("unexpected: {0}")]
-	Unexpected(String),
+	#[error(transparent)]
+	Join(#[from] tokio::task::JoinError),
 
-	#[error("sha: {0}")]
-	InvalidSha(String),
-
-	#[error("shutdown")]
-	Shutdown,
-
-	#[error("cancelled")]
+	#[error("Download cancelled")]
 	Cancelled,
 }
 
-macro_rules! from_err {
-	($($t:ty => $id:ident),+) => {
-		$(
-			impl From<$t> for DownloadError {
-				fn from(value: $t) -> Self {
-					Self::$id(value.to_string())
-				}
-			}
-		)+
-	};
-}
-
-from_err! {
-	std::io::Error => Io,
-	reqwest::Error => Reqwest,
-	tokio::sync::mpsc::error::SendError<DownloadEvent> => SendError,
-	tokio::task::JoinError => JoinError
+impl Serialize for DownloadError {
+	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+	where
+		S: Serializer,
+	{
+		serializer.serialize_str(self.to_string().as_str())
+	}
 }
 
 #[derive(Debug, Serialize)]
@@ -105,10 +85,6 @@ pub enum DownloadEvent {
 		size: usize,
 		total: Option<u64>,
 		progress: usize,
-	},
-	Error {
-		item: Item,
-		error: DownloadError,
 	},
 	Finish {
 		item: Item,
@@ -134,30 +110,7 @@ pub async fn download(
 	if let Some(sha) = item.known_sha {
 		match File::open(&item.path).await {
 			Ok(mut file) => {
-				let mut hasher = Sha1::new();
-
-				let mut buffer: Vec<u8> = vec![0; 2097152];
-
-				loop {
-					let bytes_read = file.read(&mut buffer).await?;
-
-					if bytes_read == 0 {
-						break;
-					}
-					hasher.update(&buffer[..bytes_read]);
-				}
-
-				let hex = &hasher.finalize()[..];
-
-				let bytes = (0..sha.len())
-					.step_by(2)
-					.map(|i| u8::from_str_radix(&sha[i..i + 2], 16))
-					.collect::<Result<Vec<_>, _>>()
-					.map_err(|err| DownloadError::InvalidSha(err.to_string()))?;
-
-				let matched = hex.iter().zip(&bytes).all(|(a, b)| a == b);
-
-				if matched {
+				if integrity::check(&mut file, &sha).await? {
 					return Ok(());
 				}
 			}
@@ -180,9 +133,7 @@ pub async fn download(
 	let path_key = item
 		.path
 		.to_str()
-		.ok_or(DownloadError::Unexpected(
-			"Failed to convert path to string".into(),
-		))?
+		.ok_or(DownloadError::InvalidPathUnicode(item.path.clone()))?
 		.to_owned();
 
 	while let Some(bytes) = stream.next().await {
@@ -239,15 +190,7 @@ pub async fn download_all(
 
 					Ok(result)
 				}
-				Err(err) => {
-					sender
-						.send(DownloadEvent::Error {
-							item: it.clone(),
-							error: err.clone(),
-						})
-						.await?;
-					Err(err)
-				}
+				Err(err) => Err(err),
 			}
 		})
 	}))

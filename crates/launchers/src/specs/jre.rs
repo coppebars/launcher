@@ -1,6 +1,10 @@
 use {
 	serde::Deserialize,
-	std::collections::HashMap,
+	std::{
+		collections::HashMap,
+		path::PathBuf,
+	},
+	url::Url,
 };
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Hash)]
@@ -50,7 +54,7 @@ impl ComponentType {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Manifest {
+pub struct ManifestResource {
 	pub sha1: String,
 	pub size: u32,
 	pub url: String,
@@ -71,8 +75,42 @@ pub struct Version {
 #[derive(Debug, Deserialize)]
 pub struct Component {
 	pub availability: Availability,
-	pub manifest: Manifest,
+	pub manifest: ManifestResource,
 	pub version: Version,
 }
 
 pub type JavaRuntime = HashMap<Target, HashMap<ComponentType, Vec<Component>>>;
+
+#[derive(Debug, Deserialize)]
+pub struct JreFile {
+	pub sha1: String,
+	pub size: u64,
+	pub url: Url,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Downloads {
+	pub lzma: Option<JreFile>,
+	pub raw: JreFile,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct FileEntry {
+	pub executable: bool,
+	pub downloads: Downloads,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase", tag = "type")]
+pub enum Entry {
+	Link,
+	Directory,
+	File(Box<FileEntry>),
+}
+
+pub type Files = HashMap<PathBuf, Entry>;
+
+#[derive(Debug, Deserialize)]
+pub struct Manifest {
+	pub files: Files,
+}

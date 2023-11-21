@@ -3,7 +3,7 @@
 	"type": "module",
 	"main": "mod.tsx",
 	"devDependencies": {
-		"@tauri-apps/api": "2.0.0-alpha.11",
+		"@tauri-apps/api": "2.0.0-alpha.12",
 		"@types/react": "18.2.37"
 	},
 	"peerDependencies": {

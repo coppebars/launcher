@@ -1,2 +1,2 @@
-pub mod all;
 pub mod manifest;
+pub mod jre;
