@@ -60,8 +60,6 @@ impl ProcessLauncher {
 	pub fn launch_blocking(self) {
 		let mut command = self.into_command();
 
-		println!("{:#?}", command);
-
 		command.spawn().unwrap().wait().unwrap();
 	}
 }
