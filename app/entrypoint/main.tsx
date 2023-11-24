@@ -1,3 +1,6 @@
+import                        '@mantine/core/styles.css'
+import                        '@theme/global'
+
 import { createRoot }    from 'react-dom/client'
 
 import { withProviders } from '@app/providers'

@@ -1,16 +1,16 @@
 {
-	"name": "@ui/layout",
+	"name": "@theme/vars",
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
-		"@emotion/styled": "11.11.0",
-		"styled-std": "workspace:"
+		"@mantine/vanilla-extract": "7.2.2"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.37"
+		"@theme/schema": "workspace:"
 	},
 	"peerDependencies": {
-		"@emotion/react": "*",
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
 		"react": "*",
 		"react-dom": "*"
 	}

@@ -42,29 +42,20 @@
       "props-of": [
         "shared/lib/props-of"
       ],
-      "styled-std": [
-        "shared/lib/styled-std"
-      ],
-      "@theme/common": [
-        "shared/theme/common"
-      ],
-      "@theme/dark": [
-        "shared/theme/dark"
-      ],
       "@theme/fonts": [
         "shared/theme/fonts"
       ],
       "@theme/global": [
         "shared/theme/global"
       ],
-      "@theme/light": [
-        "shared/theme/light"
-      ],
       "@theme/provider": [
         "shared/theme/provider"
       ],
-      "@ui/layout": [
-        "shared/ui/layout"
+      "@theme/schema": [
+        "shared/theme/schema"
+      ],
+      "@theme/vars": [
+        "shared/theme/vars"
       ]
     }
   },

@@ -161,6 +161,11 @@ impl Mojang {
 		utils::process_args(arguments.jvm, &mut process.jvm_args, &DEFAULT_FEATURES);
 		utils::process_args(arguments.game, &mut process.game_args, &DEFAULT_FEATURES);
 
+		process.jvm_args.push("-Dminecraft.api.auth.host=${minecraft_auth_host}".into());
+		process.jvm_args.push("-Dminecraft.api.account.host=${minecraft_account_host}".into());
+		process.jvm_args.push("-Dminecraft.api.session.host=${minecraft_session_host}".into());
+		process.jvm_args.push("-Dminecraft.api.services.host=${minecraft_services_host}".into());
+
 		process
 			.jvm_args
 			.retain(|it| !it.as_str().starts_with("-Djava.library.path"));

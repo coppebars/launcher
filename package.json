@@ -11,6 +11,13 @@
     "typecheck": "tsc",
     "tauri": "tauri"
   },
+  "dependencies": {
+    "@mantine/core": "7.2.2",
+    "@mantine/hooks": "7.2.2",
+    "@mantine/vanilla-extract": "7.2.2",
+    "react": "canary",
+    "react-dom": "canary"
+  },
   "devDependencies": {
     "@lmpx-config/eslint": "0.0.18",
     "@lmpx-config/prettier": "0.0.2",

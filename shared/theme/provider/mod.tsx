@@ -1,10 +1,11 @@
-import type { ReactElement }                          from 'react'
+import type { ReactElement }                   from 'react'
 
-import      { ThemeProvider as EmotionThemeProvider } from '@emotion/react'
+import      { localStorageColorSchemeManager } from '@mantine/core'
+import      { MantineProvider }                from '@mantine/core'
 
-import      { theme }                                 from '@theme/dark'
-import      { Fonts }                                 from '@theme/fonts'
-import      { GlobalStyles }                          from '@theme/global'
+import      { theme }                          from '@theme/schema'
+
+const colorSchemeManager = localStorageColorSchemeManager({ key: 'color-scheme' })
 
 interface Props {
 	children: ReactElement
@@ -12,10 +13,8 @@ interface Props {
 
 export function ThemeProvider({ children }: Props) {
 	return (
-		<EmotionThemeProvider theme={theme}>
-			<GlobalStyles />
-			<Fonts />
+		<MantineProvider forceColorScheme='light' colorSchemeManager={colorSchemeManager} theme={theme}>
 			{children}
-		</EmotionThemeProvider>
+		</MantineProvider>
 	)
 }

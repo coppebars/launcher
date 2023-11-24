@@ -10,6 +10,8 @@
 		"@types/react": "18.2.37"
 	},
 	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
 		"react": "*",
 		"react-dom": "*"
 	}

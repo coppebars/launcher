@@ -1,11 +1,13 @@
 {
-	"name": "@app/root",
+	"name": "@theme/schema",
+	"main": "mod.ts",
 	"type": "module",
-	"main": "mod.tsx",
+	"dependencies": {
+		"@theme/fonts": "workspace:"
+	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
-		"@tauri-apps/api": "2.0.0-alpha.12",
-		"@types/react": "18.2.37"
+		"type-fest": "4.8.2"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",
