@@ -2,6 +2,9 @@
 	"name": "@app/root",
 	"type": "module",
 	"main": "mod.tsx",
+	"dependencies": {
+		"@layout/sided": "workspace:"
+	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
 		"@tauri-apps/api": "2.0.0-alpha.12",

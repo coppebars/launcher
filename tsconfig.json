@@ -33,6 +33,9 @@
       "@app/root": [
         "app/root"
       ],
+      "@layout/sided": [
+        "layouts/sided"
+      ],
       "@config/general": [
         "shared/config/general"
       ],
@@ -41,6 +44,9 @@
       ],
       "props-of": [
         "shared/lib/props-of"
+      ],
+      "@theme/css": [
+        "shared/theme/css"
       ],
       "@theme/fonts": [
         "shared/theme/fonts"

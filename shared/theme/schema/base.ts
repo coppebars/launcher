@@ -1,5 +1,6 @@
 import      { createTheme }          from '@mantine/core'
 import      { MantineThemeOverride } from '@mantine/core'
+import      { mix }                  from '@theme/css'
 import type { PartialDeep }          from 'type-fest'
 
 import      { mabry }                from '@theme/fonts'
@@ -24,15 +25,18 @@ export const base = createTheme({
 		primary: [
 			undefined!,
 			undefined!,
-			`color-mix(in srgb, ${primary} 10%, ${black})`,
-			`color-mix(in srgb, ${primary} 90%, ${black})`,
+			mix(black, primary, 0.1),
+			mix(black, primary, 0.9),
 			primary,
 			primary,
-			`color-mix(in srgb, ${primary} 90%, ${white})`,
-			`color-mix(in srgb, ${primary} 10%, ${white})`,
+			mix(white, primary, 0.9),
+			mix(white, primary, 0.1),
 			undefined!,
 			undefined!,
 		],
+		dark: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, -0.1, -0.2, -0.3].map((it) => {
+			return it >= 0 ? mix(white, black, it) : mix('black', black, it)
+		}) as never,
 	},
 	primaryColor: 'primary',
 	primaryShade: 4,

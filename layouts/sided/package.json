@@ -1,19 +1,15 @@
 {
-	"name": "@theme/schema",
-	"main": "mod.ts",
+	"name": "@layout/sided",
 	"type": "module",
-	"exports": {
-		".": "./mod.ts",
-		"./base": "./base.ts"
-	},
+	"main": "mod.tsx",
 	"dependencies": {
 		"@theme/css": "workspace:",
-		"@theme/fonts": "workspace:",
-		"@ui/core": "workspace:"
+		"@theme/vars": "workspace:",
+		"@vanilla-extract/css": "1.14.0"
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
-		"type-fest": "4.8.2"
+		"@types/react": "18.2.38"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

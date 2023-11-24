@@ -66,6 +66,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/root@workspace:app/root"
   dependencies:
+    "@layout/sided": "workspace:"
     "@mantine/core": "npm:7.2.2"
     "@tauri-apps/api": "npm:2.0.0-alpha.12"
     "@types/react": "npm:18.2.37"
@@ -1090,6 +1091,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@layout/sided@workspace:, @layout/sided@workspace:layouts/sided":
+  version: 0.0.0-use.local
+  resolution: "@layout/sided@workspace:layouts/sided"
+  dependencies:
+    "@mantine/core": "npm:7.2.2"
+    "@theme/css": "workspace:"
+    "@theme/vars": "workspace:"
+    "@types/react": "npm:18.2.38"
+    "@vanilla-extract/css": "npm:1.14.0"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "@lmpx-config/eslint@npm:0.0.18":
   version: 0.0.18
   resolution: "@lmpx-config/eslint@npm:0.0.18"
@@ -1454,6 +1472,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@theme/css@workspace:, @theme/css@workspace:shared/theme/css":
+  version: 0.0.0-use.local
+  resolution: "@theme/css@workspace:shared/theme/css"
+  languageName: unknown
+  linkType: soft
+
 "@theme/fonts@workspace:, @theme/fonts@workspace:shared/theme/fonts":
   version: 0.0.0-use.local
   resolution: "@theme/fonts@workspace:shared/theme/fonts"
@@ -1502,6 +1526,7 @@ __metadata:
   resolution: "@theme/schema@workspace:shared/theme/schema"
   dependencies:
     "@mantine/core": "npm:7.2.2"
+    "@theme/css": "workspace:"
     "@theme/fonts": "workspace:"
     "@ui/core": "workspace:"
     type-fest: "npm:4.8.2"
