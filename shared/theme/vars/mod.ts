@@ -1,5 +1,5 @@
 import { themeToVars } from '@mantine/vanilla-extract'
 
-import { theme }       from '@theme/schema'
+import { base }        from '@theme/schema/base'
 
-export const vars = themeToVars(theme)
+export const vars = themeToVars(base)

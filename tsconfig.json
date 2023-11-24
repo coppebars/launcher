@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": [
       "ESNext",
@@ -54,8 +54,14 @@
       "@theme/schema": [
         "shared/theme/schema"
       ],
+      "@theme/schema/base": [
+        "shared/theme/schema/base.ts"
+      ],
       "@theme/vars": [
         "shared/theme/vars"
+      ],
+      "@ui/core": [
+        "ui/core"
       ]
     }
   },
