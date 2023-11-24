@@ -1,7 +1,7 @@
-import { SidedLayout } from '@layout/sided'
-import { Box }         from '@mantine/core'
-import { Stack }       from '@mantine/core'
+import { AppRoutes }     from '@app/routes'
+import { SidedLayout }   from '@layout/sided'
+import { SidebarWidget } from '@widget/sidebar'
 
 export function Root() {
-	return <SidedLayout sidebar={<Stack p={8} />} view={<Box p={8} />} />
+	return <SidedLayout sidebar={<SidebarWidget />} view={<AppRoutes />} />
 }

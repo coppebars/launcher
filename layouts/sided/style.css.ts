@@ -11,7 +11,7 @@ export const container = style({
 		},
 
 		[vars.lightSelector]: {
-			backgroundColor: vars.colors.white,
+			backgroundColor: vars.colors.light[8],
 		},
 	},
 })
@@ -21,10 +21,17 @@ export const sidebar = style({
 })
 
 export const view = style({
+	position: 'relative',
 	flexGrow: 1,
 
 	borderTopLeftRadius: vars.radius.md,
 	borderBottomLeftRadius: vars.radius.md,
 
-	backgroundColor: vars.colors.black,
+	[vars.darkSelector]: {
+		backgroundColor: vars.colors.black,
+	},
+
+	[vars.lightSelector]: {
+		backgroundColor: vars.colors.white,
+	},
 })
