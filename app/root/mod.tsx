@@ -1,10 +1,5 @@
-import { Box }    from '@mantine/core'
-import { Button } from '@mantine/core'
+import { Box } from '@mantine/core'
 
 export function Root() {
-	return (
-		<Box p={16}>
-			<Button>Sly Stone</Button>
-		</Box>
-	)
+	return <Box p={16}>Hi!</Box>
 }
