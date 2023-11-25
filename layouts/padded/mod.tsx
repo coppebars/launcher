@@ -9,5 +9,9 @@ interface Props {
 export function PaddedLayout(props: Props) {
 	const { children } = props
 
-	return <Box p={8}>{children}</Box>
+	return (
+		<Box p={8} style={{ height: '100%' }}>
+			{children}
+		</Box>
+	)
 }

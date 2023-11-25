@@ -12,7 +12,7 @@ import * as styles        from './styles.css.ts'
 export function VersionsWidget() {
 	const { data, status, error } = useQuery({
 		queryKey: ['local_versions'],
-		queryFn: () => lookupVersions({ path: '/home/limpix/workspaces/launcher/minecraf' }),
+		queryFn: () => lookupVersions({ path: '/home/limpix/workspaces/launcher/minecraft' }),
 		retry: 0,
 	})
 
@@ -24,7 +24,7 @@ export function VersionsWidget() {
 
 	if (status === 'error') {
 		return (
-			<Alert variant='filled' color='red' title='Alert title'>
+			<Alert variant='filled' color='red' title='Error'>
 				{error.message}
 			</Alert>
 		)

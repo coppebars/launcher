@@ -1,13 +1,11 @@
 {
-	"name": "@page/home",
+	"name": "@entity/instance",
 	"type": "module",
-	"main": "mod.tsx",
+	"main": "mod.ts",
 	"dependencies": {
-		"@entity/instance": "workspace:",
-		"@layout/padded": "workspace:",
-		"@tabler/icons-react": "2.42.0",
 		"effector": "23.0.0-rc.6",
-		"effector-react": "23.0.0-rc.6"
+		"effector-react": "23.0.0-rc.6",
+		"effector-storage": "6.1.1"
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",

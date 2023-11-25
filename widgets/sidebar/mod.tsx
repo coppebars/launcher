@@ -25,7 +25,7 @@ function SidebarItem(props: SidebarItemProps) {
 
 	return (
 		<UnstyledButton onClick={onClick} className={styles.item} data-active={active || undefined}>
-			<Icon style={{ width: rem(20), height: rem(20) }} stroke={1.6} />
+			<Icon style={{ width: rem(20), height: rem(20), userSelect: 'none' }} stroke={1.6} />
 		</UnstyledButton>
 	)
 }
@@ -73,7 +73,7 @@ export function SidebarWidget() {
 	return (
 		<SidebarLayout>
 			{topRoutes.map(renderItem)}
-			<div style={{ flexGrow: 1 }} />
+			<div style={{ flexGrow: 1, userSelect: 'none' }} />
 			{bottomRoutes.map(renderItem)}
 		</SidebarLayout>
 	)

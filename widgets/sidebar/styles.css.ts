@@ -18,6 +18,7 @@ export const item = style({
 	overflow: 'hidden',
 
 	zIndex: 1,
+	userSelect: 'none',
 
 	':hover': {
 		[vars.darkSelector]: {
@@ -38,40 +39,6 @@ export const item = style({
 				color: vars.colors.primary[4],
 				backgroundColor: vars.colors.primary[7],
 			},
-		},
-	},
-})
-
-export const glow = style({
-	position: 'absolute',
-
-	top: '50%',
-	left: '50%',
-	translate: '-50% -50%',
-
-	borderRadius: '1000px',
-
-	transition: 'opacity, .2s',
-
-	zIndex: -1,
-
-	[vars.darkSelector]: {
-		width: '2rem',
-		height: '2rem',
-		filter: 'blur(15px)',
-		backgroundColor: vars.colors.primary[4],
-	},
-
-	[vars.lightSelector]: {
-		width: '3rem',
-		height: '3rem',
-		filter: 'blur(25px)',
-		backgroundColor: vars.colors.primary[4],
-	},
-
-	selectors: {
-		'&:not([data-active])': {
-			opacity: 0,
 		},
 	},
 })

@@ -36,6 +36,9 @@
       "@app/routes": [
         "app/routes"
       ],
+      "@entity/instance": [
+        "entities/instance"
+      ],
       "@layout/padded": [
         "layouts/padded"
       ],
@@ -50,9 +53,6 @@
       ],
       "@page/versions": [
         "pages/versions"
-      ],
-      "@config/general": [
-        "shared/config/general"
       ],
       "core": [
         "shared/core"

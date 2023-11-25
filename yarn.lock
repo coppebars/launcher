@@ -373,15 +373,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@config/general@workspace:shared/config/general":
-  version: 0.0.0-use.local
-  resolution: "@config/general@workspace:shared/config/general"
-  dependencies:
-    "@tauri-apps/api": "npm:1.5.1"
-    indexed-db: "workspace:"
-  languageName: unknown
-  linkType: soft
-
 "@coppertiles-launcher/monorepo@workspace:.":
   version: 0.0.0-use.local
   resolution: "@coppertiles-launcher/monorepo@workspace:."
@@ -409,6 +400,23 @@ __metadata:
   checksum: cdafe5da63fc1137f3db6e232fdcde9188b2b47ee66c56c29137199642a4086f42382d866911cfb4833cae2cc00271ab45cad3946b024f67b527bb7fac7f4c9d
   languageName: node
   linkType: hard
+
+"@entity/instance@workspace:, @entity/instance@workspace:entities/instance":
+  version: 0.0.0-use.local
+  resolution: "@entity/instance@workspace:entities/instance"
+  dependencies:
+    "@mantine/core": "npm:7.2.2"
+    "@types/react": "npm:18.2.38"
+    effector: "npm:23.0.0-rc.6"
+    effector-react: "npm:23.0.0-rc.6"
+    effector-storage: "npm:6.1.1"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
 
 "@esbuild/android-arm64@npm:0.17.6":
   version: 0.17.6
@@ -1233,8 +1241,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@page/home@workspace:pages/home"
   dependencies:
+    "@entity/instance": "workspace:"
+    "@layout/padded": "workspace:"
     "@mantine/core": "npm:7.2.2"
+    "@tabler/icons-react": "npm:2.42.0"
     "@types/react": "npm:18.2.38"
+    effector: "npm:23.0.0-rc.6"
+    effector-react: "npm:23.0.0-rc.6"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
@@ -2666,6 +2679,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"effector-react@npm:23.0.0-rc.6":
+  version: 23.0.0-rc.6
+  resolution: "effector-react@npm:23.0.0-rc.6"
+  dependencies:
+    use-sync-external-store: "npm:^1.0.0"
+  peerDependencies:
+    effector: ^22.0.2
+    react: ">=16.8.0 <19.0.0"
+  checksum: efd10fb5f08847fd4369229e18cf4b1aa9ad5829ab5a6bd087500520cb2ca52f37a1c028c2f5f407953bd7a287df8d119298a2fa4a14b727996c33dc54b2e378
+  languageName: node
+  linkType: hard
+
+"effector-storage@npm:6.1.1":
+  version: 6.1.1
+  resolution: "effector-storage@npm:6.1.1"
+  peerDependencies:
+    effector: ">=22.0.0"
+  checksum: c829dae6ead82305700775808cd1d5e35b4bc0b63db07d72b0eb23b39eaffe793a0fb9518a9fe46d1f0ea0ecfffb7fbf4a921b181a67c46b000b361689c48d79
+  languageName: node
+  linkType: hard
+
+"effector@npm:23.0.0-rc.6":
+  version: 23.0.0-rc.6
+  resolution: "effector@npm:23.0.0-rc.6"
+  checksum: 661c321b19c25a27756b9c7539527f59ab0ac35c14fea4119cefcfb9497a9e62e33a61dfe9e7755cd87805e2ac7e80c3cefa76c9be1557e7caa5ac000fc699fa
+  languageName: node
+  linkType: hard
+
 "electron-to-chromium@npm:^1.4.535":
   version: 1.4.594
   resolution: "electron-to-chromium@npm:1.4.594"
@@ -3923,7 +3964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"indexed-db@workspace:, indexed-db@workspace:shared/lib/indexed-db":
+"indexed-db@workspace:shared/lib/indexed-db":
   version: 0.0.0-use.local
   resolution: "indexed-db@workspace:shared/lib/indexed-db"
   dependencies:
@@ -6297,6 +6338,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 89f0018fd9aee1fc17c85ac18c4bf8944d460d453d0d0e04ddbc8eaddf3fa591e9c74a1f8a438a1bff368a7a2417fab380bdb3df899d2194c4375b0982736de0
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.0.0":
+  version: 1.2.0
+  resolution: "use-sync-external-store@npm:1.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: ac4814e5592524f242921157e791b022efe36e451fe0d4fd4d204322d5433a4fc300d63b0ade5185f8e0735ded044c70bcf6d2352db0f74d097a238cebd2da02
   languageName: node
   linkType: hard
 

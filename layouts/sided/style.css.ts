@@ -7,11 +7,11 @@ export const container = style({
 
 	selectors: {
 		[vars.darkSelector]: {
-			backgroundColor: vars.colors.dark[7],
+			backgroundColor: vars.colors.darkTint[1],
 		},
 
 		[vars.lightSelector]: {
-			backgroundColor: vars.colors.light[8],
+			backgroundColor: vars.colors.lightTint[2],
 		},
 	},
 })
