@@ -31,6 +31,7 @@ __metadata:
     "@mantine/core": "npm:7.2.2"
     "@mantine/hooks": "npm:7.2.2"
     "@mantine/vanilla-extract": "npm:7.2.2"
+    "@tanstack/react-query": "npm:5.8.7"
     "@tauri-apps/api": "npm:1.5.1"
     "@theme/global": "workspace:"
     "@types/react": "npm:18.2.38"
@@ -51,12 +52,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/providers@workspace:app/providers"
   dependencies:
+    "@tanstack/react-query": "npm:5.8.7"
     "@theme/provider": "workspace:"
     "@types/react": "npm:18.2.38"
     react-router-dom: "npm:6.20.0"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -1387,6 +1390,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.8.7":
+  version: 5.8.7
+  resolution: "@tanstack/query-core@npm:5.8.7"
+  checksum: 96a2c1434f22919787712456cabc18f62902ab0864a1aa2a81670bcaff768abecd789fbcac8b8d589709e77cd713e1716ae7a0a9b5eeaa991364a4481813ff19
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:5.8.7":
+  version: 5.8.7
+  resolution: "@tanstack/react-query@npm:5.8.7"
+  dependencies:
+    "@tanstack/query-core": "npm:5.8.7"
+  peerDependencies:
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-native: "*"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: b6729d30a0a5cc195381b79f08d3e4af2f33d5fbf3f6a9b16907a25bf42a66bfa5433f500dc577dfccb75026bd619381f6117f314c83440807b170007d0a8619
+  languageName: node
+  linkType: hard
+
 "@tauri-apps/api@npm:1.5.1":
   version: 1.5.1
   resolution: "@tauri-apps/api@npm:1.5.1"
@@ -1951,6 +1979,7 @@ __metadata:
   resolution: "@widget/versions@workspace:widgets/versions"
   dependencies:
     "@mantine/core": "npm:7.2.2"
+    "@tanstack/react-query": "npm:5.8.7"
     "@theme/vars": "workspace:"
     "@types/react": "npm:18.2.38"
     "@vanilla-extract/css": "npm:1.14.0"
@@ -1959,6 +1988,7 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown

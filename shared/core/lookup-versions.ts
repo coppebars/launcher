@@ -10,5 +10,7 @@ export interface Version {
 }
 
 export function lookupVersions(args: LookupVersionsArgs): Promise<Version[]> {
-	return invoke('lookup_versions', args as {})
+	return invoke<Version[]>('lookup_versions', args as {}).catch((err: string) => {
+		throw new Error(err)
+	})
 }

@@ -7,6 +7,7 @@
 		"@mantine/core": "7.2.2",
 		"@mantine/hooks": "7.2.2",
 		"@mantine/vanilla-extract": "7.2.2",
+		"@tanstack/react-query": "5.8.7",
 		"@theme/global": "workspace:",
 		"@vanilla-extract/css": "1.14.0",
 		"react": "canary",
