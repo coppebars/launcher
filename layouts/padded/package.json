@@ -1,12 +1,9 @@
 {
-	"name": "@app/providers",
+	"name": "@layout/padded",
 	"type": "module",
 	"main": "mod.tsx",
-	"dependencies": {
-		"@theme/provider": "workspace:",
-		"react-router-dom": "6.20.0"
-	},
 	"devDependencies": {
+		"@mantine/core": "7.2.2",
 		"@types/react": "18.2.38"
 	},
 	"peerDependencies": {

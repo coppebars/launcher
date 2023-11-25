@@ -3,7 +3,8 @@
 	"type": "module",
 	"main": "mod.tsx",
 	"dependencies": {
-		"@page/home": "workspace:"
+		"@page/home": "workspace:",
+		"@page/versions": "workspace:"
 	},
 	"devDependencies": {
 		"@types/react": "18.2.38",

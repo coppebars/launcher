@@ -1,9 +1,6 @@
-use {
-	crate::error::IpcError,
-	std::path::Path,
-};
+use std::path::Path;
 
 #[tauri::command]
-pub async fn lookup_versions(path: &Path) -> Result<Vec<lookup::VersionOverview>, IpcError> {
-	Ok(lookup::lookup_versions(path).await?)
+pub async fn lookup_versions(path: &Path) -> Result<Vec<lookup::VersionOverview>, String> {
+	lookup::lookup_versions(path).await.map_err(|err| err.to_string())
 }

@@ -8,7 +8,7 @@
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
-		"@types/react": "18.2.37"
+		"@types/react": "18.2.38"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

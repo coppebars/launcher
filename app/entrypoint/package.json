@@ -8,19 +8,19 @@
 		"@mantine/hooks": "7.2.2",
 		"@mantine/vanilla-extract": "7.2.2",
 		"@theme/global": "workspace:",
-		"@vanilla-extract/css": "1.14.0"
+		"@vanilla-extract/css": "1.14.0",
+		"react": "canary",
+		"react-dom": "canary"
 	},
 	"devDependencies": {
 		"@tauri-apps/api": "1.5.1",
-		"@types/react": "18.2.37",
-		"@types/react-dom": "18.2.15",
+		"@types/react": "18.2.38",
+		"@types/react-dom": "18.2.17",
 		"@vanilla-extract/vite-plugin": "3.9.2",
 		"@vitejs/plugin-react": "4.2.0",
 		"postcss": "8.4.31",
 		"postcss-preset-mantine": "1.11.0",
 		"postcss-simple-vars": "7.0.1",
-		"react": "canary",
-		"react-dom": "canary",
-		"vite": "5.0.0"
+		"vite": "5.0.2"
 	}
 }

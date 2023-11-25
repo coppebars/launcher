@@ -36,6 +36,9 @@
       "@app/routes": [
         "app/routes"
       ],
+      "@layout/padded": [
+        "layouts/padded"
+      ],
       "@layout/sidebar": [
         "layouts/sidebar"
       ],
@@ -45,8 +48,14 @@
       "@page/home": [
         "pages/home"
       ],
+      "@page/versions": [
+        "pages/versions"
+      ],
       "@config/general": [
         "shared/config/general"
+      ],
+      "core": [
+        "shared/core"
       ],
       "indexed-db": [
         "shared/lib/indexed-db"
@@ -80,6 +89,9 @@
       ],
       "@widget/sidebar": [
         "widgets/sidebar"
+      ],
+      "@widget/versions": [
+        "widgets/versions"
       ]
     }
   },

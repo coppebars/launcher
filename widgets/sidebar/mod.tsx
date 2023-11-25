@@ -2,9 +2,10 @@
 
 import { useCallback }    from 'react'
 
-import { rem, Stack } from '@mantine/core'
+import { rem }            from '@mantine/core'
 import { UnstyledButton } from '@mantine/core'
-import { IconBolt, IconDownload } from '@tabler/icons-react'
+import { IconBolt }       from '@tabler/icons-react'
+import { IconDownload }   from '@tabler/icons-react'
 import { IconSettings2 }  from '@tabler/icons-react'
 import { useLocation }    from 'react-router-dom'
 import { useNavigate }    from 'react-router-dom'
@@ -25,12 +26,6 @@ function SidebarItem(props: SidebarItemProps) {
 	return (
 		<UnstyledButton onClick={onClick} className={styles.item} data-active={active || undefined}>
 			<Icon style={{ width: rem(20), height: rem(20) }} stroke={1.6} />
-			{/*<div className={styles.glow} data-active={active || undefined} />*/}
-			{/*<div*/}
-			{/*	className={styles.glow}*/}
-			{/*	style={{ filter: 'blur(3px)', width: '1rem', height: '1rem' }}*/}
-			{/*	data-active={active || undefined}*/}
-			{/*/>*/}
 		</UnstyledButton>
 	)
 }

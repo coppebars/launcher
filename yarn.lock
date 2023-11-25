@@ -33,8 +33,8 @@ __metadata:
     "@mantine/vanilla-extract": "npm:7.2.2"
     "@tauri-apps/api": "npm:1.5.1"
     "@theme/global": "workspace:"
-    "@types/react": "npm:18.2.37"
-    "@types/react-dom": "npm:18.2.15"
+    "@types/react": "npm:18.2.38"
+    "@types/react-dom": "npm:18.2.17"
     "@vanilla-extract/css": "npm:1.14.0"
     "@vanilla-extract/vite-plugin": "npm:3.9.2"
     "@vitejs/plugin-react": "npm:4.2.0"
@@ -43,7 +43,7 @@ __metadata:
     postcss-simple-vars: "npm:7.0.1"
     react: "npm:canary"
     react-dom: "npm:canary"
-    vite: "npm:5.0.0"
+    vite: "npm:5.0.2"
   languageName: unknown
   linkType: soft
 
@@ -52,8 +52,8 @@ __metadata:
   resolution: "@app/providers@workspace:app/providers"
   dependencies:
     "@theme/provider": "workspace:"
-    "@types/react": "npm:18.2.37"
-    react-router-dom: "npm:6.19.0"
+    "@types/react": "npm:18.2.38"
+    react-router-dom: "npm:6.20.0"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
@@ -70,7 +70,7 @@ __metadata:
     "@layout/sided": "workspace:"
     "@mantine/core": "npm:7.2.2"
     "@tauri-apps/api": "npm:2.0.0-alpha.12"
-    "@types/react": "npm:18.2.37"
+    "@types/react": "npm:18.2.38"
     "@widget/sidebar": "workspace:"
   peerDependencies:
     "@mantine/core": "*"
@@ -85,6 +85,7 @@ __metadata:
   resolution: "@app/routes@workspace:app/routes"
   dependencies:
     "@page/home": "workspace:"
+    "@page/versions": "workspace:"
     "@types/react": "npm:18.2.38"
     react-router-dom: "npm:6.20.0"
   peerDependencies:
@@ -132,18 +133,6 @@ __metadata:
     json5: "npm:^2.2.3"
     semver: "npm:^6.3.1"
   checksum: 08d43b749e24052d12713a7fb1f0c0d1275d4fb056d00846faeb8da79ecf6d0ba91a11b6afec407b8b0f9388d00e2c2f485f282bef0ade4d6d0a17de191a4287
-  languageName: node
-  linkType: hard
-
-"@babel/generator@npm:^7.23.0":
-  version: 7.23.0
-  resolution: "@babel/generator@npm:7.23.0"
-  dependencies:
-    "@babel/types": "npm:^7.23.0"
-    "@jridgewell/gen-mapping": "npm:^0.3.2"
-    "@jridgewell/trace-mapping": "npm:^0.3.17"
-    jsesc: "npm:^2.5.1"
-  checksum: b7d8727c574119b5ef06e5d5d0d8d939527d51537db4b08273caebb18f3f2b1d4517b874776085e161fd47d28f26b22c08e7f270b64f43b2afd4a60c5936d6cd
   languageName: node
   linkType: hard
 
@@ -290,16 +279,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.0":
-  version: 7.23.0
-  resolution: "@babel/parser@npm:7.23.0"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: ab4ea9360ed4ba3c728c5a9bf33035103ebde20a7e943c4ae1d42becb02a313d731d12a93c795c5a19777031e4022e64b92a52262eda902522a1a18649826283
-  languageName: node
-  linkType: hard
-
-"@babel/parser@npm:^7.23.3":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/parser@npm:7.23.3"
   bin:
@@ -341,16 +321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.23.2":
-  version: 7.23.2
-  resolution: "@babel/runtime@npm:7.23.2"
-  dependencies:
-    regenerator-runtime: "npm:^0.14.0"
-  checksum: 271fcfad8574269d9967b8a1c03f2e1eab108a52ad7c96ed136eee0b11f46156f1186637bd5e79a4207163db9a00413cd70a6428e137b982d0ee8ab85eb9f438
-  languageName: node
-  linkType: hard
-
-"@babel/runtime@npm:^7.20.13":
+"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.23.2":
   version: 7.23.4
   resolution: "@babel/runtime@npm:7.23.4"
   dependencies:
@@ -370,25 +341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.23.2":
-  version: 7.23.2
-  resolution: "@babel/traverse@npm:7.23.2"
-  dependencies:
-    "@babel/code-frame": "npm:^7.22.13"
-    "@babel/generator": "npm:^7.23.0"
-    "@babel/helper-environment-visitor": "npm:^7.22.20"
-    "@babel/helper-function-name": "npm:^7.23.0"
-    "@babel/helper-hoist-variables": "npm:^7.22.5"
-    "@babel/helper-split-export-declaration": "npm:^7.22.6"
-    "@babel/parser": "npm:^7.23.0"
-    "@babel/types": "npm:^7.23.0"
-    debug: "npm:^4.1.0"
-    globals: "npm:^11.1.0"
-  checksum: d096c7c4bab9262a2f658298a3c630ae4a15a10755bb257ae91d5ab3e3b2877438934859c8d34018b7727379fe6b26c4fa2efc81cf4c462a7fe00caf79fa02ff
-  languageName: node
-  linkType: hard
-
-"@babel/traverse@npm:^7.23.3":
+"@babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/traverse@npm:7.23.3"
   dependencies:
@@ -406,18 +359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.15, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.8.3":
-  version: 7.23.0
-  resolution: "@babel/types@npm:7.23.0"
-  dependencies:
-    "@babel/helper-string-parser": "npm:^7.22.5"
-    "@babel/helper-validator-identifier": "npm:^7.22.20"
-    to-fast-properties: "npm:^2.0.0"
-  checksum: 70e4db41acb6793d0eb8d81a2fa88f19ee661219b84bd5f703dbdb54eb3a4d3c0dfc55e69034c945b479df9f43fd4b1376480aaccfc19797ce5af1c5d2576b36
-  languageName: node
-  linkType: hard
-
-"@babel/types@npm:^7.23.3":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.15, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.23.3, @babel/types@npm:^7.8.3":
   version: 7.23.3
   resolution: "@babel/types@npm:7.23.3"
   dependencies:
@@ -447,14 +389,14 @@ __metadata:
     "@mantine/hooks": "npm:7.2.2"
     "@mantine/vanilla-extract": "npm:7.2.2"
     "@tauri-apps/cli": "npm:2.0.0-alpha.17"
-    "@types/node": "npm:20.9.0"
+    "@types/node": "npm:20.10.0"
     "@vanilla-extract/css": "npm:1.14.0"
     eslint: "npm:8.51.0"
     prettier: "npm:3.1.0"
     react: "npm:canary"
     react-dom: "npm:canary"
     typescript: "npm:5.2.2"
-    vite: "npm:5.0.0"
+    vite: "npm:5.0.2"
   languageName: unknown
   linkType: soft
 
@@ -1109,6 +1051,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@layout/padded@workspace:, @layout/padded@workspace:layouts/padded":
+  version: 0.0.0-use.local
+  resolution: "@layout/padded@workspace:layouts/padded"
+  dependencies:
+    "@mantine/core": "npm:7.2.2"
+    "@types/react": "npm:18.2.38"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "@layout/sidebar@workspace:, @layout/sidebar@workspace:layouts/sidebar":
   version: 0.0.0-use.local
   resolution: "@layout/sidebar@workspace:layouts/sidebar"
@@ -1284,6 +1240,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@page/versions@workspace:, @page/versions@workspace:pages/versions":
+  version: 0.0.0-use.local
+  resolution: "@page/versions@workspace:pages/versions"
+  dependencies:
+    "@layout/padded": "workspace:"
+    "@mantine/core": "npm:7.2.2"
+    "@types/react": "npm:18.2.38"
+    "@widget/versions": "workspace:"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -1302,13 +1274,6 @@ __metadata:
     picocolors: "npm:^1.0.0"
     tslib: "npm:^2.6.0"
   checksum: 7c3e68f6405a1d4c51f418d8d580e71d7bade2683d5db07e8413d8e57f7e389047eda44a2341f77a1b3085895fca7676a9d45e8812a58312524f8c4c65d501be
-  languageName: node
-  linkType: hard
-
-"@remix-run/router@npm:1.12.0":
-  version: 1.12.0
-  resolution: "@remix-run/router@npm:1.12.0"
-  checksum: d6d9dc49295ed27297a722e96b0c3177068acf85324c3eda631dc36af67b115f39e8d6829bb575a6cbef43cc816b28a35b79f0af8817db80baeaa367dc2d05e4
   languageName: node
   linkType: hard
 
@@ -1557,7 +1522,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@theme/fonts@workspace:shared/theme/fonts"
   dependencies:
-    "@types/react": "npm:18.2.37"
+    "@types/react": "npm:18.2.38"
     "@vanilla-extract/css": "npm:1.14.0"
   peerDependencies:
     react: "*"
@@ -1571,7 +1536,7 @@ __metadata:
   dependencies:
     "@mantine/core": "npm:7.2.2"
     "@theme/vars": "workspace:"
-    "@types/react": "npm:18.2.37"
+    "@types/react": "npm:18.2.38"
     "@vanilla-extract/css": "npm:1.14.0"
   peerDependencies:
     "@mantine/core": "*"
@@ -1587,7 +1552,7 @@ __metadata:
   dependencies:
     "@mantine/core": "npm:7.2.2"
     "@theme/schema": "workspace:"
-    "@types/react": "npm:18.2.37"
+    "@types/react": "npm:18.2.38"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
@@ -1682,21 +1647,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:20.10.0":
   version: 20.10.0
   resolution: "@types/node@npm:20.10.0"
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: f379e57d9d28cb5f3d8eab943de0c54a0ca2f95ee356e1fe2a1a4fa718b740103ae522c50ce107cffd52c3642ef3244cfc55bf5369081dd6c48369c8587b21ae
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:20.9.0":
-  version: 20.9.0
-  resolution: "@types/node@npm:20.9.0"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 755d07de735eafda4e20af75ad9d03bdbfddef327d790e9a896142eac7493db5d8501591376e1c8227aa12eeb88e522bc727c6024504842ed40e539e8a466db9
   languageName: node
   linkType: hard
 
@@ -1707,27 +1663,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.15":
-  version: 18.2.15
-  resolution: "@types/react-dom@npm:18.2.15"
+"@types/react-dom@npm:18.2.17":
+  version: 18.2.17
+  resolution: "@types/react-dom@npm:18.2.17"
   dependencies:
     "@types/react": "npm:*"
-  checksum: 70e86f15f69f89b8f179139ab2e8a8aa9765e742789f5dd5a46fec40d4300ada8fe3349cceda42b9964a018982d7ccb7d791b47f781966c992bfd37da909fbd3
+  checksum: 33b53078ed7e9e0cfc4dc691e938f7db1cc06353bc345947b41b581c3efe2b980c9e4eb6460dbf5ddc521dd91959194c970221a2bd4bfad9d23ebce338e12938
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:18.2.37":
-  version: 18.2.37
-  resolution: "@types/react@npm:18.2.37"
-  dependencies:
-    "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
-    csstype: "npm:^3.0.2"
-  checksum: 79dd5d23da05bec54e7423ca17096e345eb8fd80a3bf8dd916bb5cdd60677d27c298523aa5b245d090fcc4ec100cfd58c1af4631fbac709d0a9d8be75f9d78a9
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:18.2.38":
+"@types/react@npm:*, @types/react@npm:18.2.38":
   version: 18.2.38
   resolution: "@types/react@npm:18.2.38"
   dependencies:
@@ -1993,6 +1938,24 @@ __metadata:
     "@types/react": "npm:18.2.38"
     "@vanilla-extract/css": "npm:1.14.0"
     react-router-dom: "npm:6.20.0"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
+"@widget/versions@workspace:, @widget/versions@workspace:widgets/versions":
+  version: 0.0.0-use.local
+  resolution: "@widget/versions@workspace:widgets/versions"
+  dependencies:
+    "@mantine/core": "npm:7.2.2"
+    "@theme/vars": "workspace:"
+    "@types/react": "npm:18.2.38"
+    "@vanilla-extract/css": "npm:1.14.0"
+    core: "workspace:"
+    react-error-boundary: "npm:4.0.11"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
@@ -2482,6 +2445,14 @@ __metadata:
   checksum: 8f2f7a27a1a011cc6cc88cc4da2d7d0cfa5ee0369508baae3d98c260bb3ac520691464e5bbe4ae7cdf09860c1d69ecc6f70c63c6e7c7f7e3f18ec08484dc7d9b
   languageName: node
   linkType: hard
+
+"core@workspace:, core@workspace:shared/core":
+  version: 0.0.0-use.local
+  resolution: "core@workspace:shared/core"
+  dependencies:
+    "@tauri-apps/api": "npm:2.0.0-alpha.12"
+  languageName: unknown
+  linkType: soft
 
 "cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
@@ -3927,7 +3898,7 @@ __metadata:
   resolution: "indexed-db@workspace:shared/lib/indexed-db"
   dependencies:
     localforage: "npm:1.10.0"
-    type-fest: "npm:4.7.1"
+    type-fest: "npm:4.8.2"
   languageName: unknown
   linkType: soft
 
@@ -5203,21 +5174,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.1.0":
+"prettier@npm:3.1.0, prettier@npm:^3.0.2, prettier@npm:^3.0.3":
   version: 3.1.0
   resolution: "prettier@npm:3.1.0"
   bin:
     prettier: bin/prettier.cjs
   checksum: a45ea70aa97fde162ea4c4aba3dfc7859aa6a732a1db34458d9535dc3c2c16d3bc3fb5689e6cd76aa835562555303b02d9449fd2e15af3b73c8053557e25c5b6
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^3.0.2, prettier@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "prettier@npm:3.0.3"
-  bin:
-    prettier: bin/prettier.cjs
-  checksum: f950887bc03c5b970d8c6dd129364acfbbc61e7b46aec5d5ce17f4adf6404e2ef43072c98b51c4786e0eaca949b307d362a773fd47502862d754b5a328fa2b26
   languageName: node
   linkType: hard
 
@@ -5253,7 +5215,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "props-of@workspace:shared/lib/props-of"
   dependencies:
-    "@types/react": "npm:18.2.37"
+    "@types/react": "npm:18.2.38"
   languageName: unknown
   linkType: soft
 
@@ -5280,6 +5242,17 @@ __metadata:
   peerDependencies:
     react: 18.3.0-canary-593ecee66-20231114
   checksum: df70c0df4b781de8201ad245689fe0fccaf7188b8104f38e6387281796f7562507b079ab2ae099e67b16a44884f6a028d81bdedf490684978b45ce68c123afa3
+  languageName: node
+  linkType: hard
+
+"react-error-boundary@npm:4.0.11":
+  version: 4.0.11
+  resolution: "react-error-boundary@npm:4.0.11"
+  dependencies:
+    "@babel/runtime": "npm:^7.12.5"
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: 33dad3df7687971e65c7182d97f44bd618cb5d77d1c338e0a7c17c5cf7706a07b9055fffb771ff19bad750d40dd3cfd18d661a60b0518e73197e294dc185f18c
   languageName: node
   linkType: hard
 
@@ -5344,19 +5317,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.19.0":
-  version: 6.19.0
-  resolution: "react-router-dom@npm:6.19.0"
-  dependencies:
-    "@remix-run/router": "npm:1.12.0"
-    react-router: "npm:6.19.0"
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 1329d7e44a10ffa5ad9a3b1ca7ac33e16ac3de0cd14d21e9cdd44a7b8e13f8064e25211687885b5934eba781ad01cd7d14ef4bc140e02b1cfd67c7c64d05404a
-  languageName: node
-  linkType: hard
-
 "react-router-dom@npm:6.20.0":
   version: 6.20.0
   resolution: "react-router-dom@npm:6.20.0"
@@ -5367,17 +5327,6 @@ __metadata:
     react: ">=16.8"
     react-dom: ">=16.8"
   checksum: b5a1875ae802d6b8e5035fec8ee6c3d3b345d8613b4a982adbb69c9c13e8e1b6a30e8e350e669d52774bb554f7f3fc2326187222cd008ac80edb3a2d81604f16
-  languageName: node
-  linkType: hard
-
-"react-router@npm:6.19.0":
-  version: 6.19.0
-  resolution: "react-router@npm:6.19.0"
-  dependencies:
-    "@remix-run/router": "npm:1.12.0"
-  peerDependencies:
-    react: ">=16.8"
-  checksum: aff8d46dbb9d3214d57dd8e3e1a4033dc72ff56e3d294a3add45cc31589c49695fe0c01af24f235b60a8b70c06b734a5322eec0e1fb27935aa758e61359e37c2
   languageName: node
   linkType: hard
 
@@ -6093,13 +6042,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:4.7.1":
-  version: 4.7.1
-  resolution: "type-fest@npm:4.7.1"
-  checksum: e2cae05a6a5be98e5e5cfecee8782db1eb74594ceb1d85b5bfdb9b9ca5e236342f97435d3ff9edddd8eb92898af7f13555f85d1a53a69c362b0f56f2cceb8151
-  languageName: node
-  linkType: hard
-
 "type-fest@npm:4.8.2":
   version: 4.8.2
   resolution: "type-fest@npm:4.8.2"
@@ -6353,9 +6295,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.0.0":
-  version: 5.0.0
-  resolution: "vite@npm:5.0.0"
+"vite@npm:5.0.2":
+  version: 5.0.2
+  resolution: "vite@npm:5.0.2"
   dependencies:
     esbuild: "npm:^0.19.3"
     fsevents: "npm:~2.3.3"
@@ -6389,7 +6331,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 357fef1558d21fcdcc667d99c87b95220f3a3eb7c83cd49bbb57d4be775a1b9a96c6ed53b4e01534510d9005245cf0dd8bc40b9aeed73458e46079a18a27b74f
+  checksum: e596706cd3775e2300552364844b07024b5455eac03c822d681416dd981439176c397714c4ae91576d3641f812032488bd0e7ebdda50a7e776457a1a05c80db3
   languageName: node
   linkType: hard
 
