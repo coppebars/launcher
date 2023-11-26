@@ -1,37 +1,20 @@
-import { useEffect }            from 'react'
-
 import { Button }               from '@mantine/core'
 import { Flex }                 from '@mantine/core'
 import { Select }               from '@mantine/core'
 import { IconPlayerPlayFilled } from '@tabler/icons-react'
 import { useUnit }              from 'effector-react'
 
-import { $instances }           from '@entity/instance'
-import { $settings }            from '@entity/settings'
+import { $instances, $selectedInstanceId } from '@entity/instance'
+import { select }               from '@entity/instance'
+import { useLauncher }          from '@feature/launch'
 import { PaddedLayout }         from '@layout/padded'
-import { launch }               from 'core'
 
 export function HomePage() {
 	const instances = useUnit($instances)
+	const selectedId = useUnit($selectedInstanceId)
 
-	useEffect(() => {
-		// launch({
-		// 	logbackId: 'unknown',
-		// 	versionId: '1.20.1',
-		// 	provider: 'mojang',
-		// 	root: $settings.getState().rootPath,
-		// 	vars: {
-		// 		auth_player_name: 'LIMPIX31',
-		// 		auth_uuid: 'bd983a9c-0622-42dc-a0c2-47c71bd4f21b',
-		// 		game_directory: '/home/limpix/workspaces/launcher/minecraft/instances/main',
-		// 		user_type: 'msa',
-		// 		minecraft_services_host: 'https://nodium.ru:9000/',
-		// 		minecraft_auth_host: 'https://nodium.ru:9000/',
-		// 		minecraft_session_host: 'https://nodium.ru:9000/',
-		// 		minecraft_account_host: 'https://nodium.ru:9000/',
-		// 	},
-		// }).then(console.log, console.error)
-	}, [])
+	const { ready, running, launch } = useLauncher()
+	console.log(running)
 
 	return (
 		<PaddedLayout>
@@ -44,9 +27,17 @@ export function HomePage() {
 						placeholder='Pick value'
 						checkIconPosition='right'
 						searchable
-						data={instances.map(({ name }) => ({ label: name, value: name }))}
+						data={instances.map(({ name, id }) => ({ label: name, value: id }))}
+						value={selectedId}
+						onChange={select}
 					/>
-					<Button loaderProps={{ type: 'dots' }} rightSection={<IconPlayerPlayFilled size={16} />}>
+					<Button
+						disabled={!ready}
+						loading={running}
+						loaderProps={{ type: 'dots' }}
+						onClick={launch}
+						rightSection={<IconPlayerPlayFilled size={16} />}
+					>
 						Launch
 					</Button>
 				</Flex>

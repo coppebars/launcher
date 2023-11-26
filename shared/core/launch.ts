@@ -1,4 +1,3 @@
-import { listen } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/primitives'
 
 export interface LaunchOptions {
@@ -14,8 +13,6 @@ export async function launch(options: LaunchOptions) {
 
 	const prepareCommand = `${provider}_prepare`
 	const launchCommand = `${provider}_launch`
-
-	listen(`log::${options.logbackId}`, ({ payload }) => console.log(payload))
 
 	{
 		const { versionId: id, root: path } = options

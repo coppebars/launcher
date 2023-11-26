@@ -1,5 +1,21 @@
 {
 	"name": "@feature/launch",
 	"type": "module",
-	"main": "mod.ts"
+	"main": "mod.ts",
+	"dependencies": {
+		"@entity/instance": "workspace:",
+		"@entity/settings": "workspace:",
+		"core": "workspace:",
+		"effector": "23.0.0-rc.6",
+		"effector-react": "23.0.0-rc.6"
+	},
+	"devDependencies": {
+		"@types/react": "18.2.38"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
 }
