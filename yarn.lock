@@ -1263,10 +1263,12 @@ __metadata:
   resolution: "@page/home@workspace:pages/home"
   dependencies:
     "@entity/instance": "workspace:"
+    "@entity/settings": "workspace:"
     "@layout/padded": "workspace:"
     "@mantine/core": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
     "@types/react": "npm:18.2.38"
+    core: "workspace:"
     effector: "npm:23.0.0-rc.6"
     effector-react: "npm:23.0.0-rc.6"
   peerDependencies:

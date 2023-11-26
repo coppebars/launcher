@@ -4,8 +4,10 @@
 	"main": "mod.tsx",
 	"dependencies": {
 		"@entity/instance": "workspace:",
+		"@entity/settings": "workspace:",
 		"@layout/padded": "workspace:",
 		"@tabler/icons-react": "2.42.0",
+		"core": "workspace:",
 		"effector": "23.0.0-rc.6",
 		"effector-react": "23.0.0-rc.6"
 	},
