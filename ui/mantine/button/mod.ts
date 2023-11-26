@@ -1,6 +1,7 @@
 import { Button as Base } from '@mantine/core'
 
-import { label, loader } from './styles.css.ts'
+import { label }          from './styles.css.ts'
+import { loader }         from './styles.css.ts'
 import { section }        from './styles.css.ts'
 import { root }           from './styles.css.ts'
 

@@ -1,5 +1,5 @@
-import { invoke } from '@tauri-apps/api/primitives'
 import { listen } from '@tauri-apps/api/event'
+import { invoke } from '@tauri-apps/api/primitives'
 
 export interface LaunchOptions {
 	logbackId: string
