@@ -88,6 +88,7 @@ __metadata:
   resolution: "@app/routes@workspace:app/routes"
   dependencies:
     "@page/home": "workspace:"
+    "@page/settings": "workspace:"
     "@page/versions": "workspace:"
     "@types/react": "npm:18.2.38"
     react-router-dom: "npm:6.20.0"
@@ -413,6 +414,20 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
+"@entity/settings@workspace:, @entity/settings@workspace:entities/settings":
+  version: 0.0.0-use.local
+  resolution: "@entity/settings@workspace:entities/settings"
+  dependencies:
+    "@tauri-apps/api": "npm:2.0.0-alpha.12"
+    effector: "npm:23.0.0-rc.6"
+    effector-react: "npm:23.0.0-rc.6"
+    effector-storage: "npm:6.1.1"
+  peerDependencies:
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -929,6 +944,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@feature/launch@workspace:features/launch":
+  version: 0.0.0-use.local
+  resolution: "@feature/launch@workspace:features/launch"
+  languageName: unknown
+  linkType: soft
+
 "@floating-ui/core@npm:^1.4.2":
   version: 1.5.0
   resolution: "@floating-ui/core@npm:1.5.0"
@@ -1248,6 +1269,22 @@ __metadata:
     "@types/react": "npm:18.2.38"
     effector: "npm:23.0.0-rc.6"
     effector-react: "npm:23.0.0-rc.6"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
+"@page/settings@workspace:, @page/settings@workspace:pages/settings":
+  version: 0.0.0-use.local
+  resolution: "@page/settings@workspace:pages/settings"
+  dependencies:
+    "@layout/padded": "workspace:"
+    "@mantine/core": "npm:7.2.2"
+    "@types/react": "npm:18.2.38"
+    "@widget/settings": "workspace:"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
@@ -1967,6 +2004,26 @@ __metadata:
   checksum: b6bd9b2a49d58e96bd2576abc4d816c862a51e3d394c8a42ea507cac434279193529a567fce7026e16a65ca2cdb3e6f1cdfeb3ec9751fde235e74564de693939
   languageName: node
   linkType: hard
+
+"@widget/settings@workspace:, @widget/settings@workspace:widgets/settings":
+  version: 0.0.0-use.local
+  resolution: "@widget/settings@workspace:widgets/settings"
+  dependencies:
+    "@entity/settings": "workspace:"
+    "@mantine/core": "npm:7.2.2"
+    "@tabler/icons-react": "npm:2.42.0"
+    "@theme/vars": "workspace:"
+    "@types/react": "npm:18.2.38"
+    "@vanilla-extract/css": "npm:1.14.0"
+    effector: "npm:23.0.0-rc.6"
+    effector-react: "npm:23.0.0-rc.6"
+  peerDependencies:
+    "@mantine/core": "*"
+    "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
 
 "@widget/sidebar@workspace:, @widget/sidebar@workspace:widgets/sidebar":
   version: 0.0.0-use.local

@@ -62,6 +62,7 @@ export function SidebarWidget() {
 	const renderItem = useCallback(
 		({ icon, path, index }: RouteItem) => (
 			<SidebarItem
+				key={path}
 				icon={icon}
 				active={index ? pathname === '/' : pathname.startsWith(path)}
 				onClick={() => navigate(path)}

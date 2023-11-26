@@ -1,0 +1,5 @@
+{
+	"name": "@feature/launch",
+	"type": "module",
+	"main": "mod.ts"
+}

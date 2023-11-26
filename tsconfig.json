@@ -39,6 +39,12 @@
       "@entity/instance": [
         "entities/instance"
       ],
+      "@entity/settings": [
+        "entities/settings"
+      ],
+      "@feature/launch": [
+        "features/launch"
+      ],
       "@layout/padded": [
         "layouts/padded"
       ],
@@ -50,6 +56,9 @@
       ],
       "@page/home": [
         "pages/home"
+      ],
+      "@page/settings": [
+        "pages/settings"
       ],
       "@page/versions": [
         "pages/versions"
@@ -86,6 +95,9 @@
       ],
       "@ui/core": [
         "ui/core"
+      ],
+      "@widget/settings": [
+        "widgets/settings"
       ],
       "@widget/sidebar": [
         "widgets/sidebar"

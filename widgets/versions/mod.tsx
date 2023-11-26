@@ -33,7 +33,7 @@ export function VersionsWidget() {
 	return (
 		<Stack gap={8}>
 			{data.map(({ id, icon }) => (
-				<Flex gap={16} align='center' className={styles.listItem}>
+				<Flex key={id} gap={16} align='center' className={styles.listItem}>
 					{icon ? <img alt='icon' src={icon} className={styles.itemImage} /> : <div className={styles.itemImage} />}
 					{id}
 				</Flex>
