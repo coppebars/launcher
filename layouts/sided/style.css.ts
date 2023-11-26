@@ -18,6 +18,7 @@ export const container = style({
 
 export const sidebar = style({
 	position: 'relative',
+	flexShrink: 0,
 })
 
 export const view = style({

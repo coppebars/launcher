@@ -1,5 +1,21 @@
 {
 	"name": "@feature/create-or-edit-instance",
 	"type": "module",
-	"main": "mod.ts"
+	"main": "mod.ts",
+	"dependencies": {
+		"@hookform/resolvers": "3.3.2",
+		"@tabler/icons-react": "2.42.0",
+		"react-hook-form": "7.48.2",
+		"zod": "3.22.4"
+	},
+	"devDependencies": {
+		"@mantine/core": "7.2.2",
+		"@types/react": "18.2.38"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
 }

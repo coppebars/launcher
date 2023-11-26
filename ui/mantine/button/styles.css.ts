@@ -5,11 +5,13 @@ import { vars }  from '@theme/vars'
 export const root = style({
 	fontWeight: 400,
 
-	[vars.darkSelector]: {
-		color: vars.colors.black,
-	},
-
 	selectors: {
+		'&[data-variant="filled"], &:not([data-variant])': {
+			[vars.darkSelector]: {
+				color: vars.colors.black,
+			},
+		},
+
 		'&[data-loading]': {
 			vars: {
 				'--_button-loading-overlay-bg': 'transparent',

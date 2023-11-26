@@ -5,6 +5,7 @@
 	"dependencies": {
 		"@entity/instance": "workspace:",
 		"@entity/settings": "workspace:",
+		"@feature/create-or-edit-instance": "workspace:",
 		"@feature/launch": "workspace:",
 		"@layout/padded": "workspace:",
 		"@tabler/icons-react": "2.42.0",

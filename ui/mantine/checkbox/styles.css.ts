@@ -6,5 +6,11 @@ import { vars }        from '@theme/vars'
 export const icon = style({})
 
 globalStyle(`${icon} > path`, {
-	fill: vars.colors.black,
+	[vars.darkSelector]: {
+		fill: vars.colors.black,
+	},
+
+	[vars.lightSelector]: {
+		fill: vars.colors.white,
+	},
 })
