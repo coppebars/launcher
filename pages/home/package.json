@@ -8,6 +8,7 @@
 		"@feature/launch": "workspace:",
 		"@layout/padded": "workspace:",
 		"@tabler/icons-react": "2.42.0",
+		"@tauri-apps/api": "2.0.0-alpha.12",
 		"core": "workspace:",
 		"effector": "23.0.0-rc.6",
 		"effector-react": "23.0.0-rc.6"

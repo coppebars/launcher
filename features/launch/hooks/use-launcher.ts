@@ -29,12 +29,18 @@ export function useLauncher() {
 				vars: {
 					auth_player_name: 'LIMPIX31',
 					auth_uuid: 'bd983a9c-0622-42dc-a0c2-47c71bd4f21b',
-					game_directory: '/home/limpix/workspaces/launcher/minecraft/instances/main',
+					game_directory: instance.path,
 					user_type: 'msa',
 					minecraft_services_host: 'https://nodium.ru:9000/',
 					minecraft_auth_host: 'https://nodium.ru:9000/',
 					minecraft_session_host: 'https://nodium.ru:9000/',
 					minecraft_account_host: 'https://nodium.ru:9000/',
+					...(instance.screen.type === 'resolution'
+						? {
+								width: instance.screen.width.toString(10),
+								height: instance.screen.height.toString(10),
+						  }
+						: {}),
 				},
 			})
 				.catch(setError)

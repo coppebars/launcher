@@ -945,6 +945,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@feature/create-or-edit-instance@workspace:features/create-or-edit-instance":
+  version: 0.0.0-use.local
+  resolution: "@feature/create-or-edit-instance@workspace:features/create-or-edit-instance"
+  languageName: unknown
+  linkType: soft
+
 "@feature/launch@workspace:, @feature/launch@workspace:features/launch":
   version: 0.0.0-use.local
   resolution: "@feature/launch@workspace:features/launch"
@@ -1281,6 +1287,7 @@ __metadata:
     "@layout/padded": "workspace:"
     "@mantine/core": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
+    "@tauri-apps/api": "npm:2.0.0-alpha.12"
     "@types/react": "npm:18.2.38"
     core: "workspace:"
     effector: "npm:23.0.0-rc.6"

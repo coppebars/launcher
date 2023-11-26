@@ -1,0 +1,5 @@
+{
+	"name": "@feature/create-or-edit-instance",
+	"type": "module",
+	"main": "mod.ts"
+}

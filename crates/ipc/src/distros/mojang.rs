@@ -60,7 +60,7 @@ pub async fn mojang_prepare(window: Window, id: String, path: PathBuf) -> Result
 		match msg {
 			DownloadEvent::Chunk { .. } => {
 				if elapsed > next {
-					next = elapsed + Duration::from_millis(1000);
+					next = elapsed + Duration::from_millis(50);
 					window.emit("prepare", &msg).map_err(|it| it.to_string())?;
 				}
 			}
