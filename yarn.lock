@@ -1646,7 +1646,7 @@ __metadata:
     "@mantine/core": "npm:7.2.2"
     "@theme/css": "workspace:"
     "@theme/fonts": "workspace:"
-    "@ui/core": "workspace:"
+    "@ui/mantine": "workspace:"
     type-fest: "npm:4.8.2"
   peerDependencies:
     "@mantine/core": "*"
@@ -1897,9 +1897,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ui/core@workspace:, @ui/core@workspace:ui/core":
+"@ui/mantine@workspace:, @ui/mantine@workspace:ui/mantine":
   version: 0.0.0-use.local
-  resolution: "@ui/core@workspace:ui/core"
+  resolution: "@ui/mantine@workspace:ui/mantine"
   dependencies:
     "@mantine/core": "npm:7.2.2"
     "@theme/vars": "workspace:"

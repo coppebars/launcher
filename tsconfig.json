@@ -93,8 +93,8 @@
       "@theme/vars": [
         "shared/theme/vars"
       ],
-      "@ui/core": [
-        "ui/core"
+      "@ui/mantine": [
+        "ui/mantine"
       ],
       "@widget/settings": [
         "widgets/settings"

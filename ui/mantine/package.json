@@ -1,5 +1,5 @@
 {
-	"name": "@ui/core",
+	"name": "@ui/mantine",
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
