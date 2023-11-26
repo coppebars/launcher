@@ -293,7 +293,9 @@ impl Mojang {
 
 		push_action!(
 			manifest.downloads.client.url,
-			version_dir.join(format!("{}.jar", &manifest.id))
+			version_dir.join(format!("{}.jar", &manifest.id)),
+			manifest.downloads.client.size,
+			manifest.downloads.client.sha1
 		);
 
 		for lib in manifest.libraries {
@@ -315,7 +317,9 @@ impl Mojang {
 				} => {
 					push_action!(
 						downloads.artifact.url,
-						libraries_dir.join(downloads.artifact.path)
+						libraries_dir.join(downloads.artifact.path),
+						downloads.artifact.size,
+						downloads.artifact.sha1
 					);
 
 					if !rules.iter().all(Rule::unwrap) {
