@@ -1,5 +1,5 @@
 {
-	"name": "@entity/settings",
+	"name": "@launcher/settings",
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
