@@ -3,6 +3,8 @@
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
+		"@entity/instance": "workspace:",
+		"@feature/lookup": "workspace:",
 		"@hookform/resolvers": "3.3.2",
 		"@tabler/icons-react": "2.42.0",
 		"react-hook-form": "7.48.2",

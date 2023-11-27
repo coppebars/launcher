@@ -15,6 +15,7 @@
 	"peerDependencies": {
 		"@mantine/core": "*",
 		"@mantine/hooks": "*",
+		"@tanstack/react-query": "*",
 		"react": "*",
 		"react-dom": "*"
 	}

@@ -48,6 +48,9 @@
       "@feature/launch": [
         "features/launch"
       ],
+      "@feature/lookup": [
+        "features/lookup"
+      ],
       "@layout/padded": [
         "layouts/padded"
       ],

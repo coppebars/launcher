@@ -3,6 +3,9 @@
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
+		"@tabler/icons-react": "2.42.0",
+		"@theme/vars": "workspace:",
+		"@vanilla-extract/css": "1.14.0",
 		"effector": "23.0.0-rc.6",
 		"effector-react": "23.0.0-rc.6",
 		"effector-storage": "6.1.1",

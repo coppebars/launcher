@@ -1,8 +1,9 @@
+import { useCallback }              from 'react'
 import { useEffect }                from 'react'
+import { useState }                 from 'react'
 import { useRef }                   from 'react'
 
 import { Button }                   from '@mantine/core'
-import { Text }                     from '@mantine/core'
 import { Progress }                 from '@mantine/core'
 import { Stack }                    from '@mantine/core'
 import { Flex }                     from '@mantine/core'
@@ -13,6 +14,8 @@ import { listen }                   from '@tauri-apps/api/event'
 import { useUnit }                  from 'effector-react'
 
 import { $instances }               from '@entity/instance'
+import { Instance }                 from '@entity/instance'
+import { InstanceListItem }         from '@entity/instance'
 import { $selectedInstanceId }      from '@entity/instance'
 import { select }                   from '@entity/instance'
 import { CreateOrEditInstanceForm } from '@feature/create-or-edit-instance'
@@ -56,14 +59,22 @@ export function HomePage() {
 		}
 	}, [running])
 
+	const [editInstace, setEditInstance] = useState<Instance | undefined>()
+	const [openDrawer, setOpenDrawer] = useState(false)
+
+	const editInstance = useCallback((it: Instance) => {
+		setEditInstance(it)
+		setOpenDrawer(true)
+	}, [])
+
 	return (
 		<PaddedLayout>
 			<Flex direction='column' justify='space-between' style={{ height: '100%' }}>
-				<div />
-				<Text px={320} style={{ opacity: 0.2 }}>
-					Thank you for participating in the testing. We appreciate any action towards improving the app. The app still
-					has a lot of bugs, please be more patient.
-				</Text>
+				<Stack style={{ flexGrow: 1 }}>
+					{instances.map((it) => (
+						<InstanceListItem instance={it} onEdit={editInstance} />
+					))}
+				</Stack>
 				<Stack gap={8}>
 					<Flex direction='row' gap={8}>
 						<Select
@@ -90,7 +101,7 @@ export function HomePage() {
 					</Progress.Root>
 				</Stack>
 			</Flex>
-			<CreateOrEditInstanceForm />
+			<CreateOrEditInstanceForm edit={editInstace} opened={openDrawer} onClose={() => setOpenDrawer(false)} />
 		</PaddedLayout>
 	)
 }

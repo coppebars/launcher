@@ -78,6 +78,7 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -95,6 +96,7 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -407,7 +409,10 @@ __metadata:
   resolution: "@entity/instance@workspace:entities/instance"
   dependencies:
     "@mantine/core": "npm:7.2.2"
+    "@tabler/icons-react": "npm:2.42.0"
+    "@theme/vars": "workspace:"
     "@types/react": "npm:18.2.38"
+    "@vanilla-extract/css": "npm:1.14.0"
     effector: "npm:23.0.0-rc.6"
     effector-react: "npm:23.0.0-rc.6"
     effector-storage: "npm:6.1.1"
@@ -949,6 +954,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@feature/create-or-edit-instance@workspace:features/create-or-edit-instance"
   dependencies:
+    "@entity/instance": "workspace:"
+    "@feature/lookup": "workspace:"
     "@hookform/resolvers": "npm:3.3.2"
     "@mantine/core": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
@@ -976,6 +983,22 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
+"@feature/lookup@workspace:, @feature/lookup@workspace:features/lookup":
+  version: 0.0.0-use.local
+  resolution: "@feature/lookup@workspace:features/lookup"
+  dependencies:
+    "@entity/settings": "workspace:"
+    "@tanstack/react-query": "npm:5.8.7"
+    core: "workspace:"
+    effector: "npm:23.0.0-rc.6"
+    effector-react: "npm:23.0.0-rc.6"
+  peerDependencies:
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -1349,6 +1372,7 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -2093,8 +2117,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@widget/versions@workspace:widgets/versions"
   dependencies:
+    "@feature/lookup": "workspace:"
     "@mantine/core": "npm:7.2.2"
-    "@tanstack/react-query": "npm:5.8.7"
     "@theme/vars": "workspace:"
     "@types/react": "npm:18.2.38"
     "@vanilla-extract/css": "npm:1.14.0"

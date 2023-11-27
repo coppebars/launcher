@@ -3,28 +3,22 @@ import { createEvent } from 'effector'
 import { createStore } from 'effector'
 import { persist }     from 'effector-storage/local'
 
-export interface InstanceScreenFullscreen {
-	type: 'fullscreen'
-}
-
-export interface InstanceScreenSize {
-	type: 'resolution'
-	width: number
-	height: number
-}
-
 export interface Instance {
 	id: string
 	name: string
 	versionId: string
 	path: string
-	screen: InstanceScreenFullscreen | InstanceScreenSize
+	fullscreen?: boolean
+	width?: number
+	height?: number
 	alloc: number
-	args?: string
+	extraArgs?: string
 	running?: boolean
 }
 
 export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
+export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
+export const add = createEvent<Instance>('add')
 
 export const $instances = createStore<Instance[]>(
 	[
@@ -34,11 +28,8 @@ export const $instances = createStore<Instance[]>(
 			name: 'Main',
 			versionId: '1.20.1',
 			alloc: 2048,
-			screen: {
-				type: 'resolution',
-				width: 1280,
-				height: 720,
-			},
+			width: 1280,
+			height: 720,
 		},
 	],
 	{ name: 'instances' },
@@ -53,6 +44,20 @@ $instances.on(setRunningStatus, (its, { id, status }) => {
 
 	return [...its]
 })
+
+$instances.on(update, (its, { id, payload }) => {
+	const it = its.find((it) => it.id === id)
+
+	if (it) {
+		Object.keys(payload).forEach((key) => {
+			Reflect.set(it, key, Reflect.get(payload, key))
+		})
+	}
+
+	return [...its]
+})
+
+$instances.on(add, (its, instance) => [...its, instance])
 
 export const select = createEvent<string | null>('select_instance')
 
