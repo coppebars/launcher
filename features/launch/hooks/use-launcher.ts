@@ -35,12 +35,8 @@ export function useLauncher() {
 					minecraft_auth_host: 'https://nodium.ru:9000/',
 					minecraft_session_host: 'https://nodium.ru:9000/',
 					minecraft_account_host: 'https://nodium.ru:9000/',
-					...(instance.screen.type === 'resolution'
-						? {
-								width: instance.screen.width.toString(10),
-								height: instance.screen.height.toString(10),
-						  }
-						: {}),
+					width: instance.width?.toString(10) ?? '1280',
+					height: instance.height?.toString(10) ?? '720',
 				},
 			})
 				.catch(setError)

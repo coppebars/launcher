@@ -3,12 +3,14 @@ import { useEffect }                from 'react'
 import { useState }                 from 'react'
 import { useRef }                   from 'react'
 
+import { ActionIcon }               from '@mantine/core'
 import { Button }                   from '@mantine/core'
 import { Progress }                 from '@mantine/core'
 import { Stack }                    from '@mantine/core'
 import { Flex }                     from '@mantine/core'
 import { Select }                   from '@mantine/core'
 import { IconPlayerPlayFilled }     from '@tabler/icons-react'
+import { IconPlus }                 from '@tabler/icons-react'
 import { Event }                    from '@tauri-apps/api/event'
 import { listen }                   from '@tauri-apps/api/event'
 import { useUnit }                  from 'effector-react'
@@ -59,21 +61,39 @@ export function HomePage() {
 		}
 	}, [running])
 
-	const [editInstace, setEditInstance] = useState<Instance | undefined>()
+	const [editingInstace, setEditingInstance] = useState<Instance | undefined>()
 	const [openDrawer, setOpenDrawer] = useState(false)
 
 	const editInstance = useCallback((it: Instance) => {
-		setEditInstance(it)
+		setEditingInstance(it)
 		setOpenDrawer(true)
 	}, [])
+
+	const createInstance = useCallback(() => {
+		setEditingInstance(undefined)
+		setOpenDrawer(true)
+	}, [])
+
+	console.log(editingInstace)
 
 	return (
 		<PaddedLayout>
 			<Flex direction='column' justify='space-between' style={{ height: '100%' }}>
-				<Stack style={{ flexGrow: 1 }}>
+				<Stack pos='relative' style={{ flexGrow: 1 }}>
 					{instances.map((it) => (
 						<InstanceListItem instance={it} onEdit={editInstance} />
 					))}
+					<ActionIcon
+						onClick={createInstance}
+						variant='light'
+						color='gray'
+						size='xl'
+						pos='absolute'
+						bottom={32}
+						right={32}
+					>
+						<IconPlus />
+					</ActionIcon>
 				</Stack>
 				<Stack gap={8}>
 					<Flex direction='row' gap={8}>
@@ -101,7 +121,7 @@ export function HomePage() {
 					</Progress.Root>
 				</Stack>
 			</Flex>
-			<CreateOrEditInstanceForm edit={editInstace} opened={openDrawer} onClose={() => setOpenDrawer(false)} />
+			<CreateOrEditInstanceForm edit={editingInstace} opened={openDrawer} onClose={() => setOpenDrawer(false)} />
 		</PaddedLayout>
 	)
 }

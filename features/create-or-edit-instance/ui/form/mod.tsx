@@ -23,7 +23,7 @@ import      { useForm }                from 'react-hook-form'
 import      { z }                      from 'zod'
 
 import type { Instance }               from '@entity/instance'
-import      { update }                 from '@entity/instance'
+import { add, update } from '@entity/instance'
 // FIXME: Temporary FSD violation
 import      { useLookupLocalVersions } from '@feature/lookup'
 
@@ -38,42 +38,49 @@ export const schema = z.object({
 	versionId: z.string(),
 })
 
+type Schema = z.infer<typeof schema>
+
 interface Props {
 	edit?: Instance
 	opened?: boolean
 	onClose?: () => void
 }
 
+const defaultValues: Partial<Schema> = {
+	name: '',
+	path: '',
+	width: 1280,
+	height: 720,
+	fullscreen: false,
+	extraArgs: '',
+	alloc: 2048,
+}
+
 export function Form(props: Props) {
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const { edit, opened = false, onClose = () => {} } = props
 
-	const { register, formState, handleSubmit, control, watch, reset } = useForm<z.infer<typeof schema>>({
-		defaultValues: {
-			name: '',
-			path: '',
-			width: 1280,
-			height: 720,
-			fullscreen: false,
-			extraArgs: '',
-			alloc: 2048,
-		},
+	const { register, formState, handleSubmit, control, watch, reset } = useForm<Schema>({
+		defaultValues,
 		reValidateMode: 'onChange',
 		resolver: zodResolver(schema),
 	})
 
 	useLayoutEffect(() => {
+		console.log(edit)
 		if (edit) {
 			reset(edit)
+		} else {
+			reset(defaultValues)
 		}
 	}, [edit, reset])
 
 	const submit = useCallback(
-		(data: z.infer<typeof schema>) => {
+		(data: Schema) => {
 			if (edit) {
 				update({ id: edit.id, payload: data })
 			} else {
-				// TODO: add(data)
+				add(data)
 			}
 
 			onClose()

@@ -2,6 +2,7 @@ import { combine }     from 'effector'
 import { createEvent } from 'effector'
 import { createStore } from 'effector'
 import { persist }     from 'effector-storage/local'
+import { nanoid }      from 'nanoid/non-secure'
 
 export interface Instance {
 	id: string
@@ -18,7 +19,7 @@ export interface Instance {
 
 export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
 export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
-export const add = createEvent<Instance>('add')
+export const add = createEvent<Omit<Instance, 'id'>>('add')
 
 export const $instances = createStore<Instance[]>(
 	[
@@ -57,7 +58,7 @@ $instances.on(update, (its, { id, payload }) => {
 	return [...its]
 })
 
-$instances.on(add, (its, instance) => [...its, instance])
+$instances.on(add, (its, instance) => [...its, { id: nanoid(8), ...instance }])
 
 export const select = createEvent<string | null>('select_instance')
 
