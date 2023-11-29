@@ -6,11 +6,11 @@
 		"@entity/instance": "workspace:",
 		"@entity/settings": "workspace:",
 		"core": "workspace:",
-		"effector": "23.0.0-rc.6",
-		"effector-react": "23.0.0-rc.6"
+		"effector": "23.0.0",
+		"effector-react": "23.0.0"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.38"
+		"@types/react": "18.2.39"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

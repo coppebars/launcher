@@ -1,8 +1,0 @@
-[package]
-name = "barscfg"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-tauri = "2.0.0-alpha.17"
-directories = "5.0.1"

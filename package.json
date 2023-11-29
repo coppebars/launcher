@@ -27,7 +27,7 @@
     "eslint": "8.51.0",
     "prettier": "3.1.0",
     "typescript": "5.2.2",
-    "vite": "5.0.2"
+    "vite": "5.0.3"
   },
   "typescriptWorkspaces": {
     "enabled": true

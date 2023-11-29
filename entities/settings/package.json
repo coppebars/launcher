@@ -4,9 +4,9 @@
 	"main": "mod.ts",
 	"dependencies": {
 		"@tauri-apps/api": "2.0.0-alpha.12",
-		"effector": "23.0.0-rc.6",
-		"effector-react": "23.0.0-rc.6",
-		"effector-storage": "6.1.1"
+		"effector": "23.0.0",
+		"effector-react": "23.0.0",
+		"effector-storage": "7.0.0"
 	},
 	"peerDependencies": {
 		"react": "*",
