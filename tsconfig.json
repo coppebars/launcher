@@ -42,6 +42,9 @@
       "@entity/settings": [
         "entities/settings"
       ],
+      "@entity/version": [
+        "entities/version"
+      ],
       "@feature/create-or-edit-instance": [
         "features/create-or-edit-instance"
       ],

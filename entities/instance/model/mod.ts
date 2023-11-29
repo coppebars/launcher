@@ -1,13 +1,15 @@
-import { combine }     from 'effector'
-import { createEvent } from 'effector'
-import { createStore } from 'effector'
-import { persist }     from 'effector-storage/local'
-import { nanoid }      from 'nanoid/non-secure'
+/** @purpose: Type only */
+import type { Version }     from '@entity/version'
+import      { combine }     from 'effector'
+import      { createEvent } from 'effector'
+import      { createStore } from 'effector'
+import      { persist }     from 'effector-storage/local'
+import      { nanoid }      from 'nanoid/non-secure'
 
 export interface Instance {
 	id: string
 	name: string
-	versionId: string
+	version: Version
 	path: string
 	fullscreen?: boolean
 	width?: number
@@ -21,20 +23,7 @@ export const setRunningStatus = createEvent<{ id: string; status: boolean }>('se
 export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
 export const add = createEvent<Omit<Instance, 'id'>>('add')
 
-export const $instances = createStore<Instance[]>(
-	[
-		{
-			id: 'lol',
-			path: '/home/limpix/workspaces/launcher/minecraft/instances/main',
-			name: 'Main',
-			versionId: '1.20.1',
-			alloc: 2048,
-			width: 1280,
-			height: 720,
-		},
-	],
-	{ name: 'instances' },
-)
+export const $instances = createStore<Instance[]>([], { name: 'instances' })
 
 $instances.on(setRunningStatus, (its, { id, status }) => {
 	const it = its.find((it) => it.id === id)

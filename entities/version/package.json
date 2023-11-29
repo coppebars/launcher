@@ -1,0 +1,18 @@
+{
+	"name": "@entity/version",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"@entity/settings": "workspace:",
+		"core": "workspace:",
+		"zod": "3.22.4"
+	},
+	"devDependencies": {
+		"@tanstack/react-query": "5.9.0"
+	},
+	"peerDependencies": {
+		"@tanstack/react-query": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

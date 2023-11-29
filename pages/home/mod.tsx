@@ -9,6 +9,7 @@ import { Progress }                 from '@mantine/core'
 import { Stack }                    from '@mantine/core'
 import { Flex }                     from '@mantine/core'
 import { Select }                   from '@mantine/core'
+import { useDisclosure }            from '@mantine/hooks'
 import { IconPlayerPlayFilled }     from '@tabler/icons-react'
 import { IconPlus }                 from '@tabler/icons-react'
 import { Event }                    from '@tauri-apps/api/event'
@@ -62,17 +63,20 @@ export function HomePage() {
 	}, [running])
 
 	const [editingInstace, setEditingInstance] = useState<Instance | undefined>()
-	const [openDrawer, setOpenDrawer] = useState(false)
+	const [drawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
 
-	const editInstance = useCallback((it: Instance) => {
-		setEditingInstance(it)
-		setOpenDrawer(true)
-	}, [])
+	const editInstance = useCallback(
+		(it: Instance) => {
+			setEditingInstance(it)
+			openDrawer()
+		},
+		[openDrawer],
+	)
 
 	const createInstance = useCallback(() => {
 		setEditingInstance(undefined)
-		setOpenDrawer(true)
-	}, [])
+		openDrawer()
+	}, [openDrawer])
 
 	console.log(editingInstace)
 
@@ -121,7 +125,7 @@ export function HomePage() {
 					</Progress.Root>
 				</Stack>
 			</Flex>
-			<CreateOrEditInstanceForm edit={editingInstace} opened={openDrawer} onClose={() => setOpenDrawer(false)} />
+			<CreateOrEditInstanceForm edit={editingInstace} opened={drawer} onClose={closeDrawer} />
 		</PaddedLayout>
 	)
 }

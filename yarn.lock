@@ -438,6 +438,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@entity/version@workspace:, @entity/version@workspace:entities/version":
+  version: 0.0.0-use.local
+  resolution: "@entity/version@workspace:entities/version"
+  dependencies:
+    "@entity/settings": "workspace:"
+    "@tanstack/react-query": "npm:5.9.0"
+    core: "workspace:"
+    zod: "npm:3.22.4"
+  peerDependencies:
+    "@tanstack/react-query": "*"
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "@esbuild/android-arm64@npm:0.17.6":
   version: 0.17.6
   resolution: "@esbuild/android-arm64@npm:0.17.6"
@@ -954,16 +969,21 @@ __metadata:
   resolution: "@feature/create-or-edit-instance@workspace:features/create-or-edit-instance"
   dependencies:
     "@entity/instance": "workspace:"
-    "@feature/lookup": "workspace:"
+    "@entity/settings": "workspace:"
+    "@entity/version": "workspace:"
     "@hookform/resolvers": "npm:3.3.2"
     "@mantine/core": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
+    "@tanstack/react-query": "npm:5.9.0"
+    "@tauri-apps/api": "npm:2.0.0-alpha.12"
     "@types/react": "npm:18.2.39"
+    nanoid: "npm:5.0.3"
     react-hook-form: "npm:7.48.2"
     zod: "npm:3.22.4"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
+    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -987,7 +1007,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@feature/lookup@workspace:, @feature/lookup@workspace:features/lookup":
+"@feature/lookup@workspace:features/lookup":
   version: 0.0.0-use.local
   resolution: "@feature/lookup@workspace:features/lookup"
   dependencies:
@@ -1330,6 +1350,7 @@ __metadata:
     "@feature/launch": "workspace:"
     "@layout/padded": "workspace:"
     "@mantine/core": "npm:7.2.2"
+    "@mantine/hooks": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
     "@tauri-apps/api": "npm:2.0.0-alpha.12"
     "@types/react": "npm:18.2.39"
