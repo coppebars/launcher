@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use {
 	crate::distros::PrepareAction,
 	reqwest::Client,
@@ -20,7 +21,7 @@ pub use download::{
 
 #[cfg(feature = "download")]
 pub async fn place_to_canonical_tree(
-	root: &Path,
+	root: PathBuf,
 	actions: Vec<PrepareAction>,
 	sender: Arc<Sender<DownloadEvent>>,
 	token: Arc<CancellationToken>,

@@ -1,0 +1,24 @@
+{
+	"name": "@theme/schema",
+	"main": "mod.ts",
+	"type": "module",
+	"exports": {
+		".": "./mod.ts",
+		"./base": "./base.ts"
+	},
+	"dependencies": {
+		"@theme/css": "workspace:",
+		"@theme/fonts": "workspace:",
+		"@ui/mantine": "workspace:"
+	},
+	"devDependencies": {
+		"@mantine/core": "7.2.2",
+		"type-fest": "4.8.2"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

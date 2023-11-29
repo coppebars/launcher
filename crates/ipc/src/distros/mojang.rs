@@ -9,7 +9,10 @@ use {
 			BufRead,
 			BufReader,
 		},
-		path::Path,
+		path::{
+			Path,
+			PathBuf,
+		},
 		process::Stdio,
 		sync::Arc,
 		time::{
@@ -26,8 +29,8 @@ use {
 };
 
 #[tauri::command]
-pub async fn mojang_prepare(window: Window, id: &str, path: &Path) -> Result<(), String> {
-	let distro = Mojang::try_from_canonical_tree(path, id)
+pub async fn mojang_prepare(window: Window, id: String, path: PathBuf) -> Result<(), String> {
+	let distro = Mojang::try_from_canonical_tree(&path, &id)
 		.await
 		.map_err(|it| it.to_string())?;
 
@@ -38,12 +41,16 @@ pub async fn mojang_prepare(window: Window, id: &str, path: &Path) -> Result<(),
 
 	let task_token = token.clone();
 
-	let task = tokio::spawn(launchers::misc::place_to_canonical_tree(
-		Path::new("./minecraft"),
-		actions,
-		Arc::new(tx),
-		task_token,
-	));
+	let task = {
+		let path = path.clone();
+
+		tokio::spawn(launchers::misc::place_to_canonical_tree(
+			path,
+			actions,
+			Arc::new(tx),
+			task_token,
+		))
+	};
 
 	let now = SystemTime::now();
 	let mut next = SystemTime::now().elapsed().unwrap();
@@ -53,7 +60,7 @@ pub async fn mojang_prepare(window: Window, id: &str, path: &Path) -> Result<(),
 		match msg {
 			DownloadEvent::Chunk { .. } => {
 				if elapsed > next {
-					next = elapsed + Duration::from_millis(1000);
+					next = elapsed + Duration::from_millis(50);
 					window.emit("prepare", &msg).map_err(|it| it.to_string())?;
 				}
 			}

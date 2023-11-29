@@ -1,0 +1,5 @@
+{
+	"name": "@theme/css",
+	"type": "module",
+	"main": "mod.ts"
+}

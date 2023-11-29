@@ -1,0 +1,20 @@
+{
+	"name": "@layout/sided",
+	"type": "module",
+	"main": "mod.tsx",
+	"dependencies": {
+		"@theme/css": "workspace:",
+		"@theme/vars": "workspace:",
+		"@vanilla-extract/css": "1.14.0"
+	},
+	"devDependencies": {
+		"@mantine/core": "7.2.2",
+		"@types/react": "18.2.38"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

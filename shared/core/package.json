@@ -1,0 +1,8 @@
+{
+	"name": "core",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"@tauri-apps/api": "2.0.0-alpha.12"
+	}
+}

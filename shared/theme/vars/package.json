@@ -1,0 +1,17 @@
+{
+	"name": "@theme/vars",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"@mantine/vanilla-extract": "7.2.2"
+	},
+	"devDependencies": {
+		"@theme/schema": "workspace:"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

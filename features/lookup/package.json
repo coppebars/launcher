@@ -1,0 +1,19 @@
+{
+	"name": "@feature/lookup",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"@entity/settings": "workspace:",
+		"core": "workspace:",
+		"effector": "23.0.0-rc.6",
+		"effector-react": "23.0.0-rc.6"
+	},
+	"devDependencies": {
+		"@tanstack/react-query": "5.8.7"
+	},
+	"peerDependencies": {
+		"@tanstack/react-query": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

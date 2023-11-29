@@ -5,6 +5,11 @@ on:
     paths:
       - 'app/**'
       - 'shared/**'
+      - 'widgets/**'
+      - 'pages/**'
+      - 'entities/**'
+      - 'features/**'
+      - 'layouts/**'
       - '.yarn/**'
       - '.pnp.*'
       - '.yarnrc.yml'

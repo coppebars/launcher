@@ -4,12 +4,16 @@
 	"main": "mod.tsx",
 	"dependencies": {
 		"@theme/provider": "workspace:",
-		"react-router-dom": "6.19.0"
+		"react-router-dom": "6.20.0"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.37"
+		"@tanstack/react-query": "5.8.7",
+		"@types/react": "18.2.38"
 	},
 	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"@tanstack/react-query": "*",
 		"react": "*",
 		"react-dom": "*"
 	}

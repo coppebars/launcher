@@ -2,18 +2,14 @@
 	"name": "@theme/provider",
 	"type": "module",
 	"main": "mod.tsx",
-	"dependencies": {
-		"@theme/dark": "workspace:",
-		"@theme/fonts": "workspace:",
-		"@theme/global": "workspace:",
-		"@theme/light": "workspace:"
-	},
 	"devDependencies": {
-		"@emotion/react": "11.11.1",
-		"@types/react": "18.2.37"
+		"@mantine/core": "7.2.2",
+		"@theme/schema": "workspace:",
+		"@types/react": "18.2.38"
 	},
 	"peerDependencies": {
-		"@emotion/react": "*",
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
 		"react": "*",
 		"react-dom": "*"
 	}

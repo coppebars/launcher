@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": [
       "ESNext",
@@ -33,8 +33,41 @@
       "@app/root": [
         "app/root"
       ],
-      "@config/general": [
-        "shared/config/general"
+      "@app/routes": [
+        "app/routes"
+      ],
+      "@entity/instance": [
+        "entities/instance"
+      ],
+      "@entity/settings": [
+        "entities/settings"
+      ],
+      "@feature/create-or-edit-instance": [
+        "features/create-or-edit-instance"
+      ],
+      "@feature/launch": [
+        "features/launch"
+      ],
+      "@feature/lookup": [
+        "features/lookup"
+      ],
+      "@layout/padded": [
+        "layouts/padded"
+      ],
+      "@layout/sidebar": [
+        "layouts/sidebar"
+      ],
+      "@layout/sided": [
+        "layouts/sided"
+      ],
+      "@page/home": [
+        "pages/home"
+      ],
+      "@page/settings": [
+        "pages/settings"
+      ],
+      "core": [
+        "shared/core"
       ],
       "indexed-db": [
         "shared/lib/indexed-db"
@@ -42,14 +75,8 @@
       "props-of": [
         "shared/lib/props-of"
       ],
-      "styled-std": [
-        "shared/lib/styled-std"
-      ],
-      "@theme/common": [
-        "shared/theme/common"
-      ],
-      "@theme/dark": [
-        "shared/theme/dark"
+      "@theme/css": [
+        "shared/theme/css"
       ],
       "@theme/fonts": [
         "shared/theme/fonts"
@@ -57,14 +84,26 @@
       "@theme/global": [
         "shared/theme/global"
       ],
-      "@theme/light": [
-        "shared/theme/light"
-      ],
       "@theme/provider": [
         "shared/theme/provider"
       ],
-      "@ui/layout": [
-        "shared/ui/layout"
+      "@theme/schema": [
+        "shared/theme/schema"
+      ],
+      "@theme/schema/base": [
+        "shared/theme/schema/base.ts"
+      ],
+      "@theme/vars": [
+        "shared/theme/vars"
+      ],
+      "@ui/mantine": [
+        "shared/ui/mantine"
+      ],
+      "@widget/settings": [
+        "widgets/settings"
+      ],
+      "@widget/sidebar": [
+        "widgets/sidebar"
       ]
     }
   },
