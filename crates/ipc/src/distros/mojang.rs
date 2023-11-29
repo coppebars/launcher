@@ -30,7 +30,7 @@ use {
 
 #[tauri::command]
 pub async fn mojang_prepare(window: Window, id: String, path: PathBuf) -> Result<(), String> {
-	let distro = Mojang::try_from_canonical_tree(&path, &id)
+	let distro = Mojang::place(&path, &id)
 		.await
 		.map_err(|it| it.to_string())?;
 

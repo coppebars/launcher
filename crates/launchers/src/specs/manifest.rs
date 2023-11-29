@@ -188,8 +188,8 @@ pub enum Library {
 pub struct AssetIndexResource {
 	pub id: String,
 	pub sha1: String,
-	pub size: i32,
-	pub total_size: i32,
+	pub size: u64,
+	pub total_size: u64,
 	pub url: Url,
 }
 
@@ -336,6 +336,12 @@ pub struct RootManifest {
 	pub time: String,
 	#[serde(rename = "type")]
 	pub version_type: String,
+}
+
+impl From<Box<RootManifest>> for Manifest {
+	fn from(value: Box<RootManifest>) -> Self {
+		Manifest::Root(value)
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

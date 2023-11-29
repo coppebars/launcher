@@ -23,8 +23,8 @@ export function useLauncher() {
 
 			coreLaunch({
 				root: settings.rootPath,
-				versionId: instance.versionId,
-				provider: 'mojang',
+				versionId: instance.version.vid,
+				provider: instance.version.provider === 'local' ? 'mojang' : instance.version.provider,
 				logbackId: 'unknown',
 				vars: {
 					auth_player_name: 'LIMPIX31',

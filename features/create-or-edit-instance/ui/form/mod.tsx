@@ -6,7 +6,6 @@ import      { useEffect }       from 'react'
 import      { useLayoutEffect } from 'react'
 import      { useMemo }         from 'react'
 
-import      { useLookup }       from '@entity/version'
 import      { zodResolver }     from '@hookform/resolvers/zod'
 import      { Button }          from '@mantine/core'
 import      { Checkbox }        from '@mantine/core'
@@ -31,6 +30,7 @@ import type { Instance }        from '@entity/instance'
 import      { add }             from '@entity/instance'
 import      { update }          from '@entity/instance'
 import      { $settings }       from '@entity/settings'
+import      { useLookup }       from '@entity/version'
 
 export const schema = z.object({
 	name: z.string().min(3).max(40),
@@ -81,7 +81,7 @@ export function Form(props: Props) {
 		}
 	}, [path, setValue])
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (edit) {
 			reset({
 				...edit,

@@ -1,7 +1,7 @@
 pub use overview::VersionOverview;
 use {
 	profile::{
-		read_profile,
+		Profile,
 		ProfileEntry,
 	},
 	std::path::Path,
@@ -20,9 +20,9 @@ pub async fn lookup_versions(root: &Path) -> Result<Vec<VersionOverview>, std::i
 		let id = entry.file_name();
 		let id_as_str = id.to_str().unwrap();
 
-		let profiles = read_profile(root).await?.profiles;
+		let launcher_profile = Profile::read_from_canonical_root(root).await?;
 
-		if let Some(ProfileEntry { icon, .. }) = profiles.get(id_as_str) {
+		if let Some(ProfileEntry { icon, .. }) = launcher_profile.profiles.get(id_as_str) {
 			versions.push(VersionOverview {
 				id: id_as_str.to_owned(),
 				icon: icon.to_owned(),

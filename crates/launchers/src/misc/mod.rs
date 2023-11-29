@@ -1,22 +1,20 @@
-use std::path::PathBuf;
-use {
-	crate::distros::PrepareAction,
-	reqwest::Client,
-	std::{
-		path::Path,
-		sync::Arc,
-		time::Duration,
-	},
-	tokio::sync::mpsc::Sender,
-	tokio_util::sync::CancellationToken,
-};
-
 #[cfg(feature = "download")]
 pub use download::{
 	download_all,
 	DownloadError,
 	DownloadEvent,
 	Item,
+};
+use {
+	crate::distros::PrepareAction,
+	reqwest::Client,
+	std::{
+		path::PathBuf,
+		sync::Arc,
+		time::Duration,
+	},
+	tokio::sync::mpsc::Sender,
+	tokio_util::sync::CancellationToken,
 };
 
 #[cfg(feature = "download")]
