@@ -97,7 +97,7 @@
         "shared/theme/vars"
       ],
       "@ui/mantine": [
-        "ui/mantine"
+        "shared/ui/mantine"
       ],
       "@widget/settings": [
         "widgets/settings"

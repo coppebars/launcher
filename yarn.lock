@@ -1948,9 +1948,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ui/mantine@workspace:, @ui/mantine@workspace:ui/mantine":
+"@ui/mantine@workspace:, @ui/mantine@workspace:shared/ui/mantine":
   version: 0.0.0-use.local
-  resolution: "@ui/mantine@workspace:ui/mantine"
+  resolution: "@ui/mantine@workspace:shared/ui/mantine"
   dependencies:
     "@mantine/core": "npm:7.2.2"
     "@theme/vars": "workspace:"
