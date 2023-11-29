@@ -23,7 +23,8 @@ import      { useForm }                from 'react-hook-form'
 import      { z }                      from 'zod'
 
 import type { Instance }               from '@entity/instance'
-import { add, update } from '@entity/instance'
+import      { add }                    from '@entity/instance'
+import      { update }                 from '@entity/instance'
 // FIXME: Temporary FSD violation
 import      { useLookupLocalVersions } from '@feature/lookup'
 

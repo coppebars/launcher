@@ -5,7 +5,6 @@ import { useCallback }    from 'react'
 import { rem }            from '@mantine/core'
 import { UnstyledButton } from '@mantine/core'
 import { IconBolt }       from '@tabler/icons-react'
-import { IconDownload }   from '@tabler/icons-react'
 import { IconSettings2 }  from '@tabler/icons-react'
 import { useLocation }    from 'react-router-dom'
 import { useNavigate }    from 'react-router-dom'
@@ -41,10 +40,6 @@ const topRoutes: RouteItem[] = [
 		path: '/',
 		icon: IconBolt,
 		index: true,
-	},
-	{
-		path: '/versions',
-		icon: IconDownload,
 	},
 ]
 

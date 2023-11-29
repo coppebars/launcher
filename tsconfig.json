@@ -66,9 +66,6 @@
       "@page/settings": [
         "pages/settings"
       ],
-      "@page/versions": [
-        "pages/versions"
-      ],
       "core": [
         "shared/core"
       ],
@@ -107,9 +104,6 @@
       ],
       "@widget/sidebar": [
         "widgets/sidebar"
-      ],
-      "@widget/versions": [
-        "widgets/versions"
       ]
     }
   },

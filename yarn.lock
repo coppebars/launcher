@@ -90,7 +90,6 @@ __metadata:
   dependencies:
     "@page/home": "workspace:"
     "@page/settings": "workspace:"
-    "@page/versions": "workspace:"
     "@types/react": "npm:18.2.38"
     react-router-dom: "npm:6.20.0"
   peerDependencies:
@@ -1361,23 +1360,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@page/versions@workspace:, @page/versions@workspace:pages/versions":
-  version: 0.0.0-use.local
-  resolution: "@page/versions@workspace:pages/versions"
-  dependencies:
-    "@layout/padded": "workspace:"
-    "@mantine/core": "npm:7.2.2"
-    "@types/react": "npm:18.2.38"
-    "@widget/versions": "workspace:"
-  peerDependencies:
-    "@mantine/core": "*"
-    "@mantine/hooks": "*"
-    "@tanstack/react-query": "*"
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -2108,26 +2090,6 @@ __metadata:
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
-"@widget/versions@workspace:, @widget/versions@workspace:widgets/versions":
-  version: 0.0.0-use.local
-  resolution: "@widget/versions@workspace:widgets/versions"
-  dependencies:
-    "@feature/lookup": "workspace:"
-    "@mantine/core": "npm:7.2.2"
-    "@theme/vars": "workspace:"
-    "@types/react": "npm:18.2.38"
-    "@vanilla-extract/css": "npm:1.14.0"
-    core: "workspace:"
-    react-error-boundary: "npm:4.0.11"
-  peerDependencies:
-    "@mantine/core": "*"
-    "@mantine/hooks": "*"
-    "@tanstack/react-query": "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -5448,17 +5410,6 @@ __metadata:
   peerDependencies:
     react: 18.3.0-canary-6c7b41da3-20231123
   checksum: 6657e5795d190f1561676fe0d6a3d0acc8cb329e94db61f562b6e76bf856c1c26e2bbb0ee203e9d21042c067f1f7923f84aeaf7a26287b4af73a2c319be17b9f
-  languageName: node
-  linkType: hard
-
-"react-error-boundary@npm:4.0.11":
-  version: 4.0.11
-  resolution: "react-error-boundary@npm:4.0.11"
-  dependencies:
-    "@babel/runtime": "npm:^7.12.5"
-  peerDependencies:
-    react: ">=16.13.1"
-  checksum: 33dad3df7687971e65c7182d97f44bd618cb5d77d1c338e0a7c17c5cf7706a07b9055fffb771ff19bad750d40dd3cfd18d661a60b0518e73197e294dc185f18c
   languageName: node
   linkType: hard
 
