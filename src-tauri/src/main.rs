@@ -19,7 +19,13 @@ fn main() {
 		.plugin(tauri_plugin_shell::init())
 		.plugin(tauri_plugin_dialog::init())
 		.plugin(tauri_plugin_updater::Builder::new().build())
+		.on_window_event(|e| {
+			if let tauri::WindowEvent::Resized(_) = e.event() {
+				std::thread::sleep(std::time::Duration::from_nanos(1));
+			}
+		})
 		.setup(|app| {
+
 			#[allow(unused)]
 			let window = app.get_window("main").unwrap();
 
