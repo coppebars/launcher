@@ -6,40 +6,64 @@
     "distDir": "../app/entrypoint/dist"
   },
   "package": {
-    "productName": "ctlauncher",
+    "productName": "rslauncher",
     "version": "0.1.0"
   },
   "tauri": {
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.coppertiles.launcher",
+      "identifier": "com.coppebars.launcher",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
-    },
+      ],
+			"copyright": "© Coppebars, Nodium and limpix31 2020 - 2023",
+			"category": "Utility",
+			"shortDescription": "Minecraft Launcher",
+			"longDescription": "Coppebars technically advanced minucraft launcher",
+			"windows": {
+				"digestAlgorithm": " SHA-256",
+				"webviewInstallMode": {
+					"type": "skip"
+				}
+			}
+		},
     "security": {
       "csp": null
     },
     "windows": [
       {
+				"userAgent": "Rslauncher",
         "fullscreen": false,
         "resizable": true,
-        "title": "Coppertiles Launcher",
+        "title": "Rslauncher",
 				"decorations": false,
 				"transparent": true,
-        "width": 800,
-        "height": 600
+				"width": 960,
+				"height": 600,
+        "minWidth": 500,
+        "minHeight": 600
       }
     ]
   },
 	"plugins": {
 		"shell": {
 			"open": true
+		},
+		"updater": {
+			"active": true,
+			"dialog": false,
+			"endpoints": [
+				"https://ndml-update.limpix.workers.dev/{{target}}/{{current_version}}",
+				"https://api.nodium.ru/update/{{target}}/{{current_version}}",
+				"https://update.nodium.ru/{{target}}/{{current_version}}",
+				"https://nodium.ru/update/{{target}}/{{current_version}}"
+			],
+			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDVGRUE5NUNFODkyQTlFQ0MKUldUTW5pcUp6cFhxWCtYMzR3ZEhYUFlGUFR0Nzhsd1lxT2ZqQTh2ZWlZdkdJYVg0eUtFZTVqQTkK"
 		}
 	}
 }

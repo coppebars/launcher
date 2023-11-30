@@ -22,6 +22,9 @@ window-vibrancy = { git = "https://github.com/tauri-apps/window-vibrancy" }
 # Workspace
 ipc = { path = "../crates/ipc" }
 
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-updater = "2.0.0-alpha"
+
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
