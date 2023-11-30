@@ -1,35 +1,35 @@
 /* eslint-disable react/jsx-no-useless-fragment, react/jsx-fragments */
 
-import      { Fragment }        from 'react'
-import      { useCallback }     from 'react'
-import      { useEffect }       from 'react'
-import      { useMemo }         from 'react'
+import      { Fragment }    from 'react'
+import      { useCallback } from 'react'
+import      { useEffect }   from 'react'
+import      { useMemo }     from 'react'
 
-import      { zodResolver }     from '@hookform/resolvers/zod'
-import      { Button }          from '@mantine/core'
-import      { Checkbox }        from '@mantine/core'
-import      { Divider }         from '@mantine/core'
-import      { Drawer }          from '@mantine/core'
-import      { Flex }            from '@mantine/core'
-import      { Input }           from '@mantine/core'
-import      { NumberInput }     from '@mantine/core'
-import      { rem }             from '@mantine/core'
-import      { Select }          from '@mantine/core'
-import      { Skeleton }        from '@mantine/core'
-import      { Slider }          from '@mantine/core'
-import      { Stack }           from '@mantine/core'
-import      { IconX }           from '@tabler/icons-react'
-import      { join }            from '@tauri-apps/api/path'
-import      { nanoid }          from 'nanoid/non-secure'
-import      { Controller }      from 'react-hook-form'
-import      { useForm }         from 'react-hook-form'
-import      { z }               from 'zod'
+import      { zodResolver } from '@hookform/resolvers/zod'
+import      { Button }      from '@mantine/core'
+import      { Checkbox }    from '@mantine/core'
+import      { Divider }     from '@mantine/core'
+import      { Drawer }      from '@mantine/core'
+import      { Flex }        from '@mantine/core'
+import      { Input }       from '@mantine/core'
+import      { NumberInput } from '@mantine/core'
+import      { rem }         from '@mantine/core'
+import      { Select }      from '@mantine/core'
+import      { Skeleton }    from '@mantine/core'
+import      { Slider }      from '@mantine/core'
+import      { Stack }       from '@mantine/core'
+import      { IconX }       from '@tabler/icons-react'
+import      { join }        from '@tauri-apps/api/path'
+import      { nanoid }      from 'nanoid/non-secure'
+import      { Controller }  from 'react-hook-form'
+import      { useForm }     from 'react-hook-form'
+import      { z }           from 'zod'
 
-import type { Instance }        from '@entity/instance'
-import      { add }             from '@entity/instance'
-import      { update }          from '@entity/instance'
-import      { $settings }       from '@entity/settings'
-import      { useLookup }       from '@entity/version'
+import type { Instance }    from '@entity/instance'
+import      { add }         from '@entity/instance'
+import      { update }      from '@entity/instance'
+import      { $settings }   from '@entity/settings'
+import      { useLookup }   from '@entity/version'
 
 export const schema = z.object({
 	name: z.string().min(3).max(40),
@@ -93,7 +93,7 @@ export function Form(props: Props) {
 
 	const close = useCallback(() => {
 		onClose()
-	}, [onClose, reset])
+	}, [onClose])
 
 	const { data: versions, status, error } = useLookup()
 

@@ -12,6 +12,8 @@ use window_vibrancy::{
 };
 
 fn main() {
+	std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--ignore-gpu-blocklist");
+
 	tauri::Builder::default()
 		.plugin(tauri_plugin_window::init())
 		.plugin(tauri_plugin_shell::init())
