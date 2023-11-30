@@ -140,8 +140,6 @@ impl Mojang {
 
 	#[cfg(feature = "serde_json")]
 	pub async fn try_from_file(path: &Path) -> Result<Self, TryFromError> {
-		use tokio::io::AsyncReadExt;
-
 		let mut file = fs::File::open(path).await?;
 		let mut contents = String::with_capacity(8192);
 

@@ -1,15 +1,17 @@
 use std::{
 	collections::HashMap,
-	fs::{
-		self,
-		Permissions,
-	},
 	path::PathBuf,
 	process::Command,
 };
 
 #[cfg(target_family = "unix")]
-use std::os::unix::fs::PermissionsExt;
+use std::{
+	fs::{
+		self,
+		Permissions,
+	},
+	os::unix::fs::PermissionsExt,
+};
 
 #[derive(Debug, Default)]
 pub struct ProcessLauncher {
