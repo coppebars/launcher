@@ -12,7 +12,10 @@ use window_vibrancy::{
 };
 
 fn main() {
-	std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--ignore-gpu-blocklist");
+	std::env::set_var(
+		"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+		"--ignore-gpu-blocklist",
+	);
 
 	tauri::Builder::default()
 		.plugin(tauri_plugin_window::init())
@@ -25,7 +28,6 @@ fn main() {
 			}
 		})
 		.setup(|app| {
-
 			#[allow(unused)]
 			let window = app.get_window("main").unwrap();
 

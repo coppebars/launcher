@@ -180,7 +180,9 @@ impl Mojang {
 
 		let ModernArgs { arguments }: ModernArgs = manifest.arguments.into();
 
-		let jre_binaries = PathBuf::from("jre").join(manifest.java_version.component).join("bin");
+		let jre_binaries = PathBuf::from("jre")
+			.join(manifest.java_version.component)
+			.join("bin");
 
 		let mut process = ProcessLauncher {
 			bin: if cfg!(target_os = "windows") {

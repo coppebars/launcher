@@ -1,8 +1,18 @@
-use std::collections::HashSet;
-use std::iter;
-use std::path::PathBuf;
-use regex::Regex;
-use crate::specs::manifest::{Argument, ConditionalArgument, Library, Os, Rule};
+use {
+	crate::specs::manifest::{
+		Argument,
+		ConditionalArgument,
+		Library,
+		Os,
+		Rule,
+	},
+	regex::Regex,
+	std::{
+		collections::HashSet,
+		iter,
+		path::PathBuf,
+	},
+};
 
 pub fn join_classpath(classpath: &[String]) -> String {
 	let separator = if cfg!(target_os = "windows") {
@@ -54,7 +64,12 @@ pub fn libraries_to_classpath(libs: Vec<Library>) -> Vec<PathBuf> {
 				}
 			}
 			Library::Default { downloads, .. } => classpath.push(downloads.artifact.path),
-			Library::Native { mut downloads, rules, natives, .. } => {
+			Library::Native {
+				mut downloads,
+				rules,
+				natives,
+				..
+			} => {
 				classpath.push(downloads.artifact.path);
 
 				if rules.iter().all(Rule::unwrap) {
@@ -73,7 +88,7 @@ pub fn libraries_to_classpath(libs: Vec<Library>) -> Vec<PathBuf> {
 
 					classpath.push(artifact.path);
 				}
-			},
+			}
 		}
 	}
 

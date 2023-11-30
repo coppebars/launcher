@@ -12,16 +12,36 @@ async fn main() {
 	let mut process = distro.try_into_process().unwrap();
 
 	process.cwd = "./minecraft".into();
-    //process.jvm_args.push("-Dlog4j.configurationFile=${path}".into());
-	process.vars.insert("auth_player_name".into(), "LIMPIX31".into());
-    process.vars.insert("auth_uuid".into(), "00000000-0000-0000-0000-000000000000".into());
-	process.vars.insert("minecraft_account_host".into(), "https://nodium.ru:9000/account".into());
-	process.vars.insert("minecraft_auth_host".into(), "https://nodium.ru:9000/auth".into());
-	process.vars.insert("minecraft_session_host".into(), "https://nodium.ru:9000/session".into());
-	process.vars.insert("minecraft_services_host".into(), "https://nodium.ru:9000/services".into());
+	//process.jvm_args.push("-Dlog4j.configurationFile=${path}".into());
+	process
+		.vars
+		.insert("auth_player_name".into(), "LIMPIX31".into());
+	process.vars.insert(
+		"auth_uuid".into(),
+		"00000000-0000-0000-0000-000000000000".into(),
+	);
+	process.vars.insert(
+		"minecraft_account_host".into(),
+		"https://nodium.ru:9000/account".into(),
+	);
+	process.vars.insert(
+		"minecraft_auth_host".into(),
+		"https://nodium.ru:9000/auth".into(),
+	);
+	process.vars.insert(
+		"minecraft_session_host".into(),
+		"https://nodium.ru:9000/session".into(),
+	);
+	process.vars.insert(
+		"minecraft_services_host".into(),
+		"https://nodium.ru:9000/services".into(),
+	);
 	process.vars.insert("user_type".into(), "msa".into());
-    process.vars.insert("auth_access_token".into(), "test".into());
-    //process.vars.insert("path".into(), "/home/limpix/workspaces/launcher/log4j.xml".into());
+	process
+		.vars
+		.insert("auth_access_token".into(), "test".into());
+	//process.vars.insert("path".into(),
+	// "/home/limpix/workspaces/launcher/log4j.xml".into());
 
 	process.launch_blocking();
 

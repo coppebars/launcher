@@ -1,5 +1,7 @@
-mod lookup;
 mod distros;
+mod lookup;
 
-pub use lookup::*;
-pub use distros::*;
+pub use {
+	distros::*,
+	lookup::*,
+};

@@ -1,8 +1,8 @@
 use {
+	crate::specs::jre::JavaRuntime,
 	serde::Deserialize,
 	url::Url,
 };
-use crate::specs::jre::JavaRuntime;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Version {
@@ -26,7 +26,10 @@ pub struct Versions {
 }
 
 pub async fn get_versions() -> Result<Versions, reqwest::Error> {
-	reqwest::get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json").await?.json().await
+	reqwest::get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
+		.await?
+		.json()
+		.await
 }
 
 pub async fn get_jre_components() -> Result<JavaRuntime, reqwest::Error> {
