@@ -45,7 +45,7 @@ impl ProcessLauncher {
 		fs::set_permissions(self.cwd.join(&self.bin), Permissions::from_mode(0o744))
 			.expect("Could not set execute permissions");
 
-		let mut cmd = Command::new(&self.bin);
+		let mut cmd = Command::new(self.cwd.join(&self.bin));
 
 		cmd.current_dir(&self.cwd);
 
