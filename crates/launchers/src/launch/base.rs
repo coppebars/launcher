@@ -1,5 +1,10 @@
 use std::{
 	collections::HashMap,
+	fs::{
+		self,
+		Permissions,
+	},
+	os::unix::fs::PermissionsExt,
 	path::PathBuf,
 	process::Command,
 };
@@ -34,6 +39,9 @@ impl ProcessLauncher {
 	}
 
 	pub fn into_command(self) -> Command {
+		fs::set_permissions(self.cwd.join(&self.bin), Permissions::from_mode(0o744))
+			.expect("Could not set execute permissions");
+
 		let mut cmd = Command::new(&self.bin);
 
 		cmd.current_dir(&self.cwd);

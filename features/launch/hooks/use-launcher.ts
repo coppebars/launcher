@@ -1,6 +1,8 @@
 import { useCallback }          from 'react'
+import { useEffect }            from 'react'
 import { useState }             from 'react'
 
+import { notifications }        from '@mantine/notifications'
 import { useUnit }              from 'effector-react'
 
 import { $selectedInstance }    from '@entity/instance'
@@ -17,7 +19,13 @@ export function useLauncher() {
 
 	const [error, setError] = useState<string | undefined>()
 
+	const reset = useCallback(() => {
+		setError(undefined)
+	}, [])
+
 	const launch = useCallback(() => {
+		reset()
+
 		if (instance) {
 			setRunningStatus({ id: instance.id, status: true })
 
@@ -42,11 +50,19 @@ export function useLauncher() {
 				.catch(setError)
 				.finally(() => setRunningStatus({ id: instance.id, status: false }))
 		}
-	}, [instance, settings.rootPath])
+	}, [instance, reset, settings.rootPath])
 
-	const reset = useCallback(() => {
-		setError(undefined)
-	}, [])
+	useEffect(() => {
+		if (error) {
+			notifications.show({
+				withCloseButton: true,
+				autoClose: 8000,
+				title: 'Launch failed',
+				message: error,
+				color: 'red',
+			})
+		}
+	}, [error])
 
 	return { ready, running, error, launch, reset }
 }

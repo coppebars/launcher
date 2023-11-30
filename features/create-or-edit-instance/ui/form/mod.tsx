@@ -100,7 +100,6 @@ export function Form(props: Props) {
 
 	const submit = useCallback(
 		(data: Schema) => {
-			console.log(data, edit)
 			if (edit) {
 				update({
 					id: edit.id,

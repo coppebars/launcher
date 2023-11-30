@@ -17,12 +17,12 @@ export async function launch(options: LaunchOptions) {
 	{
 		const { versionId: id, root: path } = options
 
-		await invoke(prepareCommand, { id, path }).catch(console.log)
+		await invoke(prepareCommand, { id, path })
 	}
 
 	{
 		const { versionId: id, logbackId: uid, root: path, vars } = options
 
-		await invoke(launchCommand, { uid, id, path, vars }).catch(console.log)
+		await invoke(launchCommand, { uid, id, path, vars })
 	}
 }

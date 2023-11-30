@@ -39,7 +39,6 @@ export function HomePage() {
 			const segment = progress.current
 
 			if (payload.finish && segment) {
-				console.log(payload.finish)
 				segment.style.setProperty(
 					'--progress-section-width',
 					`${(payload.finish.progress / payload.finish.total) * 100}%`,
@@ -77,8 +76,6 @@ export function HomePage() {
 		setEditingInstance(undefined)
 		openDrawer()
 	}, [openDrawer])
-
-	console.log(editingInstace)
 
 	return (
 		<PaddedLayout>

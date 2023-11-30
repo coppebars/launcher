@@ -5,6 +5,7 @@
 	"dependencies": {
 		"@app/routes": "workspace:",
 		"@layout/sided": "workspace:",
+		"@ui/extra": "workspace:",
 		"@widget/sidebar": "workspace:"
 	},
 	"devDependencies": {
