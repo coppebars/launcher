@@ -4,10 +4,12 @@ use std::{
 		self,
 		Permissions,
 	},
-	os::unix::fs::PermissionsExt,
 	path::PathBuf,
 	process::Command,
 };
+
+#[cfg(target_family = "unix")]
+use std::os::unix::fs::PermissionsExt;
 
 #[derive(Debug, Default)]
 pub struct ProcessLauncher {
@@ -39,6 +41,7 @@ impl ProcessLauncher {
 	}
 
 	pub fn into_command(self) -> Command {
+		#[cfg(target_family = "unix")]
 		fs::set_permissions(self.cwd.join(&self.bin), Permissions::from_mode(0o744))
 			.expect("Could not set execute permissions");
 
