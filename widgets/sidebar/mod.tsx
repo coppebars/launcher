@@ -10,6 +10,7 @@ import { useLocation }    from 'react-router-dom'
 import { useNavigate }    from 'react-router-dom'
 
 import { SidebarLayout }  from '@layout/sidebar'
+import { WindowControls } from '@ui/extra'
 
 import * as styles        from './styles.css.ts'
 
@@ -68,6 +69,7 @@ export function SidebarWidget() {
 
 	return (
 		<SidebarLayout>
+			<WindowControls />
 			{topRoutes.map(renderItem)}
 			<div style={{ flexGrow: 1, userSelect: 'none' }} />
 			{bottomRoutes.map(renderItem)}

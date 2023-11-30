@@ -3,7 +3,8 @@
 	"type": "module",
 	"main": "mod.ts",
 	"dependencies": {
-		"@tabler/icons-react": "2.42.0"
+		"@tabler/icons-react": "2.42.0",
+		"@tauri-apps/api": "2.0.0-alpha.12"
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
