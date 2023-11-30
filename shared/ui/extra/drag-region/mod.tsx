@@ -7,7 +7,7 @@ export function DragRegion() {
 			pos='fixed'
 			align='center'
 			justify='center'
-			style={{ height: '2rem', userSelect: 'none', inset: 0, width: '100vw', zIndex: 1000, pointerEvents: 'none' }}
+			style={{ height: '2rem', userSelect: 'none', inset: 0, width: '100vw', zIndex: 1000 }}
 			data-tauri-drag-region
 		>
 			<IconGripHorizontal color='gray' style={{ userSelect: 'none' }} />
