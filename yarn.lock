@@ -53,6 +53,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@app/providers@workspace:app/providers"
   dependencies:
+    "@mantine/modals": "npm:7.2.2"
     "@mantine/notifications": "npm:7.2.2"
     "@tanstack/react-query": "npm:5.9.0"
     "@theme/provider": "workspace:"
@@ -1295,6 +1296,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/modals@npm:7.2.2":
+  version: 7.2.2
+  resolution: "@mantine/modals@npm:7.2.2"
+  peerDependencies:
+    "@mantine/core": 7.2.2
+    "@mantine/hooks": 7.2.2
+    react: ^18.2.0
+    react-dom: ^18.2.0
+  checksum: 1dd4286feb4198f42435395ab24072a901b00067e7e3497f0257946e3b96f3dbb2b36bcb30e4dd165c4238144a922d96c846602816ec344958577e0630a37096
+  languageName: node
+  linkType: hard
+
 "@mantine/notifications@npm:7.2.2":
   version: 7.2.2
   resolution: "@mantine/notifications@npm:7.2.2"
@@ -1388,6 +1401,7 @@ __metadata:
     "@layout/padded": "workspace:"
     "@mantine/core": "npm:7.2.2"
     "@mantine/hooks": "npm:7.2.2"
+    "@mantine/modals": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
     "@tauri-apps/api": "npm:2.0.0-alpha.12"
     "@types/react": "npm:18.2.39"

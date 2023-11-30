@@ -13,7 +13,7 @@ interface Props {
 
 export function ThemeProvider({ children }: Props) {
 	return (
-		<MantineProvider defaultColorScheme='dark' colorSchemeManager={colorSchemeManager} theme={theme}>
+		<MantineProvider defaultColorScheme='light' colorSchemeManager={colorSchemeManager} theme={theme}>
 			{children}
 		</MantineProvider>
 	)

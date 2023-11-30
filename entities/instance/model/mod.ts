@@ -22,6 +22,7 @@ export interface Instance {
 export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
 export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
 export const add = createEvent<Omit<Instance, 'id'>>('add')
+export const remove = createEvent<string>('remove')
 
 export const $instances = createStore<Instance[]>([], { name: 'instances' })
 
@@ -48,6 +49,8 @@ $instances.on(update, (its, { id, payload }) => {
 })
 
 $instances.on(add, (its, instance) => [...its, { id: nanoid(8), ...instance }])
+
+$instances.on(remove, (its, id) => its.filter((it) => it.id !== id))
 
 export const select = createEvent<string | null>('select_instance')
 

@@ -92,7 +92,6 @@ export function Form(props: Props) {
 	}, [edit, reset])
 
 	const close = useCallback(() => {
-		reset(defaultValues)
 		onClose()
 	}, [onClose, reset])
 
