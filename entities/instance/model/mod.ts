@@ -1,10 +1,11 @@
 /** @purpose: Type only */
-import type { Version }     from '@entity/version'
 import      { combine }     from 'effector'
 import      { createEvent } from 'effector'
 import      { createStore } from 'effector'
 import      { persist }     from 'effector-storage/local'
 import      { nanoid }      from 'nanoid/non-secure'
+
+import type { Version }     from '@entity/version'
 
 export interface Instance {
 	id: string
@@ -16,24 +17,29 @@ export interface Instance {
 	height?: number
 	alloc: number
 	extraArgs?: string
+}
+
+export interface RuntimeInstanceData {
 	running?: boolean
 }
 
-export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
+export const $instances = createStore<Instance[]>([], { name: 'instances' })
+export const $selectedInstanceId = createStore<string | null>(null, { name: 'selected_instance' })
+export const $runtimeInstancesData = createStore<Record<string, RuntimeInstanceData>>(
+	{},
+	{ name: 'runtime_instances_data' },
+)
+
 export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
 export const add = createEvent<Omit<Instance, 'id'>>('add')
 export const remove = createEvent<string>('remove')
+export const select = createEvent<string | null>('select_instance')
+export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
 
-export const $instances = createStore<Instance[]>([], { name: 'instances' })
+$runtimeInstancesData.on(setRunningStatus, (its, { id, status }) => {
+	const it = its[id]
 
-$instances.on(setRunningStatus, (its, { id, status }) => {
-	const it = its.find((it) => it.id === id)
-
-	if (it) {
-		it.running = status
-	}
-
-	return [...its]
+	return { ...its, [id]: { ...it, running: status } }
 })
 
 $instances.on(update, (its, { id, payload }) => {
@@ -51,10 +57,6 @@ $instances.on(update, (its, { id, payload }) => {
 $instances.on(add, (its, instance) => [...its, { id: nanoid(8), ...instance }])
 
 $instances.on(remove, (its, id) => its.filter((it) => it.id !== id))
-
-export const select = createEvent<string | null>('select_instance')
-
-export const $selectedInstanceId = createStore<string | null>(null, { name: 'selected_instance' })
 
 $selectedInstanceId.on(select, (_, nid) => ($instances.getState().find(({ id }) => id === nid) ? nid : null))
 

@@ -1,21 +1,23 @@
-import { useCallback }          from 'react'
-import { useEffect }            from 'react'
-import { useState }             from 'react'
+import { useCallback }           from 'react'
+import { useEffect }             from 'react'
+import { useState }              from 'react'
 
-import { notifications }        from '@mantine/notifications'
-import { useUnit }              from 'effector-react'
+import { notifications }         from '@mantine/notifications'
+import { useUnit }               from 'effector-react'
 
-import { $selectedInstance }    from '@entity/instance'
-import { setRunningStatus }     from '@entity/instance'
-import { $settings }            from '@entity/settings'
-import { launch as coreLaunch } from 'core'
+import { $runtimeInstancesData } from '@entity/instance'
+import { $selectedInstance }     from '@entity/instance'
+import { setRunningStatus }      from '@entity/instance'
+import { $settings }             from '@entity/settings'
+import { launch as coreLaunch }  from 'core'
 
 export function useLauncher() {
 	const settings = useUnit($settings)
 	const instance = useUnit($selectedInstance)
+	const runtimeData = useUnit($runtimeInstancesData)
 
 	const ready = Boolean(instance)
-	const running = Boolean(instance?.running)
+	const running = Boolean(instance?.id && runtimeData[instance?.id]?.running)
 
 	const [error, setError] = useState<string | undefined>()
 
