@@ -3,7 +3,7 @@
 
 use tauri::Manager;
 #[cfg(target_os = "windows")]
-use window_vibrancy::apply_blur;
+use window_vibrancy::apply_acrylic;
 
 #[cfg(target_os = "macos")]
 use window_vibrancy::{
@@ -12,9 +12,21 @@ use window_vibrancy::{
 };
 
 fn main() {
+	std::env::set_var(
+		"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+		"--ignore-gpu-blocklist",
+	);
+
 	tauri::Builder::default()
 		.plugin(tauri_plugin_window::init())
 		.plugin(tauri_plugin_shell::init())
+		.plugin(tauri_plugin_dialog::init())
+		.plugin(tauri_plugin_updater::Builder::new().build())
+		.on_window_event(|e| {
+			if let tauri::WindowEvent::Resized(_) = e.event() {
+				std::thread::sleep(std::time::Duration::from_nanos(1));
+			}
+		})
 		.setup(|app| {
 			#[allow(unused)]
 			let window = app.get_window("main").unwrap();
@@ -24,7 +36,7 @@ fn main() {
 				.expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
 
 			#[cfg(target_os = "windows")]
-			apply_blur(&window, None)
+			apply_acrylic(&window, None)
 				.expect("Unsupported platform! 'apply_blur' is only supported on Windows");
 
 			Ok(())

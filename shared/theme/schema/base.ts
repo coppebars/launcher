@@ -8,6 +8,7 @@ import      { mabry }                from '@theme/fonts'
 const white = '#ebebeb'
 const black = '#131313'
 const primary = '#E87A52'
+const red = '#e85f52'
 
 export const base = createTheme({
 	fontFamily: mabry,
@@ -35,6 +36,8 @@ export const base = createTheme({
 			undefined!,
 		],
 		darkShade: [
+			mix(black, white, 0.01),
+			mix(black, white, 0.03),
 			mix(black, white, 0.05),
 			mix(black, white, 0.1),
 			mix(black, white, 0.2),
@@ -43,8 +46,6 @@ export const base = createTheme({
 			mix(black, white, 0.5),
 			mix(black, white, 0.6),
 			mix(black, white, 0.7),
-			mix(black, white, 0.8),
-			mix(black, white, 0.9),
 		],
 		lightShade: [
 			mix(white, black, 0.05),
@@ -105,6 +106,19 @@ export const base = createTheme({
 			undefined!,
 			undefined!,
 			undefined!,
+		],
+		red: [
+			mix(red, white, 0.3),
+			mix(red, white, 0.25),
+			mix(red, white, 0.2),
+			mix(red, white, 0.15),
+			mix(red, white, 0.1),
+			mix(red, white, 0.05),
+			mix(red, white, 0.05),
+			red,
+			red,
+			red,
+			red,
 		],
 	},
 	primaryColor: 'primary',

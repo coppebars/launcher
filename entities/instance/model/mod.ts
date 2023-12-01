@@ -1,49 +1,45 @@
-import { combine }     from 'effector'
-import { createEvent } from 'effector'
-import { createStore } from 'effector'
-import { persist }     from 'effector-storage/local'
-import { nanoid }      from 'nanoid/non-secure'
+/** @purpose: Type only */
+import      { combine }     from 'effector'
+import      { createEvent } from 'effector'
+import      { createStore } from 'effector'
+import      { persist }     from 'effector-storage/local'
+import      { nanoid }      from 'nanoid/non-secure'
+
+import type { Version }     from '@entity/version'
 
 export interface Instance {
 	id: string
 	name: string
-	versionId: string
+	version: Version
 	path: string
 	fullscreen?: boolean
 	width?: number
 	height?: number
 	alloc: number
 	extraArgs?: string
+}
+
+export interface RuntimeInstanceData {
 	running?: boolean
 }
 
-export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
-export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
-export const add = createEvent<Omit<Instance, 'id'>>('add')
-
-export const $instances = createStore<Instance[]>(
-	[
-		{
-			id: 'lol',
-			path: '/home/limpix/workspaces/launcher/minecraft/instances/main',
-			name: 'Main',
-			versionId: '1.20.1',
-			alloc: 2048,
-			width: 1280,
-			height: 720,
-		},
-	],
-	{ name: 'instances' },
+export const $instances = createStore<Instance[]>([], { name: 'instances' })
+export const $selectedInstanceId = createStore<string | null>(null, { name: 'selected_instance' })
+export const $runtimeInstancesData = createStore<Record<string, RuntimeInstanceData>>(
+	{},
+	{ name: 'runtime_instances_data' },
 )
 
-$instances.on(setRunningStatus, (its, { id, status }) => {
-	const it = its.find((it) => it.id === id)
+export const update = createEvent<{ id: string; payload: Partial<Instance> }>('update')
+export const add = createEvent<Omit<Instance, 'id'>>('add')
+export const remove = createEvent<string>('remove')
+export const select = createEvent<string | null>('select_instance')
+export const setRunningStatus = createEvent<{ id: string; status: boolean }>('set_running_status')
 
-	if (it) {
-		it.running = status
-	}
+$runtimeInstancesData.on(setRunningStatus, (its, { id, status }) => {
+	const it = its[id]
 
-	return [...its]
+	return { ...its, [id]: { ...it, running: status } }
 })
 
 $instances.on(update, (its, { id, payload }) => {
@@ -60,9 +56,7 @@ $instances.on(update, (its, { id, payload }) => {
 
 $instances.on(add, (its, instance) => [...its, { id: nanoid(8), ...instance }])
 
-export const select = createEvent<string | null>('select_instance')
-
-export const $selectedInstanceId = createStore<string | null>(null, { name: 'selected_instance' })
+$instances.on(remove, (its, id) => its.filter((it) => it.id !== id))
 
 $selectedInstanceId.on(select, (_, nid) => ($instances.getState().find(({ id }) => id === nid) ? nid : null))
 

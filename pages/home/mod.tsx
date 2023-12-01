@@ -4,11 +4,14 @@ import { useState }                 from 'react'
 import { useRef }                   from 'react'
 
 import { ActionIcon }               from '@mantine/core'
+import { Text }                     from '@mantine/core'
 import { Button }                   from '@mantine/core'
 import { Progress }                 from '@mantine/core'
 import { Stack }                    from '@mantine/core'
 import { Flex }                     from '@mantine/core'
 import { Select }                   from '@mantine/core'
+import { useDisclosure }            from '@mantine/hooks'
+import { modals }                   from '@mantine/modals'
 import { IconPlayerPlayFilled }     from '@tabler/icons-react'
 import { IconPlus }                 from '@tabler/icons-react'
 import { Event }                    from '@tauri-apps/api/event'
@@ -16,6 +19,7 @@ import { listen }                   from '@tauri-apps/api/event'
 import { useUnit }                  from 'effector-react'
 
 import { $instances }               from '@entity/instance'
+import { remove }                   from '@entity/instance'
 import { Instance }                 from '@entity/instance'
 import { InstanceListItem }         from '@entity/instance'
 import { $selectedInstanceId }      from '@entity/instance'
@@ -38,7 +42,6 @@ export function HomePage() {
 			const segment = progress.current
 
 			if (payload.finish && segment) {
-				console.log(payload.finish)
 				segment.style.setProperty(
 					'--progress-section-width',
 					`${(payload.finish.progress / payload.finish.total) * 100}%`,
@@ -62,26 +65,43 @@ export function HomePage() {
 	}, [running])
 
 	const [editingInstace, setEditingInstance] = useState<Instance | undefined>()
-	const [openDrawer, setOpenDrawer] = useState(false)
+	const [drawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false)
 
-	const editInstance = useCallback((it: Instance) => {
-		setEditingInstance(it)
-		setOpenDrawer(true)
+	const editInstance = useCallback(
+		(it: Instance) => {
+			setEditingInstance(it)
+			openDrawer()
+		},
+		[openDrawer],
+	)
+
+	const removeInstance = useCallback((it: Instance) => {
+		modals.openConfirmModal({
+			title: `Remove "${it.name}" instance?`,
+			centered: true,
+			children: (
+				<Text size='sm'>
+					This won&apos;t delete your worlds and mods immediately, just mark the instance as not needed and it will be
+					deleted later. This action is undoable.
+				</Text>
+			),
+			labels: { confirm: 'Remove', cancel: 'Cancel' },
+			confirmProps: { color: 'red' },
+			onConfirm: () => remove(it.id),
+		})
 	}, [])
 
 	const createInstance = useCallback(() => {
 		setEditingInstance(undefined)
-		setOpenDrawer(true)
-	}, [])
-
-	console.log(editingInstace)
+		openDrawer()
+	}, [openDrawer])
 
 	return (
 		<PaddedLayout>
 			<Flex direction='column' justify='space-between' style={{ height: '100%' }}>
 				<Stack pos='relative' style={{ flexGrow: 1 }}>
 					{instances.map((it) => (
-						<InstanceListItem instance={it} onEdit={editInstance} />
+						<InstanceListItem instance={it} onEdit={editInstance} onRemove={removeInstance} />
 					))}
 					<ActionIcon
 						onClick={createInstance}
@@ -121,7 +141,7 @@ export function HomePage() {
 					</Progress.Root>
 				</Stack>
 			</Flex>
-			<CreateOrEditInstanceForm edit={editingInstace} opened={openDrawer} onClose={() => setOpenDrawer(false)} />
+			<CreateOrEditInstanceForm edit={editingInstace} opened={drawer} onClose={closeDrawer} />
 		</PaddedLayout>
 	)
 }

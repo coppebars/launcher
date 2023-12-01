@@ -1,4 +1,3 @@
-use tokio::io::AsyncWriteExt;
 use {
 	crate::{
 		distros::{
@@ -40,14 +39,21 @@ use {
 			Display,
 			Formatter,
 		},
+		io::ErrorKind,
 		path::{
 			Path,
 			PathBuf,
 		},
 	},
 	thiserror::Error,
+	tokio::{
+		fs,
+		io::{
+			AsyncReadExt,
+			AsyncWriteExt,
+		},
+	},
 	url::Url,
-	tokio::fs,
 };
 
 mod api;
@@ -97,7 +103,7 @@ pub enum Error {
 	Malformed(String),
 
 	#[error(transparent)]
-	Io(#[from] std::io::Error)
+	Io(#[from] std::io::Error),
 }
 
 static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
@@ -118,7 +124,15 @@ impl Display for PrepareAction {
 	}
 }
 
+fn join_version_path(root: &Path, id: &str) -> PathBuf {
+	root.join("versions").join(id).join(format!("{}.json", id))
+}
+
 impl Mojang {
+	pub fn from_manifest<T: Into<Manifest>>(manifest: T) -> Self {
+		Self(manifest.into())
+	}
+
 	#[cfg(feature = "serde_json")]
 	pub fn try_from_json(value: &str) -> Result<Self, serde_json::Error> {
 		Ok(Self(serde_json::from_str(value)?))
@@ -126,9 +140,7 @@ impl Mojang {
 
 	#[cfg(feature = "serde_json")]
 	pub async fn try_from_file(path: &Path) -> Result<Self, TryFromError> {
-		use tokio::io::AsyncReadExt;
-
-		let mut file = tokio::fs::File::open(path).await?;
+		let mut file = fs::File::open(path).await?;
 		let mut contents = String::with_capacity(8192);
 
 		file.read_to_string(&mut contents).await?;
@@ -137,7 +149,25 @@ impl Mojang {
 	}
 
 	pub async fn try_from_canonical_tree(root: &Path, id: &str) -> Result<Self, TryFromError> {
-		Self::try_from_file(&root.join("versions").join(id).join(format!("{}.json", id))).await
+		Self::try_from_file(&join_version_path(root, id)).await
+	}
+
+	pub async fn place(root: &Path, id: &str) -> Result<Self, Error> {
+		let path = join_version_path(root, id);
+
+		Ok(match fs::File::open(path).await {
+			Ok(mut file) => {
+				let mut contents = String::with_capacity(8192);
+
+				file.read_to_string(&mut contents).await?;
+
+				Ok(Self::try_from_json(&contents)?)
+			}
+			Err(err) => match err.kind() {
+				ErrorKind::NotFound => Ok(Mojang(Self::save_manifest(root, id).await?.into())),
+				_ => Err(err),
+			},
+		}?)
 	}
 
 	pub fn try_into_process(self) -> Result<ProcessLauncher, Error> {
@@ -150,10 +180,16 @@ impl Mojang {
 
 		let ModernArgs { arguments }: ModernArgs = manifest.arguments.into();
 
+		let jre_binaries = PathBuf::from("jre")
+			.join(manifest.java_version.component)
+			.join("bin");
+
 		let mut process = ProcessLauncher {
-			bin: PathBuf::from("./jre")
-				.join(manifest.java_version.component)
-				.join("bin/java"),
+			bin: if cfg!(target_os = "windows") {
+				jre_binaries.join("javaw.exe")
+			} else {
+				jre_binaries.join("java")
+			},
 			main_class: manifest.main_class,
 			..Default::default()
 		};
@@ -161,10 +197,18 @@ impl Mojang {
 		utils::process_args(arguments.jvm, &mut process.jvm_args, &DEFAULT_FEATURES);
 		utils::process_args(arguments.game, &mut process.game_args, &DEFAULT_FEATURES);
 
-		process.jvm_args.push("-Dminecraft.api.auth.host=${minecraft_auth_host}".into());
-		process.jvm_args.push("-Dminecraft.api.account.host=${minecraft_account_host}".into());
-		process.jvm_args.push("-Dminecraft.api.session.host=${minecraft_session_host}".into());
-		process.jvm_args.push("-Dminecraft.api.services.host=${minecraft_services_host}".into());
+		process
+			.jvm_args
+			.push("-Dminecraft.api.auth.host=${minecraft_auth_host}".into());
+		process
+			.jvm_args
+			.push("-Dminecraft.api.account.host=${minecraft_account_host}".into());
+		process
+			.jvm_args
+			.push("-Dminecraft.api.session.host=${minecraft_session_host}".into());
+		process
+			.jvm_args
+			.push("-Dminecraft.api.services.host=${minecraft_services_host}".into());
 
 		process
 			.jvm_args
@@ -221,7 +265,9 @@ impl Mojang {
 		fs::create_dir_all(&version_dir).await?;
 		let mut file = fs::File::create(version_dir.join(format!("{}.json", id))).await?;
 
-		file.write_all(serde_json::to_string(&manifest)?.as_bytes()).await?;
+		file
+			.write_all(serde_json::to_string(&manifest)?.as_bytes())
+			.await?;
 
 		Ok(manifest)
 	}
@@ -376,7 +422,18 @@ impl Mojang {
 			}
 		}
 
+		push_action!(
+			manifest.asset_index.url.clone(),
+			assets_dir
+				.join("indexes")
+				.join(format!("{}.json", manifest.asset_index.id)),
+			manifest.asset_index.size,
+			manifest.asset_index.sha1
+		);
+
 		let asset_index: AssetIndex = reqwest::get(manifest.asset_index.url).await?.json().await?;
+
+		let assets_objects_dir = assets_dir.join("objects");
 
 		for it in asset_index.objects.into_values() {
 			let path = format!("{}/{}", &it.hash[..2], it.hash);
@@ -386,7 +443,7 @@ impl Mojang {
 					"https://resources.download.minecraft.net/{}",
 					path
 				))?,
-				assets_dir.join(path),
+				assets_objects_dir.join(path),
 				it.size,
 				it.hash
 			);

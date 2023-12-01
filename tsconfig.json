@@ -42,6 +42,9 @@
       "@entity/settings": [
         "entities/settings"
       ],
+      "@entity/version": [
+        "entities/version"
+      ],
       "@feature/create-or-edit-instance": [
         "features/create-or-edit-instance"
       ],
@@ -95,6 +98,9 @@
       ],
       "@theme/vars": [
         "shared/theme/vars"
+      ],
+      "@ui/extra": [
+        "shared/ui/extra"
       ],
       "@ui/mantine": [
         "shared/ui/mantine"

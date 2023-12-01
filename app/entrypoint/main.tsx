@@ -1,4 +1,5 @@
 import                        '@mantine/core/styles.css'
+import                        '@mantine/notifications/styles.css'
 import                        '@theme/global'
 
 import { createRoot }    from 'react-dom/client'

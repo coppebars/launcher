@@ -4,6 +4,15 @@ use std::{
 	process::Command,
 };
 
+#[cfg(target_family = "unix")]
+use std::{
+	fs::{
+		self,
+		Permissions,
+	},
+	os::unix::fs::PermissionsExt,
+};
+
 #[derive(Debug, Default)]
 pub struct ProcessLauncher {
 	pub cwd: PathBuf,
@@ -34,7 +43,11 @@ impl ProcessLauncher {
 	}
 
 	pub fn into_command(self) -> Command {
-		let mut cmd = Command::new(&self.bin);
+		#[cfg(target_family = "unix")]
+		fs::set_permissions(self.cwd.join(&self.bin), Permissions::from_mode(0o744))
+			.expect("Could not set execute permissions");
+
+		let mut cmd = Command::new(self.cwd.join(&self.bin));
 
 		cmd.current_dir(&self.cwd);
 

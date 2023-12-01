@@ -8,15 +8,17 @@
 		"@feature/create-or-edit-instance": "workspace:",
 		"@feature/launch": "workspace:",
 		"@layout/padded": "workspace:",
+		"@mantine/modals": "7.2.2",
 		"@tabler/icons-react": "2.42.0",
 		"@tauri-apps/api": "2.0.0-alpha.12",
 		"core": "workspace:",
-		"effector": "23.0.0-rc.6",
-		"effector-react": "23.0.0-rc.6"
+		"effector": "23.0.0",
+		"effector-react": "23.0.0"
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
-		"@types/react": "18.2.38"
+		"@mantine/hooks": "7.2.2",
+		"@types/react": "18.2.39"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

@@ -6,12 +6,13 @@
 		"@layout/sidebar": "workspace:",
 		"@tabler/icons-react": "2.42.0",
 		"@theme/vars": "workspace:",
+		"@ui/extra": "workspace:",
 		"@vanilla-extract/css": "1.14.0",
 		"react-router-dom": "6.20.0"
 	},
 	"devDependencies": {
 		"@mantine/core": "7.2.2",
-		"@types/react": "18.2.38"
+		"@types/react": "18.2.39"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

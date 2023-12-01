@@ -7,6 +7,5 @@ members = [
 	"crates/lookup",
 	"crates/ipc",
 	"crates/integrity",
-	"crates/barscfg",
 	"crates/launchers"
 ]

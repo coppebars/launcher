@@ -1,4 +1,4 @@
-import type { ReactElement }                   from 'react'
+import type { ReactNode }                      from 'react'
 
 import      { localStorageColorSchemeManager } from '@mantine/core'
 import      { MantineProvider }                from '@mantine/core'
@@ -8,7 +8,7 @@ import      { theme }                          from '@theme/schema'
 const colorSchemeManager = localStorageColorSchemeManager({ key: 'color-scheme' })
 
 interface Props {
-	children: ReactElement
+	children: ReactNode
 }
 
 export function ThemeProvider({ children }: Props) {
