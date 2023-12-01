@@ -1,6 +1,7 @@
 import { Flex }               from '@mantine/core'
 import { IconGripHorizontal } from '@tabler/icons-react'
-import { shaded } from './styles.css.ts'
+
+import { shaded }             from './styles.css.ts'
 
 export function DragRegion() {
 	return (

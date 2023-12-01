@@ -1,7 +1,6 @@
-import type { Version }        from '@entity/version'
-
 // FIXME: Temporary FSD Violation
 import      { $settings }      from '@entity/settings'
+import type { Version }        from '@entity/version'
 import      { lookupVersions } from 'core'
 
 export async function lookupLocalVersions(): Promise<Version[]> {

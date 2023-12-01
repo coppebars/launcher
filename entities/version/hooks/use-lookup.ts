@@ -1,6 +1,7 @@
+import      { useQuery }                      from '@tanstack/react-query'
+
 import type { Provider }                      from '@entity/version'
 import type { Version }                       from '@entity/version'
-import      { useQuery }                      from '@tanstack/react-query'
 
 import      { lookupLocalVersions }           from '../lib/local.ts'
 import      { fetchVersions as fetchMojangs } from '../lib/mojang.ts'
