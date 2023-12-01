@@ -1,5 +1,6 @@
 import { Flex }               from '@mantine/core'
 import { IconGripHorizontal } from '@tabler/icons-react'
+import { shaded } from './styles.css.ts'
 
 export function DragRegion() {
 	return (
@@ -18,7 +19,7 @@ export function DragRegion() {
 			}}
 			data-tauri-drag-region
 		>
-			<IconGripHorizontal color='gray' style={{ userSelect: 'none', pointerEvents: 'none' }} />
+			<IconGripHorizontal className={shaded} style={{ userSelect: 'none', pointerEvents: 'none' }} />
 		</Flex>
 	)
 }

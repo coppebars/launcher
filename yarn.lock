@@ -2038,7 +2038,9 @@ __metadata:
     "@mantine/core": "npm:7.2.2"
     "@tabler/icons-react": "npm:2.42.0"
     "@tauri-apps/api": "npm:2.0.0-alpha.12"
+    "@theme/vars": "workspace:"
     "@types/react": "npm:18.2.39"
+    "@vanilla-extract/css": "npm:1.14.0"
   peerDependencies:
     "@mantine/core": "*"
     "@mantine/hooks": "*"
