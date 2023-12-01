@@ -1,3 +1,6 @@
+#[cfg(target_family = "unix")]
+use std::os::unix::fs::PermissionsExt;
+
 use {
 	crate::specs::manifest::{
 		Argument,
@@ -9,19 +12,36 @@ use {
 	regex::Regex,
 	std::{
 		collections::HashSet,
+		fs::{
+			self,
+			Permissions,
+		},
 		iter,
-		path::PathBuf,
+		path::{
+			Path,
+			PathBuf,
+		},
 	},
 };
 
-pub fn join_classpath(classpath: &[String]) -> String {
-	let separator = if cfg!(target_os = "windows") {
+pub const CLASSPATH_SEPARATOR: &str = {
+	if cfg!(target_os = "windows") {
 		";"
 	} else {
 		":"
-	};
+	}
+};
 
-	classpath.join(separator)
+pub const BINARY_NAME: &str = {
+	if cfg!(target_os = "windows") {
+		"javaw.exe"
+	} else {
+		"java"
+	}
+};
+
+pub fn join_classpath(classpath: &[String]) -> String {
+	classpath.join(CLASSPATH_SEPARATOR)
 }
 
 pub fn libname_to_path(name: &str) -> Option<PathBuf> {
@@ -111,4 +131,10 @@ pub fn process_args(args: Vec<Argument>, to: &mut Vec<String>, with_features: &H
 			}
 		}
 	}
+}
+
+pub fn setup_permissions(path: &Path) {
+	#[cfg(target_family = "unix")]
+	fs::set_permissions(path, Permissions::from_mode(0o744))
+		.expect("Could not set execute permissions");
 }

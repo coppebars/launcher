@@ -1,16 +1,10 @@
-use std::{
-	collections::HashMap,
-	path::PathBuf,
-	process::Command,
-};
-
-#[cfg(target_family = "unix")]
-use std::{
-	fs::{
-		self,
-		Permissions,
+use {
+	crate::launch::utils::setup_permissions,
+	std::{
+		collections::HashMap,
+		path::PathBuf,
+		process::Command,
 	},
-	os::unix::fs::PermissionsExt,
 };
 
 #[derive(Debug, Default)]
@@ -24,14 +18,7 @@ pub struct ProcessLauncher {
 	pub alloc: Option<(u32, u32)>,
 }
 
-pub trait DistroLauncher {
-	type Error;
-
-	fn try_into_process(self) -> Result<ProcessLauncher, Self::Error>;
-}
-
 impl ProcessLauncher {
-	#[allow(unused)]
 	fn set_vars(&self, target: &str) -> String {
 		let mut target = target.to_owned();
 
@@ -43,11 +30,11 @@ impl ProcessLauncher {
 	}
 
 	pub fn into_command(self) -> Command {
-		#[cfg(target_family = "unix")]
-		fs::set_permissions(self.cwd.join(&self.bin), Permissions::from_mode(0o744))
-			.expect("Could not set execute permissions");
+		let full_bin_path = self.cwd.join(&self.bin);
 
-		let mut cmd = Command::new(self.cwd.join(&self.bin));
+		setup_permissions(&full_bin_path);
+
+		let mut cmd = Command::new(full_bin_path);
 
 		cmd.current_dir(&self.cwd);
 

@@ -1,7 +1,19 @@
 use {
 	launchers::{
-		distros::mojang::Mojang,
-		misc::DownloadEvent,
+		distros::{
+			mojang::{
+				Mojang,
+				VersionOptions,
+			},
+			Distro,
+		},
+		install::{
+			executor::{
+				ActionExecutorExt,
+				DownloadEvent,
+			},
+			Install,
+		},
 	},
 	std::{
 		collections::HashMap,
@@ -27,14 +39,19 @@ use {
 	tokio::sync::mpsc,
 	tokio_util::sync::CancellationToken,
 };
+use launchers::launch::TryIntoLauncher;
 
 #[tauri::command]
-pub async fn mojang_prepare(window: Window, id: String, path: PathBuf) -> Result<(), String> {
-	let distro = Mojang::place(&path, &id)
+pub async fn mojang_prepare(
+	window: Window,
+	version: VersionOptions,
+	path: PathBuf,
+) -> Result<(), String> {
+	let distro = Mojang::try_from_root_else_install(&path, &version)
 		.await
 		.map_err(|it| it.to_string())?;
 
-	let actions = distro.prepare().await.map_err(|it| it.to_string())?;
+	let actions = distro.install().await.map_err(|it| it.to_string())?;
 
 	let (tx, mut rx) = mpsc::channel(1024);
 	let token = Arc::new(CancellationToken::new());
@@ -44,12 +61,7 @@ pub async fn mojang_prepare(window: Window, id: String, path: PathBuf) -> Result
 	let task = {
 		let path = path.clone();
 
-		tokio::spawn(launchers::misc::place_to_canonical_tree(
-			path,
-			actions,
-			Arc::new(tx),
-			task_token,
-		))
+		tokio::spawn(actions.execute(path, Arc::new(tx), task_token))
 	};
 
 	let now = SystemTime::now();
@@ -86,11 +98,11 @@ pub async fn mojang_launch(
 	path: &Path,
 	vars: HashMap<String, String>,
 ) -> Result<(), String> {
-	let distro = Mojang::try_from_canonical_tree(path, id)
+	let distro = Mojang::try_from_root(path, id)
 		.await
 		.map_err(|it| it.to_string())?;
 
-	let mut launcher = distro.try_into_process().map_err(|it| it.to_string())?;
+	let mut launcher = distro.try_into_launcher().map_err(|it| it.to_string())?;
 
 	launcher.cwd = path.to_owned();
 	launcher.vars.extend(vars);

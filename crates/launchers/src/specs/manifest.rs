@@ -197,9 +197,6 @@ pub struct AssetIndexResource {
 #[serde(rename_all = "snake_case")]
 pub struct PackageDownloads {
 	pub client: Resource,
-	pub client_mappings: Resource,
-	pub server: Resource,
-	pub server_mappings: Resource,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -365,6 +362,15 @@ pub struct InheritedManifest {
 pub enum Manifest {
 	Root(Box<RootManifest>),
 	Inherited(Box<InheritedManifest>),
+}
+
+impl Manifest {
+	pub fn into_root(self) -> Option<Box<RootManifest>> {
+		match self {
+			Manifest::Root(it) => Some(it),
+			_ => None,
+		}
+	}
 }
 
 impl InheritedManifest {

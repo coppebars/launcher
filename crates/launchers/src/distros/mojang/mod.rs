@@ -2,13 +2,13 @@ use {
 	crate::{
 		distros::{
 			mojang::api::get_jre_components,
-			PrepareAction,
-			PrepareRemoteFileAction,
-			PrepareWriteAction,
+			Distro,
+			VersionId,
 		},
 		launch::{
 			utils,
 			ProcessLauncher,
+			TryIntoLauncher,
 		},
 		specs::{
 			jre::{
@@ -23,37 +23,29 @@ use {
 				Manifest,
 				ModernArgs,
 				Os,
-				RootManifest,
 				Rule,
 			},
 		},
 	},
 	once_cell::sync::Lazy,
 	serde::{
+		Deserialize,
 		Serialize,
 		Serializer,
 	},
 	std::{
 		collections::HashSet,
-		fmt::{
-			Display,
-			Formatter,
-		},
-		io::ErrorKind,
-		path::{
-			Path,
-			PathBuf,
-		},
+		path::PathBuf,
 	},
 	thiserror::Error,
-	tokio::{
-		fs,
-		io::{
-			AsyncReadExt,
-			AsyncWriteExt,
-		},
-	},
 	url::Url,
+};
+
+#[cfg(feature = "install")]
+use crate::install::action::{
+	Action,
+	DownloadAction,
+	WriteAction,
 };
 
 mod api;
@@ -109,68 +101,44 @@ pub enum Error {
 static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
 	Lazy::new(|| HashSet::from(["has_custom_resolution"]));
 
-impl Display for PrepareAction {
-	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-		use PrepareAction::*;
+#[derive(Debug, Clone, Deserialize)]
+pub struct VersionOptions {
+	mcv: String,
+}
 
-		match self {
-			RemoteFile(it) => {
-				write!(f, "RemoteFile: {} => {}", it.url, it.path.to_str().unwrap())
-			}
-			Write(it) => {
-				write!(f, "Write: {}", it.path.to_str().unwrap())
-			}
-		}
+impl VersionId for VersionOptions {
+	fn version_id(&self) -> String {
+		self.mcv.clone()
 	}
 }
 
-fn join_version_path(root: &Path, id: &str) -> PathBuf {
-	root.join("versions").join(id).join(format!("{}.json", id))
-}
+impl Distro for Mojang {
+	type Error = Error;
+	type VersionOptions = VersionOptions;
 
-impl Mojang {
-	pub fn from_manifest<T: Into<Manifest>>(manifest: T) -> Self {
-		Self(manifest.into())
+	fn from_manifest(value: Manifest) -> Self {
+		Self(value)
 	}
 
-	#[cfg(feature = "serde_json")]
-	pub fn try_from_json(value: &str) -> Result<Self, serde_json::Error> {
+	fn try_from_json(value: &str) -> Result<Self, Self::Error> {
 		Ok(Self(serde_json::from_str(value)?))
 	}
 
-	#[cfg(feature = "serde_json")]
-	pub async fn try_from_file(path: &Path) -> Result<Self, TryFromError> {
-		let mut file = fs::File::open(path).await?;
-		let mut contents = String::with_capacity(8192);
+	async fn fetch_manifest(options: &Self::VersionOptions) -> Result<Manifest, Self::Error> {
+		let versions = api::get_versions().await?.versions;
+		let version = versions
+			.into_iter()
+			.find(|it| it.id == options.mcv)
+			.ok_or(Error::ManifestNotFound(options.mcv.to_owned()))?;
 
-		file.read_to_string(&mut contents).await?;
-
-		Ok(Self::try_from_json(&contents)?)
+		Ok(reqwest::get(version.url).await?.json().await?)
 	}
+}
 
-	pub async fn try_from_canonical_tree(root: &Path, id: &str) -> Result<Self, TryFromError> {
-		Self::try_from_file(&join_version_path(root, id)).await
-	}
+impl TryIntoLauncher for Mojang {
+	type Error = Error;
 
-	pub async fn place(root: &Path, id: &str) -> Result<Self, Error> {
-		let path = join_version_path(root, id);
-
-		Ok(match fs::File::open(path).await {
-			Ok(mut file) => {
-				let mut contents = String::with_capacity(8192);
-
-				file.read_to_string(&mut contents).await?;
-
-				Ok(Self::try_from_json(&contents)?)
-			}
-			Err(err) => match err.kind() {
-				ErrorKind::NotFound => Ok(Mojang(Self::save_manifest(root, id).await?.into())),
-				_ => Err(err),
-			},
-		}?)
-	}
-
-	pub fn try_into_process(self) -> Result<ProcessLauncher, Error> {
+	fn try_into_launcher(self) -> Result<ProcessLauncher, Error> {
 		let manifest = match self.0 {
 			Manifest::Root(it) => it,
 			Manifest::Inherited(_) => return Err(Error::Inherited),
@@ -185,11 +153,7 @@ impl Mojang {
 			.join("bin");
 
 		let mut process = ProcessLauncher {
-			bin: if cfg!(target_os = "windows") {
-				jre_binaries.join("javaw.exe")
-			} else {
-				jre_binaries.join("java")
-			},
+			bin: jre_binaries.join(utils::BINARY_NAME),
 			main_class: manifest.main_class,
 			..Default::default()
 		};
@@ -258,32 +222,13 @@ impl Mojang {
 
 		Ok(process)
 	}
+}
 
-	pub async fn save_manifest(root: &Path, id: &str) -> Result<Box<RootManifest>, Error> {
-		let manifest = Self::get_manifest(id).await?;
-		let version_dir = root.join("versions").join(id);
-		fs::create_dir_all(&version_dir).await?;
-		let mut file = fs::File::create(version_dir.join(format!("{}.json", id))).await?;
+#[cfg(feature = "install")]
+impl crate::install::Install for Mojang {
+	type Error = Error;
 
-		file
-			.write_all(serde_json::to_string(&manifest)?.as_bytes())
-			.await?;
-
-		Ok(manifest)
-	}
-
-	pub async fn get_manifest(id: &str) -> Result<Box<RootManifest>, Error> {
-		let versions = api::get_versions().await?.versions;
-		let version = versions
-			.into_iter()
-			.find(|it| it.id == id)
-			.ok_or(Error::ManifestNotFound(id.to_owned()))?;
-
-		Ok(reqwest::get(version.url).await?.json().await?)
-	}
-
-	#[cfg(feature = "serde_json")]
-	pub async fn prepare(self) -> Result<Vec<PrepareAction>, Error> {
+	async fn install(self) -> Result<Vec<Action>, Self::Error> {
 		let mut actions = Vec::with_capacity(4096);
 
 		let versions_dir = PathBuf::from("versions");
@@ -295,9 +240,12 @@ impl Mojang {
 			Manifest::Root(it) => it,
 			Manifest::Inherited(it) => {
 				let id = it.id.clone();
-				let root = it.into_root(Self::get_manifest(&id).await?);
+				let manifest = Self::fetch_manifest(&VersionOptions { mcv: id.clone() }).await?;
+				let root = manifest
+					.into_root()
+					.expect("Mojang manifest unexpectedly inherited");
 
-				actions.push(PrepareAction::Write(PrepareWriteAction {
+				actions.push(Action::Write(WriteAction {
 					path: versions_dir.join(id),
 					content: serde_json::to_string(&root)?.into_bytes(),
 				}));
@@ -310,27 +258,30 @@ impl Mojang {
 
 		macro_rules! push_action {
 			($url:expr, $path:expr) => {
-				actions.push(PrepareAction::RemoteFile(PrepareRemoteFileAction {
+				actions.push(Action::Download(DownloadAction {
 					url: $url,
 					path: $path,
 					known_size: None,
 					known_sha: None,
+					ignore_integrity: false,
 				}))
 			};
 			($url:expr, $path:expr, $size:expr) => {
-				actions.push(PrepareAction::RemoteFile(PrepareRemoteFileAction {
+				actions.push(Action::Download(DownloadAction {
 					url: $url,
 					path: $path,
 					known_size: Some($size),
 					known_sha: None,
+					ignore_integrity: false,
 				}))
 			};
 			($url:expr, $path:expr, $size:expr, $sha:expr) => {
-				actions.push(PrepareAction::RemoteFile(PrepareRemoteFileAction {
+				actions.push(Action::Download(DownloadAction {
 					url: $url,
 					path: $path,
 					known_size: Some($size),
 					known_sha: Some($sha),
+					ignore_integrity: false,
 				}))
 			};
 		}

@@ -17,7 +17,7 @@ export async function launch(options: LaunchOptions) {
 	{
 		const { versionId: id, root: path } = options
 
-		await invoke(prepareCommand, { id, path })
+		await invoke(prepareCommand, { version: { mcv: id }, path })
 	}
 
 	{
