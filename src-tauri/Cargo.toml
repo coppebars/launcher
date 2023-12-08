@@ -1,7 +1,7 @@
 [package]
-name = "coppertiles-launcher"
+name = "rslauncher"
 version = "0.1.0"
-description = "Technically advanced Minecraft Launcher by Copprtiles team"
+description = "Technically advanced Minecraft Launcher by Coppebars team"
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
@@ -12,9 +12,11 @@ tauri-build = { version = "2.0.0-alpha", features = [] }
 [dependencies]
 tauri.workspace = true
 serde_json.workspace = true
+tracing.workspace = true
 tauri-plugin-window = "2.0.0-alpha"
 tauri-plugin-shell = "2.0.0-alpha"
 tauri-plugin-dialog = "2.0.0-alpha"
+tracing-subscriber = "0.3"
 window-vibrancy = { git = "https://github.com/tauri-apps/window-vibrancy" }
 # Workspace
 ipc = { path = "../crates/ipc" }

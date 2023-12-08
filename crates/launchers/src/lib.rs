@@ -3,6 +3,8 @@
 pub mod distros;
 pub mod launch;
 pub mod specs;
+pub mod error;
+pub mod api;
+pub mod jre;
 
-#[cfg(feature = "install")]
-pub mod install;
+pub use error::Error;

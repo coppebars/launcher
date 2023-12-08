@@ -1,6 +1,7 @@
 use {
 	serde::{
 		de::{
+			Error,
 			Visitor,
 		},
 		Deserialize,
@@ -11,7 +12,6 @@ use {
 	std::{
 		collections::{
 			HashMap,
-			HashSet,
 		},
 		ffi::OsStr,
 		fmt::{
@@ -24,7 +24,6 @@ use {
 		},
 	},
 	url::Url,
-	crate::Error,
 };
 
 #[derive(Debug, Clone)]
@@ -83,7 +82,7 @@ impl<'de> Deserialize<'de> for ArtifactName {
 
 			fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
 				where
-					E: serde::de::Error,
+					E: Error,
 			{
 				let parts: Vec<&str> = v.split(':').collect();
 
@@ -96,7 +95,7 @@ impl<'de> Deserialize<'de> for ArtifactName {
 
 			fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
 				where
-					E: serde::de::Error,
+					E: Error,
 			{
 				self.visit_str(&v)
 			}
@@ -118,9 +117,23 @@ impl Serialize for ArtifactName {
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum Os {
-	Linux,
 	Windows,
+	Linux,
 	Osx,
+}
+
+impl Os {
+	pub fn target() -> Option<Self> {
+		if cfg!(target_os = "linux") {
+			Some(Self::Linux)
+		} else if cfg!(target_os = "windows") {
+			Some(Self::Windows)
+		} else if cfg!(target_os = "macos") {
+			Some(Self::Osx)
+		} else {
+			None
+		}
+	}
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, PartialEq, Eq)]
@@ -128,6 +141,16 @@ pub enum Os {
 pub enum Arch {
 	X64,
 	X86,
+}
+
+impl Arch {
+	pub fn target() -> Self {
+		if cfg!(any(target_arch = "x86_64", target_arch = "aarch64")) {
+			Self::X64
+		} else {
+			Self::X86
+		}
+	}
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -138,12 +161,12 @@ pub enum RuleAction {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(rename_all = "lowercase")]
 pub enum RuleCondition {
 	Os {
 		name: Option<Os>,
 		arch: Option<Arch>,
-		version: Option<Arch>,
+		version: Option<String>,
 	},
 	Features(HashMap<String, bool>),
 }
@@ -152,65 +175,7 @@ pub enum RuleCondition {
 pub struct Rule {
 	pub action: RuleAction,
 	#[serde(flatten)]
-	pub condition: RuleCondition,
-}
-
-impl Rule {
-	pub fn resolve_os(&self) -> bool {
-		let mut allow = true;
-
-		if let RuleCondition::Os { name, arch, .. } = &self.condition {
-			if let Some(os_name) = &name {
-				allow = match os_name {
-					#[cfg(target_os = "linux")]
-					Os::Linux => true,
-					#[cfg(target_os = "windows")]
-					Os::Windows => true,
-					#[cfg(target_os = "macos")]
-					Os::Osx => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
-
-			if let Some(os_arch) = &arch {
-				allow = match os_arch {
-					#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-					Arch::X64 => true,
-					#[cfg(target_arch = "x86")]
-					Arch::X86 => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
-		}
-
-		match self.action {
-			RuleAction::Allow => allow,
-			RuleAction::Disallow => !allow,
-		}
-	}
-
-	pub fn resolve_features(&self, features: &HashSet<&str>) -> bool {
-		let mut allow = true;
-
-		if let RuleCondition::Features(list) = &self.condition {
-			allow = list.keys().all(|it| features.contains(it.as_str()));
-		}
-
-		match self.action {
-			RuleAction::Allow => allow,
-			RuleAction::Disallow => !allow,
-		}
-	}
-
-	pub fn resolve_all_os(rules: &[Rule]) -> bool {
-		rules.iter().all(Rule::resolve_os)
-	}
-
-	pub fn resolve_all_features(rules: &[Rule], features: &HashSet<&str>) -> bool {
-		rules.iter().all(|it| it.resolve_features(features))
-	}
+	pub condition: Option<RuleCondition>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -245,37 +210,11 @@ pub struct CommonLibrary {
 	pub downloads: CommonLibraryArtifacts,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Natives {
-	#[serde(flatten)]
-	inner: HashMap<Os, String>,
-}
-
-impl Natives {
-	pub fn get_classifier_name(&self) -> Result<&str, Error> {
-		let platform = if cfg!(target_os = "windows") {
-			&Os::Windows
-		} else if cfg!(target_os = "linux") {
-			&Os::Linux
-		} else if cfg!(target_os = "macos") {
-			&Os::Osx
-		} else {
-			return Err(Error::UnsupportedTarget);
-		};
-
-		self
-			.inner
-			.get(platform)
-			.ok_or(Error::Validation("Missing native classifier".into()))
-			.map(|it| it.as_str())
-	}
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NativeLibrary {
 	pub name: ArtifactName,
 	pub downloads: NativeLibraryArtifacts,
-	pub natives: Natives,
+	pub natives: HashMap<Os, String>,
 	pub rules: Vec<Rule>,
 }
 
@@ -296,16 +235,17 @@ pub struct CustomLibrary {
 #[serde(untagged)]
 pub enum Library {
 	Native(NativeLibrary),
-	Common(CommonLibrary),
 	Seminative(SeminativeLibrary),
+	Common(CommonLibrary),
+	Custom(CustomLibrary),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ThirdPartyLibrary {
 	Native(NativeLibrary),
-	Common(CommonLibrary),
 	Seminative(SeminativeLibrary),
+	Common(CommonLibrary),
 	Custom(CustomLibrary),
 }
 
@@ -390,7 +330,7 @@ impl From<String> for ModernArgs {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct LegacyArgs {
-	#[serde(rename = "minecraft_arguments")]
+	#[serde(rename = "minecraftArguments")]
 	pub arguments: String,
 }
 
@@ -401,7 +341,7 @@ impl From<LegacyArgs> for ModernArgs {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(untagged, rename_all = "camelCase")]
+#[serde(untagged)]
 pub enum ArgsContainer {
 	Modern(ModernArgs),
 	Legacy(LegacyArgs),
@@ -476,7 +416,7 @@ pub struct InheritedManifest {
 	pub main_class: String,
 	#[serde(flatten)]
 	pub arguments: ArgsContainer,
-	pub libraries: Vec<ThirdPartyLibrary>,
+	pub libraries: Vec<Library>,
 	#[serde(rename = "type")]
 	pub version_type: String,
 }
@@ -484,8 +424,8 @@ pub struct InheritedManifest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Manifest {
-	Native(Box<NativeManifest>),
 	Inherited(Box<InheritedManifest>),
+	Native(Box<NativeManifest>),
 }
 
 impl From<Box<NativeManifest>> for Manifest {

@@ -1,5 +1,6 @@
 pub mod action;
 pub mod executor;
+mod cache;
 
 pub trait Install {
 	type Error;

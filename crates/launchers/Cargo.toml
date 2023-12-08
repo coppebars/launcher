@@ -16,9 +16,5 @@ url = { version = "2.5", features = ["serde"] }
 regex = "1.10"
 once_cell = "1.18"
 reqwest = { version = "0.11", features = ["json"] }
-
-[features]
-serde_json = ["dep:serde_json"]
-install = ["dep:download"]
-mojang = []
-all = ["serde_json", "mojang", "install"]
+reqwest-middleware = "0.2"
+http-cache-reqwest = "0.12"

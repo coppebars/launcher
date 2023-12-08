@@ -1,3 +1,4 @@
+use reqwest_middleware::ClientBuilder;
 use {
 	crate::{
 		distros::{
@@ -10,34 +11,25 @@ use {
 			ProcessLauncher,
 			TryIntoLauncher,
 		},
-		specs::{
-			jre::{
-				ComponentType,
-				Entry,
-				Manifest as JreManifest,
-				Target,
-			},
-			manifest::{
-				AssetIndex,
-				Library,
-				Manifest,
-				ModernArgs,
-				Os,
-				Rule,
-			},
-		},
+		specs::prelude::*,
+		Error,
+	},
+	http_cache_reqwest::{
+		CACacheManager,
+		Cache,
+		CacheMode,
+		HttpCache,
+		HttpCacheOptions,
 	},
 	once_cell::sync::Lazy,
-	serde::{
-		Deserialize,
-		Serialize,
-		Serializer,
+	reqwest::{
+		Client, ,
 	},
+	serde::Deserialize,
 	std::{
 		collections::HashSet,
 		path::PathBuf,
 	},
-	thiserror::Error,
 	url::Url,
 };
 
@@ -52,51 +44,6 @@ mod api;
 
 #[derive(Debug, Clone)]
 pub struct Mojang(Manifest);
-
-#[derive(Debug, Error)]
-pub enum TryFromError {
-	#[error(transparent)]
-	Io(#[from] std::io::Error),
-
-	#[error(transparent)]
-	Json(#[from] serde_json::Error),
-}
-
-impl Serialize for TryFromError {
-	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-	where
-		S: Serializer,
-	{
-		serializer.serialize_str(self.to_string().as_str())
-	}
-}
-
-#[derive(Debug, Error)]
-pub enum Error {
-	#[error("Target manifest is inheriting. It does not contain enough data to to launch from it")]
-	Inherited,
-
-	#[error("Invalid utf-8 in path")]
-	InvalidUtf8Path,
-
-	#[error("Manifest with id: {0}, not found")]
-	ManifestNotFound(String),
-
-	#[error(transparent)]
-	Reqwest(#[from] reqwest::Error),
-
-	#[error(transparent)]
-	Json(#[from] serde_json::Error),
-
-	#[error(transparent)]
-	UrlParse(#[from] url::ParseError),
-
-	#[error("Manifest malformed: {0}")]
-	Malformed(String),
-
-	#[error(transparent)]
-	Io(#[from] std::io::Error),
-}
 
 static DEFAULT_FEATURES: Lazy<HashSet<&str>> =
 	Lazy::new(|| HashSet::from(["has_custom_resolution"]));
@@ -129,7 +76,7 @@ impl Distro for Mojang {
 		let version = versions
 			.into_iter()
 			.find(|it| it.id == options.mcv)
-			.ok_or(Error::ManifestNotFound(options.mcv.to_owned()))?;
+			.ok_or(Error::ManifestNotFound)?;
 
 		Ok(reqwest::get(version.url).await?.json().await?)
 	}
@@ -144,7 +91,7 @@ impl TryIntoLauncher for Mojang {
 			Manifest::Inherited(_) => return Err(Error::Inherited),
 		};
 
-		let classpath = utils::libraries_to_classpath(manifest.libraries);
+		let classpath = manifest.libraries.into_classpath()?;
 
 		let ModernArgs { arguments }: ModernArgs = manifest.arguments.into();
 
@@ -189,19 +136,9 @@ impl TryIntoLauncher for Mojang {
 
 		classpath.push(version_base.join(format!("{}.jar", &manifest.id)));
 
-		process.vars.insert(
-			"classpath".into(),
-			utils::join_classpath(
-				&classpath
-					.iter()
-					.map(|it| {
-						it.to_str()
-							.ok_or(Error::InvalidUtf8Path)
-							.map(|it| it.to_owned())
-					})
-					.collect::<Result<Vec<_>, _>>()?,
-			),
-		);
+		process
+			.vars
+			.insert("classpath".into(), classpath.join_classpath()?);
 
 		process.vars.insert("version_name".into(), manifest.id);
 		process
@@ -299,11 +236,10 @@ impl crate::install::Install for Mojang {
 			use Library::*;
 
 			match lib {
-				Custom { name, url } => {
-					let path = utils::libname_to_path(&name).unwrap();
-
-					let url = url.join(path.to_str().unwrap())?;
-
+				Custom { ref url, .. } => {
+					// TODO: Drop unwrap
+					let path = lib.derive_path().unwrap();
+					let url = url.join(path.to_str().ok_or(Error::InvalidUtf8Path)?)?;
 					push_action!(url, libraries_dir.join(path))
 				}
 				Native {
@@ -323,18 +259,7 @@ impl crate::install::Install for Mojang {
 						continue;
 					}
 
-					let classifier = if cfg!(target_os = "windows") {
-						natives.get(&Os::Windows)
-					} else if cfg!(target_os = "linux") {
-						natives.get(&Os::Linux)
-					} else if cfg!(target_os = "macos") {
-						natives.get(&Os::Osx)
-					} else {
-						panic!("Unsupported os")
-					};
-
-					let classifier =
-						classifier.ok_or(Error::Malformed("Inappropriate native classifier".into()))?;
+					let classifier = natives.get_classifier_name()?;
 
 					let artifact = downloads
 						.classifiers
@@ -401,35 +326,10 @@ impl crate::install::Install for Mojang {
 		}
 
 		let jre_manifest = get_jre_components().await?;
-		let jre_target = jre_manifest
-			.get(
-				#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
-				&Target::Linux,
-				#[cfg(all(target_os = "linux", target_arch = "x86"))]
-				&Target::LinuxI386,
-				#[cfg(all(target_os = "windows", target_arch = "x86_64"))]
-				&Target::WindowsX64,
-				#[cfg(all(target_os = "windows", target_arch = "x86"))]
-				&Target::WindowsX86,
-				#[cfg(all(target_os = "windows", target_arch = "aarch64"))]
-				&Target::WindowsArm64,
-				#[cfg(all(target_os = "macos", target_arch = "x86_64"))]
-				&Target::Macos,
-				#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
-				&Target::MacosArm64,
-			)
-			.expect("Target is not supported");
-
-		let jre_component = jre_target
-			.get(
-				&ComponentType::from_str(&manifest.java_version.component)
-					.ok_or(Error::Malformed("Unknown jre component".into()))?,
-			)
-			.ok_or(Error::Malformed("No such jre component".into()))?
-			.get(0)
-			.ok_or(Error::Malformed(
-				"Jre is not supported for current platform".into(),
-			))?;
+		let jre_target = jre_manifest.get_components_for_current_target()?;
+		let jre_component = jre_target.get_component(&JreComponentType::from_str(
+			&manifest.java_version.component,
+		))?;
 
 		let jre_manifest: JreManifest = reqwest::get(jre_component.manifest.url.clone())
 			.await?
@@ -437,7 +337,7 @@ impl crate::install::Install for Mojang {
 			.await?;
 
 		for (path, entry) in jre_manifest.files {
-			if let Entry::File(it) = entry {
+			if let JreEntry::File(it) = entry {
 				let file = it.downloads.raw;
 
 				push_action!(file.url, jre_component_dir.join(path), file.size, file.sha1)

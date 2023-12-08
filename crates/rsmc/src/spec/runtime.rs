@@ -1,5 +1,4 @@
 use {
-	crate::Error,
 	serde::Deserialize,
 	std::{
 		collections::HashMap,
@@ -77,53 +76,6 @@ pub struct Component {
 	pub availability: Availability,
 	pub manifest: ManifestResource,
 	pub version: Version,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct TargetComponents {
-	#[serde(flatten)]
-	inner: HashMap<ComponentType, Vec<Component>>,
-}
-
-impl TargetComponents {
-	pub fn get_component(&self, component: &ComponentType) -> Result<&Component, Error> {
-		self
-			.inner
-			.get(component)
-			.ok_or(Error::UnsupportedTarget)?
-			.get(0)
-			.ok_or(Error::UnsupportedTarget)
-	}
-}
-
-#[derive(Debug, Deserialize)]
-pub struct JavaRuntime {
-	#[serde(flatten)]
-	inner: HashMap<Target, TargetComponents>,
-}
-
-impl JavaRuntime {
-	pub fn get_components_for_current_target(&self) -> Result<&TargetComponents, Error> {
-		self
-			.inner
-			.get(
-				#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
-				&Target::Linux,
-				#[cfg(all(target_os = "linux", target_arch = "x86"))]
-				&Target::LinuxI386,
-				#[cfg(all(target_os = "windows", target_arch = "x86_64"))]
-				&Target::WindowsX64,
-				#[cfg(all(target_os = "windows", target_arch = "x86"))]
-				&Target::WindowsX86,
-				#[cfg(all(target_os = "windows", target_arch = "aarch64"))]
-				&Target::WindowsArm64,
-				#[cfg(all(target_os = "macos", target_arch = "x86_64"))]
-				&Target::Macos,
-				#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
-				&Target::MacosArm64,
-			)
-			.ok_or(Error::UnsupportedTarget)
-	}
 }
 
 #[derive(Debug, Deserialize)]

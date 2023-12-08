@@ -1,7 +1,7 @@
-mod distros;
 mod lookup;
+mod launch;
 
 pub use {
-	distros::*,
+	launch::*,
 	lookup::*,
 };

@@ -39,6 +39,7 @@ pub struct Item {
 	pub path: PathBuf,
 	pub known_size: Option<u64>,
 	pub known_sha: Option<String>,
+	pub ignore_integrity: bool,
 }
 
 #[derive(Debug, Error)]
@@ -110,6 +111,10 @@ pub async fn download(
 	if let Some(sha) = item.known_sha {
 		match File::open(&item.path).await {
 			Ok(mut file) => {
+				if item.ignore_integrity {
+					return Ok(())
+				}
+
 				if integrity::check(&mut file, &sha).await? {
 					return Ok(());
 				}

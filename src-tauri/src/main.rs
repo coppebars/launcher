@@ -1,17 +1,30 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::Manager;
-#[cfg(target_os = "windows")]
-use window_vibrancy::apply_acrylic;
-
 #[cfg(target_os = "macos")]
 use window_vibrancy::{
 	apply_vibrancy,
 	NSVisualEffectMaterial,
 };
+#[cfg(target_os = "windows")]
+use window_vibrancy::apply_acrylic;
+
+use {
+	tauri::Manager,
+	tracing_subscriber::{
+		layer::SubscriberExt,
+		util::SubscriberInitExt,
+	},
+	tracing::info,
+};
 
 fn main() {
+	tracing_subscriber::registry()
+		.with(tracing_subscriber::fmt::layer())
+		.init();
+
+	info!("Rslauncher v{}", env!("CARGO_PKG_VERSION"));
+
 	std::env::set_var(
 		"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
 		"--ignore-gpu-blocklist",
@@ -41,11 +54,7 @@ fn main() {
 
 			Ok(())
 		})
-		.invoke_handler(tauri::generate_handler![
-			ipc::lookup_versions,
-			ipc::mojang_prepare,
-			ipc::mojang_launch,
-		])
+		.invoke_handler(tauri::generate_handler![ipc::lookup_versions, ipc::launch,])
 		.run(tauri::generate_context!())
 		.expect("error while running tauri application");
 }
