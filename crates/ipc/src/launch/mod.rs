@@ -1,16 +1,27 @@
-use std::collections::HashMap;
-use tracing::{error, info, trace};
 use {
 	rsmc::launcher::Launcher,
-	std::path::PathBuf,
+	std::{
+		collections::HashMap,
+		path::PathBuf,
+	},
 	tauri::{
 		Manager,
 		Window,
 	},
+	tracing::{
+		error,
+		info,
+		trace,
+	},
 };
 
 #[tauri::command]
-pub async fn launch(window: Window, root: PathBuf, id: String, vars: HashMap<String, String>) -> Result<(), String> {
+pub async fn launch(
+	window: Window,
+	root: PathBuf,
+	id: String,
+	vars: HashMap<String, String>,
+) -> Result<(), String> {
 	trace!("Constructing launcher");
 	let mut launcher = Launcher::try_from_root(&root, &id).await.map_err(|err| {
 		error!(?err, "Failed to construct launcher from manifest");

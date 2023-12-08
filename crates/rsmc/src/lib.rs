@@ -9,8 +9,6 @@ pub mod error;
 pub mod launcher;
 #[cfg(feature = "spec")]
 pub mod spec;
-#[cfg(feature = "install")]
-pub mod install;
 
 pub(crate) use {
 	error::Error,
