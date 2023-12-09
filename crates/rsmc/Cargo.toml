@@ -13,13 +13,9 @@ thiserror.workspace = true
 tracing.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
-download = { path = "../download", optional = true }
-reqwest = { version = "0.11", features = ["json"], optional = true }
-url = { version = "2.5", features = ["serde"], optional = true }
 
 [features]
-default = ["tracing"]
-spec = ["url"]
+default = ["launcher", "tracing"]
+spec = []
 launcher = ["spec"]
 tracing = []
-api = ["reqwest", "url", "spec"]

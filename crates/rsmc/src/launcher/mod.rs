@@ -2,7 +2,7 @@ use std::process::Stdio;
 
 use {
 	crate::{
-		spec::manifest::*,
+		spec::*,
 		tracing::debug,
 		tracing::trace,
 		Error,

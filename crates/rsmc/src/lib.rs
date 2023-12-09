@@ -2,8 +2,6 @@
 
 pub(crate) mod private;
 
-#[cfg(feature = "api")]
-pub mod api;
 pub mod error;
 #[cfg(feature = "launcher")]
 pub mod launcher;

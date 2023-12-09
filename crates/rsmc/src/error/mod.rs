@@ -15,6 +15,7 @@ pub enum Error {
 	#[error(transparent)]
 	Network(#[from] reqwest::Error),
 
+	#[cfg(feature = "url")]
 	#[error(transparent)]
 	UrlParse(#[from] url::ParseError),
 
