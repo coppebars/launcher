@@ -20,6 +20,7 @@ export async function launch(options: LaunchOptions) {
 	// 	await invoke(prepareCommand, { version: { mcv: id }, path })
 	// }
 
+	// eslint-disable-next-line no-lone-blocks
 	{
 		const { versionId: id, root, vars } = options
 
