@@ -9,20 +9,21 @@ export interface LaunchOptions {
 }
 
 export async function launch(options: LaunchOptions) {
-	const { provider } = options
+	// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// const { provider } = options
 
-	const prepareCommand = `${provider}_prepare`
-	const launchCommand = `${provider}_launch`
+	// const prepareCommand = `${provider}_prepare`
 
+	// {
+	// 	const { versionId: id, root: path } = options
+	//
+	// 	await invoke(prepareCommand, { version: { mcv: id }, path })
+	// }
+
+	// eslint-disable-next-line no-lone-blocks
 	{
-		const { versionId: id, root: path } = options
+		const { versionId: id, root, vars } = options
 
-		await invoke(prepareCommand, { id, path })
-	}
-
-	{
-		const { versionId: id, logbackId: uid, root: path, vars } = options
-
-		await invoke(launchCommand, { uid, id, path, vars })
+		await invoke('launch', { id, root, vars })
 	}
 }

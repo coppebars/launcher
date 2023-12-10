@@ -1,23 +1,22 @@
 [package]
-name = "coppertiles-launcher"
+name = "rslauncher"
 version = "0.1.0"
-description = "Technically advanced Minecraft Launcher by Copprtiles team"
-authors = ["limpix31"]
-license = "BSD-3-Clause"
-repository = "https://github.com/coppertiles/launcher.git"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Technically advanced Minecraft Launcher by Coppebars team"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
 
 [build-dependencies]
 tauri-build = { version = "2.0.0-alpha", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0-alpha", features = [] }
+tauri.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
 tauri-plugin-window = "2.0.0-alpha"
 tauri-plugin-shell = "2.0.0-alpha"
 tauri-plugin-dialog = "2.0.0-alpha"
-serde_json = "1.0"
+tracing-subscriber = "0.3"
 window-vibrancy = { git = "https://github.com/tauri-apps/window-vibrancy" }
 # Workspace
 ipc = { path = "../crates/ipc" }

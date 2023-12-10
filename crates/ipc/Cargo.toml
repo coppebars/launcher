@@ -1,14 +1,15 @@
 [package]
 name = "ipc"
-version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors.workspace = true
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 
 [dependencies]
-tauri = "2.0.0-alpha"
+tauri.workspace = true
+tokio.workspace = true
+serde.workspace = true
+tracing.workspace = true
+rsmc = { path = "../rsmc" }
 lookup = { path = "../lookup" }
-serde = { version = "1.0", features = ["derive"] }
-launchers = { path = "../launchers", features = ["all"] }
-tokio = { version = "1.34", features = ["sync"] }
 tokio-util = "0.7"

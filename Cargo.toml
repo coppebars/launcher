@@ -2,10 +2,20 @@
 resolver = "2"
 members = [
 	"src-tauri",
-	"crates/download",
-	"crates/profile",
-	"crates/lookup",
-	"crates/ipc",
-	"crates/integrity",
-	"crates/launchers"
+	"crates/*",
 ]
+
+[workspace.package]
+authors = ["LIMPIX31"]
+repository = "https://github.com/coppebars/launcher"
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.74"
+
+[workspace.dependencies]
+tauri = { version = "2.0.0-alpha", features = [] }
+tokio = { version = "1.34.0", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tracing = "0.1"

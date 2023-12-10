@@ -388,27 +388,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@coppertiles-launcher/monorepo@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@coppertiles-launcher/monorepo@workspace:."
-  dependencies:
-    "@lmpx-config/eslint": "npm:0.0.18"
-    "@lmpx-config/prettier": "npm:0.0.2"
-    "@mantine/core": "npm:7.2.2"
-    "@mantine/hooks": "npm:7.2.2"
-    "@mantine/vanilla-extract": "npm:7.2.2"
-    "@tauri-apps/cli": "npm:2.0.0-alpha.17"
-    "@types/node": "npm:20.10.0"
-    "@vanilla-extract/css": "npm:1.14.0"
-    eslint: "npm:8.51.0"
-    prettier: "npm:3.1.0"
-    react: "npm:canary"
-    react-dom: "npm:canary"
-    typescript: "npm:5.2.2"
-    vite: "npm:5.0.3"
-  languageName: unknown
-  linkType: soft
-
 "@emotion/hash@npm:^0.9.0":
   version: 0.9.1
   resolution: "@emotion/hash@npm:0.9.1"
@@ -1543,6 +1522,27 @@ __metadata:
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
+
+"@rslauncher/monorepo@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@rslauncher/monorepo@workspace:."
+  dependencies:
+    "@lmpx-config/eslint": "npm:0.0.18"
+    "@lmpx-config/prettier": "npm:0.0.2"
+    "@mantine/core": "npm:7.2.2"
+    "@mantine/hooks": "npm:7.2.2"
+    "@mantine/vanilla-extract": "npm:7.2.2"
+    "@tauri-apps/cli": "npm:2.0.0-alpha.17"
+    "@types/node": "npm:20.10.0"
+    "@vanilla-extract/css": "npm:1.14.0"
+    eslint: "npm:8.51.0"
+    prettier: "npm:3.1.0"
+    react: "npm:canary"
+    react-dom: "npm:canary"
+    typescript: "npm:5.2.2"
+    vite: "npm:5.0.3"
+  languageName: unknown
+  linkType: soft
 
 "@tabler/icons-react@npm:2.42.0":
   version: 2.42.0
