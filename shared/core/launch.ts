@@ -9,7 +9,8 @@ export interface LaunchOptions {
 }
 
 export async function launch(options: LaunchOptions) {
-	const { provider } = options
+	// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// const { provider } = options
 
 	// const prepareCommand = `${provider}_prepare`
 
