@@ -6,6 +6,7 @@
 		"@entity/settings": "workspace:",
 		"@tabler/icons-react": "2.42.0",
 		"@theme/vars": "workspace:",
+		"@ui/extra": "workspace:",
 		"@vanilla-extract/css": "1.14.0",
 		"effector": "23.0.0",
 		"effector-react": "23.0.0"

@@ -2166,6 +2166,7 @@ __metadata:
     "@tabler/icons-react": "npm:2.42.0"
     "@theme/vars": "workspace:"
     "@types/react": "npm:18.2.39"
+    "@ui/extra": "workspace:"
     "@vanilla-extract/css": "npm:1.14.0"
     effector: "npm:23.0.0"
     effector-react: "npm:23.0.0"
