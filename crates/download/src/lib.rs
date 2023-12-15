@@ -112,7 +112,7 @@ pub async fn download(
 		match File::open(&item.path).await {
 			Ok(mut file) => {
 				if item.ignore_integrity {
-					return Ok(())
+					return Ok(());
 				}
 
 				if integrity::check(&mut file, &sha).await? {

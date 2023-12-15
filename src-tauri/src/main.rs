@@ -1,21 +1,21 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+#[cfg(target_os = "windows")]
+use window_vibrancy::apply_acrylic;
 #[cfg(target_os = "macos")]
 use window_vibrancy::{
 	apply_vibrancy,
 	NSVisualEffectMaterial,
 };
-#[cfg(target_os = "windows")]
-use window_vibrancy::apply_acrylic;
 
 use {
 	tauri::Manager,
+	tracing::info,
 	tracing_subscriber::{
 		layer::SubscriberExt,
 		util::SubscriberInitExt,
 	},
-	tracing::info,
 };
 
 fn main() {

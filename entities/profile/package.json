@@ -1,0 +1,14 @@
+{
+	"name": "@entity/profile",
+	"type": "module",
+	"main": "mod.ts",
+	"dependencies": {
+		"effector": "23.0.0",
+		"effector-react": "23.0.1",
+		"effector-storage": "7.0.0"
+	},
+	"peerDependencies": {
+		"react": "*",
+		"react-dom": "*"
+	}
+}

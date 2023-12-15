@@ -32,5 +32,8 @@ pub enum Error {
 	InvalidManifest(String),
 
 	#[error("{0}")]
-	Inconsistent(String)
+	Inconsistent(String),
+
+	#[error("Not yet supported feature: {0}")]
+	NotYetSupported(String),
 }

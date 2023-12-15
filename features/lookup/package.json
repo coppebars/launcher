@@ -6,10 +6,10 @@
 		"@entity/settings": "workspace:",
 		"core": "workspace:",
 		"effector": "23.0.0",
-		"effector-react": "23.0.0"
+		"effector-react": "23.0.1"
 	},
 	"devDependencies": {
-		"@tanstack/react-query": "5.9.0"
+		"@tanstack/react-query": "5.14.0"
 	},
 	"peerDependencies": {
 		"@tanstack/react-query": "*",

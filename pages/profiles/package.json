@@ -1,0 +1,22 @@
+{
+	"name": "@page/profiles",
+	"type": "module",
+	"main": "mod.tsx",
+	"dependencies": {
+		"@entity/profile": "workspace:",
+		"@layout/padded": "workspace:",
+		"effector": "23.0.0",
+		"effector-react": "23.0.1"
+	},
+	"devDependencies": {
+		"@mantine/core": "7.3.2",
+		"@mantine/hooks": "7.3.2",
+		"@types/react": "18.2.45"
+	},
+	"peerDependencies": {
+		"@mantine/core": "*",
+		"@mantine/hooks": "*",
+		"react": "*",
+		"react-dom": "*"
+	}
+}

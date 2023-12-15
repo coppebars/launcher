@@ -3,6 +3,6 @@
 	"type": "module",
 	"main": "mod.ts",
 	"devDependencies": {
-		"@types/react": "18.2.39"
+		"@types/react": "18.2.45"
 	}
 }
