@@ -39,6 +39,9 @@
       "@entity/instance": [
         "entities/instance"
       ],
+      "@entity/profile": [
+        "entities/profile"
+      ],
       "@entity/settings": [
         "entities/settings"
       ],
@@ -65,6 +68,9 @@
       ],
       "@page/home": [
         "pages/home"
+      ],
+      "@page/profiles": [
+        "pages/profiles"
       ],
       "@page/settings": [
         "pages/settings"

@@ -7,16 +7,16 @@
 		"@entity/settings": "workspace:",
 		"@entity/version": "workspace:",
 		"@hookform/resolvers": "3.3.2",
-		"@tabler/icons-react": "2.42.0",
+		"@tabler/icons-react": "2.44.0",
 		"@tauri-apps/api": "2.0.0-alpha.12",
-		"nanoid": "5.0.3",
-		"react-hook-form": "7.48.2",
+		"nanoid": "5.0.4",
+		"react-hook-form": "7.49.2",
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
-		"@mantine/core": "7.2.2",
-		"@tanstack/react-query": "5.9.0",
-		"@types/react": "18.2.39"
+		"@mantine/core": "7.3.2",
+		"@tanstack/react-query": "5.14.0",
+		"@types/react": "18.2.45"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

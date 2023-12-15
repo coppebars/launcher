@@ -3,8 +3,10 @@ use std::process::Stdio;
 use {
 	crate::{
 		spec::*,
-		tracing::debug,
-		tracing::trace,
+		tracing::{
+			debug,
+			trace,
+		},
 		Error,
 	},
 	std::{
@@ -57,61 +59,22 @@ fn process_args(args: Vec<Argument>, to: &mut Vec<String>) {
 			Argument::Constant(it) => {
 				trace!("+arg: {}", it);
 				to.push(it)
-			},
+			}
 			Argument::Conditional { rules, value } => {
-				if rules.iter().all(unpack_rule) {
+				if Rule::unpack_all(&rules) {
 					match value {
 						ConditionalArgument::Single(it) => {
 							trace!("+arg: {}", it);
 							to.push(it)
-						},
+						}
 						ConditionalArgument::List(it) => {
 							trace!("+args: {:?}", it);
 							to.extend(it)
-						},
+						}
 					}
 				}
 			}
 		}
-	}
-}
-
-fn unpack_rule(rule: &Rule) -> bool {
-	let mut allow = true;
-
-	match &rule.condition {
-		Some(RuleCondition::Os { name, arch, .. }) => {
-			if let Some(os_name) = &name {
-				allow = match os_name {
-					#[cfg(target_os = "linux")]
-					Os::Linux => true,
-					#[cfg(target_os = "windows")]
-					Os::Windows => true,
-					#[cfg(target_os = "macos")]
-					Os::Osx => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
-
-			if let Some(os_arch) = &arch {
-				allow = match os_arch {
-					#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-					Arch::X64 => true,
-					#[cfg(target_arch = "x86")]
-					Arch::X86 => true,
-					#[allow(unreachable_patterns)]
-					_ => false,
-				};
-			}
-		}
-		Some(RuleCondition::Features(_)) => allow = false,
-		_ => {}
-	};
-
-	match rule.action {
-		RuleAction::Allow => allow,
-		RuleAction::Disallow => !allow,
 	}
 }
 
@@ -174,41 +137,22 @@ impl Launcher {
 				Custom(it) => {
 					trace!("Including (custom) : {}", it.name);
 					classpath.push(it.name.to_path());
-				},
+				}
 				Common(it) => {
 					trace!("Including         : {}", it.name);
 					classpath.push(it.downloads.artifact.path);
 				}
 				Seminative(it) => {
-					if it.rules.iter().all(unpack_rule) {
+					if Rule::unpack_all(&it.rules) {
 						trace!("Including (native): {}", it.name);
 						classpath.push(it.downloads.artifact.path);
 					}
 				}
 				Native(mut it) => {
 					trace!(?it);
-					if it.rules.iter().all(unpack_rule) {
-						let platform = if cfg!(target_os = "windows") {
-							&Os::Windows
-						} else if cfg!(target_os = "linux") {
-							&Os::Linux
-						} else if cfg!(target_os = "macos") {
-							&Os::Osx
-						} else {
-							return Err(Error::UnsupportedPlatform);
-						};
-
-						let classifier = it
-							.natives
-							.get(platform)
-							.ok_or(Error::InvalidManifest("Missing native classifier".into()))?
-							.as_str();
-
-						let artifact = it
-							.downloads
-							.classifiers
-							.remove(classifier)
-							.ok_or(Error::InvalidManifest("Missing native classifier".into()))?;
+					if Rule::unpack_all(&it.rules) {
+						let classifier = it.natives.get_classifier_name()?;
+						let artifact = it.downloads.extract_artifact(classifier)?;
 
 						trace!("Including (base)  : {}", it.name);
 						classpath.push(it.downloads.artifact.path);
@@ -237,12 +181,6 @@ impl Launcher {
 		// This is intentional! Do not remove without RFC
 		jvm_args.retain(|it| !it.starts_with("-Djava.library.path"));
 
-		macro vars($($name:ident:$value:expr,)*) {
-			HashMap::from([
-				$((stringify!($name).into(), { $value }.into()),)*
-			])
-		}
-
 		let mut classpath: Vec<_> = classpath
 			.into_iter()
 			.map(|it| libraries_dir.join(it))
@@ -268,6 +206,12 @@ impl Launcher {
 		} else {
 			":"
 		});
+
+		macro vars($($name:ident:$value:expr,)*) {
+			HashMap::from([
+				$((stringify!($name).into(), { $value }.into()),)*
+			])
+		}
 
 		let mut vars: HashMap<String, String> = vars! {
 			version_name: self.manifest.id,

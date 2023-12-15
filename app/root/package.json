@@ -9,9 +9,9 @@
 		"@widget/sidebar": "workspace:"
 	},
 	"devDependencies": {
-		"@mantine/core": "7.2.2",
+		"@mantine/core": "7.3.2",
 		"@tauri-apps/api": "2.0.0-alpha.12",
-		"@types/react": "18.2.39"
+		"@types/react": "18.2.45"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

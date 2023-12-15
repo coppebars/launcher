@@ -13,9 +13,10 @@ thiserror.workspace = true
 tracing.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
+url = { version = "2.5", features = ["serde"], optional = true }
 
 [features]
 default = ["launcher", "tracing"]
-spec = []
+spec = ["url"]
 launcher = ["spec"]
 tracing = []

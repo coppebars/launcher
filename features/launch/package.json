@@ -4,14 +4,15 @@
 	"main": "mod.ts",
 	"dependencies": {
 		"@entity/instance": "workspace:",
+		"@entity/profile": "workspace:",
 		"@entity/settings": "workspace:",
-		"@mantine/notifications": "7.2.2",
+		"@mantine/notifications": "7.3.2",
 		"core": "workspace:",
 		"effector": "23.0.0",
-		"effector-react": "23.0.0"
+		"effector-react": "23.0.1"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.39"
+		"@types/react": "18.2.45"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

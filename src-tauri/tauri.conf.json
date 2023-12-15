@@ -21,6 +21,9 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
+			"resources": [
+				"resources/*"
+			],
 			"copyright": "© Coppebars, Nodium and limpix31 2020 - 2023",
 			"category": "Utility",
 			"shortDescription": "Minecraft Launcher",

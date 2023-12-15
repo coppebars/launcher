@@ -5,6 +5,7 @@ use {
 		path::PathBuf,
 	},
 	tauri::{
+		AppHandle,
 		Manager,
 		Window,
 	},
@@ -17,6 +18,7 @@ use {
 
 #[tauri::command]
 pub async fn launch(
+	handle: AppHandle,
 	window: Window,
 	root: PathBuf,
 	id: String,
@@ -28,6 +30,26 @@ pub async fn launch(
 
 		err.to_string()
 	})?;
+
+	// trace!("Getting authlib injector");
+	// let authlib_injector_path = handle
+	// 	.path()
+	// 	.resolve("athl.jar", BaseDirectory::Resource)
+	// 	.expect("Failed to resolve resource");
+	//
+	// debug!("Java Agent: {:?}", authlib_injector_path);
+	//
+	// let authlib_injector_path = authlib_injector_path.to_str().ok_or("Invalid
+	// path")?;
+	//
+	// launcher
+	// 	.extra_jvm_args
+	// 	.extend([
+	// 		format!("-javaagent:{authlib_injector_path}=https://nodium.ru:32717"),
+	// 		"-Dauthlibinjector.disableHttpd".into(),
+	// 		"-Dauthlibinjector.noShowServerName".into(),
+	// 		"-Dauthlibinjector.usernameCheck=enabled".into()
+	// 	]);
 
 	trace!(?vars);
 	launcher.vars = vars;

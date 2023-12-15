@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@tauri-apps/api": "2.0.0-alpha.12",
 		"effector": "23.0.0",
-		"effector-react": "23.0.0",
+		"effector-react": "23.0.1",
 		"effector-storage": "7.0.0"
 	},
 	"peerDependencies": {

@@ -4,11 +4,12 @@
 	"main": "mod.tsx",
 	"dependencies": {
 		"@page/home": "workspace:",
+		"@page/profiles": "workspace:",
 		"@page/settings": "workspace:"
 	},
 	"devDependencies": {
-		"@types/react": "18.2.39",
-		"react-router-dom": "6.20.0"
+		"@types/react": "18.2.45",
+		"react-router-dom": "6.21.0"
 	},
 	"peerDependencies": {
 		"@mantine/core": "*",

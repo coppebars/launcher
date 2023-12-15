@@ -1,18 +1,14 @@
 use {
+	crate::error::Error,
 	serde::{
-		de::{
-			Error,
-			Visitor,
-		},
+		de::Visitor,
 		Deserialize,
 		Deserializer,
 		Serialize,
 		Serializer,
 	},
 	std::{
-		collections::{
-			HashMap,
-		},
+		collections::HashMap,
 		ffi::OsStr,
 		fmt::{
 			Display,
@@ -64,8 +60,8 @@ impl Display for ArtifactName {
 
 impl<'de> Deserialize<'de> for ArtifactName {
 	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-		where
-			D: Deserializer<'de>,
+	where
+		D: Deserializer<'de>,
 	{
 		struct ArtifactNameVisitor;
 
@@ -80,8 +76,8 @@ impl<'de> Deserialize<'de> for ArtifactName {
 			}
 
 			fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-				where
-					E: Error,
+			where
+				E: serde::de::Error,
 			{
 				let parts: Vec<&str> = v.split(':').collect();
 
@@ -93,8 +89,8 @@ impl<'de> Deserialize<'de> for ArtifactName {
 			}
 
 			fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
-				where
-					E: Error,
+			where
+				E: serde::de::Error,
 			{
 				self.visit_str(&v)
 			}
@@ -106,8 +102,8 @@ impl<'de> Deserialize<'de> for ArtifactName {
 
 impl Serialize for ArtifactName {
 	fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-		where
-			S: Serializer,
+	where
+		S: Serializer,
 	{
 		serializer.serialize_str(&format!("{self}"))
 	}
@@ -122,15 +118,15 @@ pub enum Os {
 }
 
 impl Os {
-	pub fn target() -> Option<Self> {
+	pub fn target() -> Result<Self, Error> {
 		if cfg!(target_os = "linux") {
-			Some(Self::Linux)
+			Ok(Self::Linux)
 		} else if cfg!(target_os = "windows") {
-			Some(Self::Windows)
+			Ok(Self::Windows)
 		} else if cfg!(target_os = "macos") {
-			Some(Self::Osx)
+			Ok(Self::Osx)
 		} else {
-			None
+			Err(Error::UnsupportedPlatform)
 		}
 	}
 }
@@ -177,6 +173,51 @@ pub struct Rule {
 	pub condition: Option<RuleCondition>,
 }
 
+impl Rule {
+	pub fn unpack_all(rules: &[Rule]) -> bool {
+		rules.iter().all(Rule::unpack)
+	}
+
+	pub fn unpack(&self) -> bool {
+		let mut allow = true;
+
+		match &self.condition {
+			Some(RuleCondition::Os { name, arch, .. }) => {
+				if let Some(os_name) = &name {
+					allow = match os_name {
+						#[cfg(target_os = "linux")]
+						Os::Linux => true,
+						#[cfg(target_os = "windows")]
+						Os::Windows => true,
+						#[cfg(target_os = "macos")]
+						Os::Osx => true,
+						#[allow(unreachable_patterns)]
+						_ => false,
+					};
+				}
+
+				if let Some(os_arch) = &arch {
+					allow = match os_arch {
+						#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+						Arch::X64 => true,
+						#[cfg(target_arch = "x86")]
+						Arch::X86 => true,
+						#[allow(unreachable_patterns)]
+						_ => false,
+					};
+				}
+			}
+			Some(RuleCondition::Features(_)) => allow = false,
+			_ => {}
+		};
+
+		match self.action {
+			RuleAction::Allow => allow,
+			RuleAction::Disallow => !allow,
+		}
+	}
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Artifact {
 	pub path: PathBuf,
@@ -201,6 +242,15 @@ pub struct NativeLibraryArtifacts {
 	pub classifiers: HashMap<String, Artifact>,
 }
 
+impl NativeLibraryArtifacts {
+	pub fn extract_artifact(&mut self, classifier_name: &str) -> Result<Artifact, Error> {
+		self
+			.classifiers
+			.remove(classifier_name)
+			.ok_or(Error::InvalidManifest("Missing native classifier".into()))
+	}
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommonLibrary {
 	pub name: ArtifactName,
@@ -211,8 +261,26 @@ pub struct CommonLibrary {
 pub struct NativeLibrary {
 	pub name: ArtifactName,
 	pub downloads: NativeLibraryArtifacts,
-	pub natives: HashMap<Os, String>,
+	pub natives: Natives,
 	pub rules: Vec<Rule>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Natives {
+	#[serde(flatten)]
+	pub inner: HashMap<Os, String>,
+}
+
+impl Natives {
+	pub fn get_classifier_name(&self) -> Result<&str, Error> {
+		Ok(
+			self
+				.inner
+				.get(&Os::target()?)
+				.ok_or(Error::InvalidManifest("Missing native classifier".into()))?
+				.as_str(),
+		)
+	}
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -236,13 +304,15 @@ pub enum Library {
 	Custom(CustomLibrary),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ThirdPartyLibrary {
-	Native(NativeLibrary),
-	Seminative(SeminativeLibrary),
-	Common(CommonLibrary),
-	Custom(CustomLibrary),
+impl Library {
+	pub fn to_path(&self) -> PathBuf {
+		match self {
+			Library::Native(it) => it.name.to_path(),
+			Library::Seminative(it) => it.name.to_path(),
+			Library::Common(it) => it.name.to_path(),
+			Library::Custom(it) => it.name.to_path(),
+		}
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

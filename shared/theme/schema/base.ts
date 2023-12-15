@@ -87,7 +87,7 @@ export const base = createTheme({
 			mix(white, black, 0.05),
 			mix(white, black, 0.1),
 			mix(white, black, 0.2),
-			mix(white, black, 0.3),
+			mix(white, black, 0.8),
 			mix(white, black, 0.9),
 			mix(white, black, 0.9),
 			mix(white, black, 0.95),
