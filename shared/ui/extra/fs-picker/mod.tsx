@@ -25,7 +25,6 @@ interface Props {
 
 export function FsPicker(props: Props) {
 	const [dirs, setDirs] = useState<any>([])
-	// const [history, setHistory] = useState<any>({})
 
 	const back = () => {
 		const lastIndex = props.value.lastIndexOf('\\')
@@ -41,15 +40,22 @@ export function FsPicker(props: Props) {
 
 	useEffect(() => {
 		getDirs()
-	}, [props.value])
+	}, [dirs])
 
 	return (
 		<Flex direction='column' className={styled}>
-			<Button onClick={back}>{'<'}</Button>
-			{dirs.map((el: any) =>
+			{dirs?.map((el: any) =>
 				props.type === 'dirs' ? (
 					el.isDir ? (
-						<Dir key={el.name} name={el.name} newPath={props.onChange} join={join} value={props.value} />
+						<Dir
+							key={el.name}
+							name={el.name}
+							newPath={props.onChange}
+							join={join}
+							value={props.value}
+							type={props.type}
+							lookup={props.lookup}
+						/>
 					) : null
 				) : !el.isDir ? (
 					<File key={el.name} name={el.name} newPath={props.onChange} join={join} value={props.value} />

@@ -26,7 +26,12 @@ export function SettingsWidget() {
 			{ name: 'files', isDir: true },
 			{ name: 'package.json', isDir: false },
 		],
-		'C:\\example\\project\\files': [],
+		'C:\\example\\project\\files': [
+			{ name: 'another', isDir: true },
+			{ name: 'another2', isDir: true },
+		],
+		'C:\\example\\project\\files\\another': [],
+		'C:\\example\\project\\files\\another2': [],
 	}
 
 	const [path, setPath] = useState('C:\\example')
