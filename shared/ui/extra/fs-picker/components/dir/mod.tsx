@@ -24,12 +24,12 @@ const Dir = (props: Props) => {
 			<Box
 				onClick={async () => {
 					if (visible) {
-						// Нормально не отрабатывает выбор пути, нужно как то по другому убирать
-						const lastIndex = props.value.lastIndexOf('\\')
-						if (lastIndex > 2) {
-							props.newPath(props.value.replace(props.value.substring(lastIndex), ''))
+						const index = props.value.indexOf(props.name)
+						if (index > 2) {
+							props.newPath(props.value.substring(0, index))
 						}
 					} else {
+						// Надо исправить баг, когда есть две вложенных папки в одной, можно выбрать одну в другую
 						const path = await props.join(props.value, props.name)
 						const dirsAs = await props.lookup(path)
 						setDirs(dirsAs)

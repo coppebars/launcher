@@ -51,7 +51,7 @@ export function SettingsWidget() {
 			>
 				<Input
 					py={4}
-					value={settings.rootPath}
+					value={path}
 					disabled
 					variant='filled'
 					placeholder='Oops. Something going wrong...'
