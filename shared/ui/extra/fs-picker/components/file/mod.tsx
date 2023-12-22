@@ -11,8 +11,10 @@ const File = (props: Props) => {
 	return (
 		<Box
 			onClick={async () => {
-				const path = await props.join(props.value, props.name)
-				props.newPath(path)
+				if (!props.value.includes(props.name)) {
+					const path = await props.join(props.value, props.name)
+					props.newPath(path)
+				}
 			}}
 		>
 			File: {props.name}

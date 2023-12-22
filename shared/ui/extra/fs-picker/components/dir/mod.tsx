@@ -1,11 +1,7 @@
 import { Box }      from "@mantine/core"
 import { useState } from "react"
 import File         from "../file/mod"
-
-interface Entry {
-	isDir: boolean
-	name: string
-}
+import { Entry }    from "../../types"
 
 interface Props {
 	name: string
@@ -17,33 +13,41 @@ interface Props {
 }
 
 const Dir = (props: Props) => {
-	const [dirs, setDirs] = useState<any>([])
+	const [dirs, setDirs] = useState<Entry[]>([])
 	const [visible, setVisible] = useState<boolean>(false)
+
+	const handleClick = async () => {
+		if (visible) {
+			const index = props.value.indexOf(props.name)
+			if (index > 2) {
+				props.newPath(props.value.substring(0, index))
+			}
+		} else {
+			const path = await props.join(props.value, props.name)
+			const dirsAs = await props.lookup(path)
+			if (dirsAs) {
+				setDirs(dirsAs)
+				props.newPath(path)
+			} else {
+				const lastIndex = props.value.lastIndexOf('\\')
+				if (lastIndex > 2) {
+					const backPath = await props.join(props.value.replace(props.value.substring(lastIndex), ''), props.name)
+					props.newPath(backPath)
+					console.log(backPath)
+					const newDirs = await props.lookup(backPath)
+					setDirs(newDirs)
+				}
+			}
+		}
+		setVisible(!visible)
+	}
+
 	return (
 		<>
-			<Box
-				onClick={async () => {
-					if (visible) {
-						const index = props.value.indexOf(props.name)
-						if (index > 2) {
-							props.newPath(props.value.substring(0, index))
-						}
-					} else {
-						// Надо исправить баг, когда есть две вложенных папки в одной, можно выбрать одну в другую
-						const path = await props.join(props.value, props.name)
-						const dirsAs = await props.lookup(path)
-						setDirs(dirsAs)
-						props.newPath(path)
-					}
-					console.log(props.value)
-					setVisible(!visible)
-				}}
-			>
-				Dir: {props.name}
-			</Box>
+			<Box onClick={handleClick}>Dir: {props.name}</Box>
 			{visible ? (
 				<Box style={{ marginLeft: '10px' }}>
-					{dirs?.map((el: any) =>
+					{dirs?.map((el: Entry) =>
 						props.type === 'dirs' ? (
 							el.isDir ? (
 								<Dir

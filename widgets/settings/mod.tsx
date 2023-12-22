@@ -26,12 +26,7 @@ export function SettingsWidget() {
 			{ name: 'files', isDir: true },
 			{ name: 'package.json', isDir: false },
 		],
-		'C:\\example\\project\\files': [
-			{ name: 'another', isDir: true },
-			{ name: 'another2', isDir: true },
-		],
-		'C:\\example\\project\\files\\another': [],
-		'C:\\example\\project\\files\\another2': [],
+		'C:\\example\\project\\files': [],
 	}
 
 	const [path, setPath] = useState('C:\\example')
@@ -51,7 +46,7 @@ export function SettingsWidget() {
 			>
 				<Input
 					py={4}
-					value={path}
+					value={settings.rootPath}
 					disabled
 					variant='filled'
 					placeholder='Oops. Something going wrong...'
